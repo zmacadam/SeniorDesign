@@ -1,5 +1,7 @@
 # 2019-ncov-frontend
 
+> Coronavirus (2019-nCoV) Frontend
+
 ## Project setup
 ```
 npm install
