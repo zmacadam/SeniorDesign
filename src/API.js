@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const http = axios.create({
-  baseURL: process.env.NODE_ENV === 'production' ? process.env.BASE_URL : 'http://localhost:3000',
+  baseURL: 'http://167.179.92.170:3000',
 });
 
 export default {
