@@ -2,6 +2,8 @@
 
 > Coronavirus (2019-nCoV) Frontend
 
+Backend can be found here [2019-ncov-api](https://github.com/sorxrob/2019-ncov-api).
+
 ## Project setup
 ```
 npm install
