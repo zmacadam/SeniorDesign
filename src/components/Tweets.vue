@@ -19,8 +19,8 @@
       <v-card class="mb-2" outlined v-for="i in 10" :key="i">
         <v-card-text>
           <v-skeleton-loader type="text@4"></v-skeleton-loader>
-          <div style="margin-left: 95px;" class="mt-5">
-            <v-skeleton-loader width="150" type="text"></v-skeleton-loader>
+          <div style="margin-left: 50%;" class="mt-5">
+            <v-skeleton-loader type="text"></v-skeleton-loader>
           </div>
         </v-card-text>
         <v-card-actions>
@@ -36,24 +36,34 @@
         </v-card-actions>
       </v-card>
     </div>
+
+    <v-btn
+      v-if="$vuetify.breakpoint.smAndDown"
+      text
+      block
+      @click="SET_TWEET_DIALOG(true)"
+      >View More Tweets</v-btn
+    >
   </div>
 </template>
 
 <script>
-import moment from 'moment';
+import { mapMutations } from 'vuex';
 import API from '../API';
 
 export default {
+  props: ['count'],
   data: () => ({
     items: [],
     loading: false,
     searchMetadata: {},
+    endReached: false,
   }),
   async mounted() {
     this.loading = true;
     const { statuses, search_metadata: searchMetadata } = await API.getTweets({
       q: 'coronavirus ncov 2019ncov wuhan -filter:retweets',
-      count: 10,
+      count: this.count || 10,
       result_type: 'recent',
     });
     this.items = statuses;
@@ -62,6 +72,8 @@ export default {
   },
   methods: {
     async loadMore() {
+      if (this.endReached) return;
+
       if (this.searchMetadata.next_results) {
         this.loading = true;
         const urlParams = new URLSearchParams(this.searchMetadata.next_results);
@@ -75,19 +87,11 @@ export default {
         this.items = [...this.items, ...statuses];
         this.searchMetadata = searchMetadata;
         this.loading = false;
+      } else {
+        this.endReached = true;
       }
     },
-  },
-  filters: {
-    fromNow(val) {
-      return moment(val, 'ddd MMM DD HH:mm:ss Z YYYY').fromNow();
-    },
-    URLify(val) {
-      return val.replace(
-        /((http|https|ftp):\/\/[\w?=&./-;#~%-]+(?![\w\s?&./;#~%"=-]*>))/g,
-        '<a class="urlify" href="$1" target="_BLANK">$1</a> ',
-      );
-    },
+    ...mapMutations(['SET_TWEET_DIALOG']),
   },
 };
 </script>

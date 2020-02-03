@@ -6,7 +6,7 @@
           <v-list-item-content>
             <v-list-item-title class="title">
               <v-skeleton-loader v-if="!total" type="text"></v-skeleton-loader>
-              <ICountUp v-else :endVal="total" />
+              <ICountUp class="display-2" v-else :endVal="total" />
             </v-list-item-title>
             <v-list-item-subtitle>
               <v-skeleton-loader v-if="!total" width="140" type="text"></v-skeleton-loader>
@@ -40,11 +40,8 @@
 
     <v-app-bar app clipped-left>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title v-if="$vuetify.breakpoint.smAndUp">
-        2019-nCoV Worldwide Confirmed Cases
-      </v-toolbar-title>
-      <v-toolbar-title v-else>
-        2019-nCoV
+      <v-toolbar-title>
+        2019-nCoV <span v-show="$vuetify.breakpoint.smAndUp">Worldwide Confirmed Cases</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn href="https://github.com/sorxrob/2019-ncov-frontend" target="_BLANK" icon>
@@ -56,12 +53,16 @@
       <v-container>
         <v-row>
           <v-col cols="12" md="8">
-            <v-card tile style="height: 60vh;">
+            <v-card tile style="height: 70vh;">
               <LeafletMap :locations="locations" ref="map" @MARKER_CLICKED="viewDetails" />
             </v-card>
           </v-col>
           <v-col cols="12" md="4">
-            <perfect-scrollbar @ps-y-reach-end="endReached">
+            <perfect-scrollbar
+              style="overscroll-behavior: none;"
+              v-if="$vuetify.breakpoint.mdAndUp"
+              @ps-y-reach-end="endReached"
+            >
               <v-card tile>
                 <v-card-title>
                   <v-icon large left>
@@ -70,10 +71,24 @@
                   <span class="title font-weight-light">Twitter</span>
                 </v-card-title>
                 <v-card-text>
-                  <tweets ref="tweets"></tweets>
+                  <tweets
+                    ref="tweets"
+                    @MORE_TWEETS_CLICKED="$refs.tweetDialog.dialog = true"
+                  ></tweets>
                 </v-card-text>
               </v-card>
             </perfect-scrollbar>
+            <v-card v-else tile>
+              <v-card-title>
+                <v-icon large left>
+                  mdi-twitter
+                </v-icon>
+                <span class="title font-weight-light">Twitter</span>
+              </v-card-title>
+              <v-card-text>
+                <tweets ref="tweets" :count="5"></tweets>
+              </v-card-text>
+            </v-card>
           </v-col>
           <v-col cols="12" md="6">
             <v-card tile>
@@ -109,6 +124,7 @@
             <p>Country/Region: {{ selected.country }}</p>
             <p>Confirmed: <ICountUp :endVal="selected.cases" /></p>
             <p>Deaths: <ICountUp :endVal="selected.deaths" /></p>
+            <p>References: {{ selected.references }}</p>
           </v-card-text>
           <v-card-actions v-show="$vuetify.breakpoint.smAndUp">
             <v-spacer></v-spacer>
@@ -117,6 +133,8 @@
         </v-card>
       </v-dialog>
     </v-content>
+
+    <tweet-dialog ref="tweetDialog"></tweet-dialog>
 
     <!-- <v-footer app>
       <span>&copy; 2020</span>
@@ -130,6 +148,7 @@ import LeafletMap from './components/Map.vue';
 import DailyReport from './components/DailyReport.vue';
 import DailyDeaths from './components/DailyDeaths.vue';
 import Tweets from './components/Tweets.vue';
+import TweetDialog from './components/TweetDialog.vue';
 import API from './API';
 
 export default {
@@ -141,6 +160,7 @@ export default {
     DailyDeaths,
     ICountUp,
     Tweets,
+    TweetDialog,
   },
 
   data: () => ({
@@ -160,7 +180,10 @@ export default {
   async created() {
     this.$vuetify.theme.dark = true;
     this.loading = true;
-    this.locations = await API.getConfirmedCases();
+    this.locations = (await API.getConfirmedCases()).map(data => ({
+      ...data,
+      references: data.references.join(', '),
+    }));
     this.loading = false;
   },
 
@@ -170,6 +193,7 @@ export default {
         this.drawer = false;
       }
 
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       const { lat, lon } = location.coordinates;
       this.$refs.map.flyTo(lat, lon);
     },
@@ -184,8 +208,8 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .ps {
-  height: 60vh;
+  height: 70vh;
 }
 </style>

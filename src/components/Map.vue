@@ -1,12 +1,13 @@
 <template>
- <l-map
+  <l-map
     ref="map"
     style="z-index: 0; height: 100%; width: 100%"
     :zoom="zoom"
     :center="center"
     @update:zoom="zoomUpdated"
     @update:center="centerUpdated"
-    @update:bounds="boundsUpdated">
+    @update:bounds="boundsUpdated"
+  >
     <l-tile-layer :url="url"></l-tile-layer>
     <l-circle-marker
       @click="$emit('MARKER_CLICKED', l)"
@@ -14,12 +15,12 @@
       :key="idx"
       :lat-lng="[l.coordinates.lat, l.coordinates.lon]"
       color="red"
-      fillColor='#f00'
+      fillColor="#f00"
       :fillOpacity="0.35"
       :stroke="false"
       :radius="20"
     />
- </l-map>
+  </l-map>
 </template>
 
 <script>
@@ -31,7 +32,7 @@ export default {
   data: () => ({
     url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
     zoom: 4,
-    center: [47.413220, -1.219482],
+    center: [47.41322, -1.219482],
     bounds: null,
   }),
   methods: {

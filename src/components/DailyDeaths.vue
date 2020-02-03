@@ -1,8 +1,5 @@
 <template>
-  <apexcharts
-  ref="chart"
-  :options="chartOptions"
-  :series="series"></apexcharts>
+  <apexcharts ref="chart" :options="chartOptions" :series="series"></apexcharts>
 </template>
 
 <script>
@@ -21,7 +18,7 @@ export default {
       chartOptions: {
         chart: {
           id: 'basic-line',
-          type: 'area',
+          type: 'bar',
           toolbar: {
             show: false,
           },
@@ -54,13 +51,23 @@ export default {
     const data = await API.getDailyDeaths();
     this.$refs.chart.updateOptions({
       xaxis: {
-        categories: this.limitBy(data.map(i => moment(i.date, 'MMM D.').format('MMM D')), data.length, data.length - 6),
+        categories: this.limitBy(
+          data.map(i => moment(i.date, 'MMM D.').format('MMM D')),
+          data.length,
+          data.length - 6,
+        ),
       },
     });
-    this.$refs.chart.updateSeries([{
-      name: 'Deaths per Day',
-      data: this.limitBy(data.map(i => i.count), data.length, data.length - 6),
-    }]);
+    this.$refs.chart.updateSeries([
+      {
+        name: 'Deaths per Day',
+        data: this.limitBy(
+          data.map(i => i.count),
+          data.length,
+          data.length - 6,
+        ),
+      },
+    ]);
   },
   mixins: [Vue2Filters.mixin],
 };

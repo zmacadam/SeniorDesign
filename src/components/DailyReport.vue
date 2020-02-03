@@ -1,8 +1,5 @@
 <template>
-  <apexcharts
-  ref="chart"
-  :options="chartOptions"
-  :series="series"></apexcharts>
+  <apexcharts ref="chart" :options="chartOptions" :series="series"></apexcharts>
 </template>
 
 <script>
@@ -54,13 +51,23 @@ export default {
     const data = await API.getMainlandChinaDailyReport();
     this.$refs.chart.updateOptions({
       xaxis: {
-        categories: this.limitBy(data.map(i => moment(i.date).format('MMM D')), data.length, data.length - 6),
+        categories: this.limitBy(
+          data.map(i => moment(i.date).format('MMM D')),
+          data.length,
+          data.length - 6,
+        ),
       },
     });
-    this.$refs.chart.updateSeries([{
-      name: 'Confirmed cases in Mainland China',
-      data: this.limitBy(data.map(i => +i.count.replace(/,/g, '')), data.length, data.length - 6),
-    }]);
+    this.$refs.chart.updateSeries([
+      {
+        name: 'Confirmed cases in Mainland China',
+        data: this.limitBy(
+          data.map(i => +i.count.replace(/,/g, '')),
+          data.length,
+          data.length - 6,
+        ),
+      },
+    ]);
   },
   mixins: [Vue2Filters.mixin],
 };
