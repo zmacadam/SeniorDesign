@@ -34,7 +34,6 @@ export default {
   async mounted() {
     this.loading = true;
     const data = await API.getTimeline();
-    console.log(data);
     data.forEach((item) => {
       const times = item.time.map(i => ({
         ...i,
