@@ -65,7 +65,7 @@ export default {
       q: 'coronavirus ncov 2019ncov wuhan -filter:retweets',
       count: this.count || 10,
       result_type: 'recent',
-      lang: 'en',
+      locale: 'en',
     });
     this.items = statuses;
     this.searchMetadata = searchMetadata;
