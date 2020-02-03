@@ -114,6 +114,12 @@
             <timeline></timeline>
           </v-col>
         </v-row>
+
+        <v-row>
+          <v-col cols="12">
+            <reference></reference>
+          </v-col>
+        </v-row>
       </v-container>
 
       <!-- Details -->
@@ -133,7 +139,6 @@
             <p>Country/Region: {{ selected.country }}</p>
             <p>Confirmed: <ICountUp :endVal="selected.cases" /></p>
             <p>Deaths: <ICountUp :endVal="selected.deaths" /></p>
-            <p>References: <span v-html="$options.filters.URLify(selected.references)"></span></p>
           </v-card-text>
           <v-card-actions v-show="$vuetify.breakpoint.smAndUp">
             <v-spacer></v-spacer>
@@ -159,6 +164,7 @@ import DailyDeaths from './components/DailyDeaths.vue';
 import Tweets from './components/Tweets.vue';
 import TweetDialog from './components/TweetDialog.vue';
 import Timeline from './components/Timeline.vue';
+import Reference from './components/Reference.vue';
 import API from './API';
 
 export default {
@@ -172,6 +178,7 @@ export default {
     Tweets,
     TweetDialog,
     Timeline,
+    Reference,
   },
 
   data: () => ({
