@@ -32,7 +32,7 @@ export default {
   data: () => ({
     url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
     zoom: 4,
-    center: [47.41322, -1.219482],
+    center: [35.000074, 104.999927],
     bounds: null,
   }),
   methods: {
