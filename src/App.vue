@@ -53,7 +53,7 @@
       <v-container>
         <v-row>
           <v-col cols="12" md="8">
-            <v-card tile style="height: 70vh;">
+            <v-card tile style="height: 70vh;" flat>
               <LeafletMap :locations="locations" ref="map" @MARKER_CLICKED="viewDetails" />
             </v-card>
           </v-col>
@@ -63,7 +63,7 @@
               v-if="$vuetify.breakpoint.mdAndUp"
               @ps-y-reach-end="endReached"
             >
-              <v-card tile>
+              <v-card tile flat>
                 <v-card-title>
                   <v-icon large left>
                     mdi-twitter
@@ -78,7 +78,7 @@
                 </v-card-text>
               </v-card>
             </perfect-scrollbar>
-            <v-card v-else tile>
+            <v-card v-else tile flat>
               <v-card-title>
                 <v-icon large left>
                   mdi-twitter
@@ -90,19 +90,28 @@
               </v-card-text>
             </v-card>
           </v-col>
+        </v-row>
+
+        <v-row>
           <v-col cols="12" md="6">
-            <v-card tile>
+            <v-card tile flat>
               <v-card-text>
                 <daily-report></daily-report>
               </v-card-text>
             </v-card>
           </v-col>
           <v-col cols="12" md="6">
-            <v-card tile>
+            <v-card tile flat>
               <v-card-text>
                 <daily-deaths></daily-deaths>
               </v-card-text>
             </v-card>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col cols="12" md="6">
+            <timeline></timeline>
           </v-col>
         </v-row>
       </v-container>
@@ -124,7 +133,7 @@
             <p>Country/Region: {{ selected.country }}</p>
             <p>Confirmed: <ICountUp :endVal="selected.cases" /></p>
             <p>Deaths: <ICountUp :endVal="selected.deaths" /></p>
-            <p>References: {{ selected.references }}</p>
+            <p>References: <span v-html="$options.filters.URLify(selected.references)"></span></p>
           </v-card-text>
           <v-card-actions v-show="$vuetify.breakpoint.smAndUp">
             <v-spacer></v-spacer>
@@ -149,6 +158,7 @@ import DailyReport from './components/DailyReport.vue';
 import DailyDeaths from './components/DailyDeaths.vue';
 import Tweets from './components/Tweets.vue';
 import TweetDialog from './components/TweetDialog.vue';
+import Timeline from './components/Timeline.vue';
 import API from './API';
 
 export default {
@@ -161,6 +171,7 @@ export default {
     ICountUp,
     Tweets,
     TweetDialog,
+    Timeline,
   },
 
   data: () => ({
@@ -184,6 +195,7 @@ export default {
       ...data,
       references: data.references.join(', '),
     }));
+    console.log(this.locations);
     this.loading = false;
   },
 
