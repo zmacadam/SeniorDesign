@@ -3,6 +3,9 @@
     <v-card-title>
       <span class="title font-weight-light">Timeline (GMT)</span>
     </v-card-title>
+    <div v-if="loading" class="px-5">
+      <v-skeleton-loader type="paragraph@10"></v-skeleton-loader>
+    </div>
     <v-tabs fixed-tabs v-model="tab" show-arrows slider-color="white">
       <v-tab v-for="(item, idx) in items" :key="idx">
         {{ item.date }}
@@ -38,9 +41,12 @@ export default {
   data: () => ({
     items: [],
     tab: null,
+    loading: false,
   }),
   async mounted() {
+    this.loading = true;
     this.items = await API.getTimeline();
+    this.loading = false;
   },
 };
 </script>
