@@ -110,7 +110,7 @@
         </v-row>
 
         <v-row>
-          <v-col cols="12" md="6">
+          <v-col cols="12">
             <timeline></timeline>
           </v-col>
         </v-row>
@@ -152,17 +152,17 @@
 </template>
 
 <script>
-import ICountUp from "vue-countup-v2";
-import LeafletMap from "./components/Map.vue";
-import DailyReport from "./components/DailyReport.vue";
-import DailyDeaths from "./components/DailyDeaths.vue";
-import Tweets from "./components/Tweets.vue";
-import TweetDialog from "./components/TweetDialog.vue";
-import Timeline from "./components/Timeline.vue";
-import API from "./API";
+import ICountUp from 'vue-countup-v2';
+import LeafletMap from './components/Map.vue';
+import DailyReport from './components/DailyReport.vue';
+import DailyDeaths from './components/DailyDeaths.vue';
+import Tweets from './components/Tweets.vue';
+import TweetDialog from './components/TweetDialog.vue';
+import Timeline from './components/Timeline.vue';
+import API from './API';
 
 export default {
-  name: "App",
+  name: 'App',
 
   components: {
     LeafletMap,
@@ -171,7 +171,7 @@ export default {
     ICountUp,
     Tweets,
     TweetDialog,
-    Timeline
+    Timeline,
   },
 
   data: () => ({
@@ -179,13 +179,13 @@ export default {
     locations: [],
     selected: {},
     dialog: false,
-    loading: false
+    loading: false,
   }),
 
   computed: {
     total() {
       return this.locations.reduce((total, num) => total + num.cases, 0);
-    }
+    },
   },
 
   async created() {
@@ -193,7 +193,7 @@ export default {
     this.loading = true;
     this.locations = (await API.getConfirmedCases()).map(data => ({
       ...data,
-      references: data.references.join(", ")
+      references: data.references.join(', '),
     }));
     this.loading = false;
   },
@@ -204,7 +204,7 @@ export default {
         this.drawer = false;
       }
 
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       const { lat, lon } = location.coordinates;
       this.$refs.map.flyTo(lat, lon);
     },
@@ -214,8 +214,8 @@ export default {
     },
     endReached() {
       this.$refs.tweets.loadMore();
-    }
-  }
+    },
+  },
 };
 </script>
 
