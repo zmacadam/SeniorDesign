@@ -3,21 +3,21 @@
     <v-card-title>
       <span class="title font-weight-light">Timeline (GMT)</span>
     </v-card-title>
-    <v-data-table
-    :headers="headers"
-    :items="items"
-    :items-per-page="10"
-  >
-    <template v-slot:item.source="{ item }">
-      <a target="_BLANK" style="text-decoration: none;" class="white--text" :href="item.source">
-        Source
-      </a>
-    </template>
-  </v-data-table>
+    <v-data-table :headers="headers" :items="items" :items-per-page="10">
+      <template v-slot:item.source="{ item }">
+        <a target="_BLANK" style="text-decoration: none;" class="white--text" :href="item.source">
+          Source
+        </a>
+      </template>
+      <template v-slot:item.datetime="{ item }">
+        {{ item.datetime | toDate }}
+      </template>
+    </v-data-table>
   </v-card>
 </template>
 
 <script>
+import moment from 'moment';
 import API from '../API';
 
 export default {
@@ -26,8 +26,8 @@ export default {
     tab: null,
     loading: false,
     headers: [
-      { text: 'Date', value: 'date' },
-      { text: 'Time and Description', value: 'time_and_description', width: '50%' },
+      { text: 'DateTime', value: 'datetime' },
+      { text: 'Description', value: 'description', width: '50%' },
       { text: '', value: 'source', sortable: false },
     ],
   }),
@@ -36,12 +36,18 @@ export default {
     const data = await API.getTimeline();
     data.forEach((item) => {
       const times = item.time.map(i => ({
-        ...i,
-        date: item.date,
+        datetime: +moment(`${item.date} ${i.time}`, 'D MMMM HH:mm').format('x'),
+        source: i.source,
+        description: i.description,
       }));
       this.items = [...this.items, ...times];
     });
     this.loading = false;
+  },
+  filters: {
+    toDate(val) {
+      return moment(val).format('MMMM D HH:mm');
+    },
   },
 };
 </script>
