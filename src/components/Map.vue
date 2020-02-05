@@ -13,12 +13,11 @@
       @click="$emit('MARKER_CLICKED', l)"
       v-for="(l, idx) in locations"
       :key="idx"
-      :lat-lng="[l.coordinates.lat, l.coordinates.lon]"
+      :lat-lng="[+l.Lat, +l.Long]"
       color="red"
       fillColor="#f00"
       :fillOpacity="0.35"
       :stroke="false"
-      :radius="20"
     />
   </l-map>
 </template>

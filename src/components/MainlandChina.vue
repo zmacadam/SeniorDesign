@@ -4,10 +4,9 @@
 
 <script>
 import VueApexCharts from 'vue-apexcharts';
-// import moment from 'moment';
 
 export default {
-  name: 'DailyReport',
+  name: 'MainlandChina',
   props: ['data'],
   components: {
     apexcharts: VueApexCharts,
@@ -16,11 +15,14 @@ export default {
     return {
       chartOptions: {
         chart: {
-          id: 'daily-report',
-          type: 'area',
+          id: 'mainland-china',
+          type: 'bar',
           toolbar: {
             show: false,
           },
+        },
+        animations: {
+          enabled: true,
         },
         xaxis: {
           categories: [],
@@ -31,17 +33,14 @@ export default {
         dataLabels: {
           enabled: false,
         },
-        stroke: {
-          curve: 'straight',
-        },
         markers: {
           size: 5,
           strokeColor: '#fff',
           strokeWidth: 2,
         },
-        colors: ['#00897B', '#f00'],
+        colors: ['#FEAA00'],
         title: {
-          text: 'Total Confirmed Cases and Deaths Daily',
+          text: 'Confirmed Cases in Mainland China',
           align: 'left',
         },
       },
@@ -51,31 +50,19 @@ export default {
 
   watch: {
     data(val) {
-      const datesCombined = val.map(i => i.dates).flat(1);
-      const uniqueDates = [...new Set(datesCombined.map(i => i.date))];
-      const categories = uniqueDates.slice(Math.max(uniqueDates.length - 10, 1));
+      const categories = val.map(i => i['Province/State']);
       this.$refs.chart.updateOptions({
         xaxis: {
           categories,
         },
       });
-      const series = [
+      const series = val.map(i => i.dates[i.dates.length - 1].confirmed);
+      this.$refs.chart.updateSeries([
         {
           name: 'Total Cases',
-          data: Array(categories.length).fill(0),
+          data: series,
         },
-        {
-          name: 'Total Deaths',
-          data: Array(categories.length).fill(0),
-        },
-      ];
-      datesCombined.forEach((item) => {
-        const categoryIdx = categories.indexOf(item.date);
-        series[0].data[categoryIdx] += item.confirmed;
-        series[1].data[categoryIdx] += item.death;
-      });
-
-      this.$refs.chart.updateSeries(series);
+      ]);
     },
   },
 };
