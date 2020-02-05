@@ -1,15 +1,23 @@
 <template>
   <v-app id="inspire">
     <v-navigation-drawer v-model="drawer" app clipped>
-      <v-list two-line>
+      <v-list three-line>
         <v-list-item>
           <v-list-item-content>
             <v-list-item-title class="title">
-              <v-skeleton-loader v-if="!total" type="text"></v-skeleton-loader>
-              <ICountUp class="display-2" v-else :endVal="total" />
+              <v-skeleton-loader v-if="!cases.total_confirmed" type="text"></v-skeleton-loader>
+              <ICountUp
+                class="red--text text--darken-2 display-2"
+                v-else
+                :endVal="cases.total_confirmed"
+              />
             </v-list-item-title>
             <v-list-item-subtitle>
-              <v-skeleton-loader v-if="!total" width="140" type="text"></v-skeleton-loader>
+              <v-skeleton-loader
+                v-if="!cases.total_confirmed"
+                width="140"
+                type="text"
+              ></v-skeleton-loader>
               <span v-else>Total Confirmed</span>
             </v-list-item-subtitle>
           </v-list-item-content>
@@ -27,12 +35,18 @@
             </v-list-item-content>
           </v-list-item>
         </div>
-        <v-list-item v-else @click="view(l)" v-for="(l, idx) in locations" :key="idx" link>
+        <v-list-item @click="view(l)" v-else v-for="(l, idx) in locations" :key="idx" link>
           <v-list-item-content>
             <v-list-item-title>
-              <span class="font-weight-bold"><ICountUp :endVal="l.cases"/></span> {{ l.country }}
+              <span class="font-weight-bold"
+                ><ICountUp class="red--text text--darken-2" :endVal="l.confirmed"
+              /></span>
+              {{ l["Country/Region"] }}
             </v-list-item-title>
-            <v-list-item-subtitle> Deaths: <ICountUp :endVal="l.deaths" /> </v-list-item-subtitle>
+            <v-list-item-subtitle> Deaths: <ICountUp :endVal="l.death" /> </v-list-item-subtitle>
+            <v-list-item-subtitle>
+              Recovered: <ICountUp :endVal="l.recovered" />
+            </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -47,6 +61,9 @@
       <v-btn href="https://github.com/sorxrob/2019-ncov-frontend" target="_BLANK" icon>
         <v-icon>mdi-github-circle</v-icon>
       </v-btn>
+      <v-btn icon>
+        <v-icon>mdi-facebook-messenger</v-icon>
+      </v-btn>
     </v-app-bar>
 
     <v-content>
@@ -54,7 +71,7 @@
         <v-row>
           <v-col cols="12" md="8">
             <v-card tile style="height: 70vh;" flat>
-              <LeafletMap :locations="locations" ref="map" @MARKER_CLICKED="viewDetails" />
+              <LeafletMap :locations="cases.data" ref="map" @MARKER_CLICKED="viewDetails" />
             </v-card>
           </v-col>
           <v-col cols="12" md="4">
@@ -96,14 +113,14 @@
           <v-col cols="12" md="6">
             <v-card tile flat>
               <v-card-text>
-                <daily-report></daily-report>
+                <daily-report :data="cases.data"></daily-report>
               </v-card-text>
             </v-card>
           </v-col>
           <v-col cols="12" md="6">
             <v-card tile flat>
               <v-card-text>
-                <daily-deaths></daily-deaths>
+                <mainland-china :data="mainlandChinaCases"></mainland-china>
               </v-card-text>
             </v-card>
           </v-col>
@@ -136,9 +153,19 @@
             </v-btn>
           </v-card-title>
           <v-card-text>
-            <p>Country/Region: {{ selected.country }}</p>
-            <p>Confirmed: <ICountUp :endVal="selected.cases" /></p>
-            <p>Deaths: <ICountUp :endVal="selected.deaths" /></p>
+            <p>Country/Region: {{ selected["Country/Region"] }}</p>
+            <p v-show="selected['Province/State']">
+              Province/State: {{ selected["Province/State"] }}
+            </p>
+            <p>
+              First confirmed date in country (Est.):
+              {{ selected["First confirmed date in country (Est.)"] }}
+            </p>
+            <p>
+              Confirmed: <ICountUp class="red--text text--darken-2" :endVal="selected.confirmed" />
+            </p>
+            <p>Deaths: <ICountUp :endVal="selected.death" /></p>
+            <p>Recovered: <ICountUp :endVal="selected.recovered" /></p>
           </v-card-text>
           <v-card-actions v-show="$vuetify.breakpoint.smAndUp">
             <v-spacer></v-spacer>
@@ -160,7 +187,7 @@
 import ICountUp from 'vue-countup-v2';
 import LeafletMap from './components/Map.vue';
 import DailyReport from './components/DailyReport.vue';
-import DailyDeaths from './components/DailyDeaths.vue';
+import MainlandChina from './components/MainlandChina.vue';
 import Tweets from './components/Tweets.vue';
 import TweetDialog from './components/TweetDialog.vue';
 import Timeline from './components/Timeline.vue';
@@ -173,7 +200,7 @@ export default {
   components: {
     LeafletMap,
     DailyReport,
-    DailyDeaths,
+    MainlandChina,
     ICountUp,
     Tweets,
     TweetDialog,
@@ -183,25 +210,48 @@ export default {
 
   data: () => ({
     drawer: null,
-    locations: [],
+    cases: {
+      data: [],
+    },
     selected: {},
     dialog: false,
     loading: false,
   }),
 
   computed: {
-    total() {
-      return this.locations.reduce((total, num) => total + num.cases, 0);
+    locations() {
+      const data = [];
+      this.cases.data.forEach((item) => {
+        const idx = data.findIndex(i => i['Country/Region'] === item['Country/Region']);
+        const { confirmed } = item.dates[item.dates.length - 1];
+        const { recovered } = item.dates[item.dates.length - 1];
+        const { death } = item.dates[item.dates.length - 1];
+
+        if (idx === -1) {
+          data.push({
+            ...item,
+            confirmed,
+            recovered,
+            death,
+            dates: undefined,
+          });
+        } else {
+          data[idx].confirmed += confirmed;
+          data[idx].recovered += recovered;
+          data[idx].death += death;
+        }
+      });
+      return data;
+    },
+    mainlandChinaCases() {
+      return this.cases.data.filter(i => i['Country/Region'] === 'Mainland China');
     },
   },
 
   async created() {
     this.$vuetify.theme.dark = true;
     this.loading = true;
-    this.locations = (await API.getConfirmedCases()).map(data => ({
-      ...data,
-      references: data.references.join(', '),
-    }));
+    this.cases = await API.getCases();
     this.loading = false;
   },
 
@@ -212,11 +262,16 @@ export default {
       }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      const { lat, lon } = location.coordinates;
-      this.$refs.map.flyTo(lat, lon);
+      const { Lat, Long } = location;
+      this.$refs.map.flyTo(Lat, Long);
     },
     viewDetails(location) {
-      this.selected = Object.assign({}, location);
+      this.selected = {
+        ...location,
+        confirmed: +location.dates[location.dates.length - 1].confirmed,
+        death: +location.dates[location.dates.length - 1].death,
+        recovered: +location.dates[location.dates.length - 1].recovered,
+      };
       this.dialog = true;
     },
     endReached() {
