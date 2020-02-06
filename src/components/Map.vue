@@ -18,6 +18,7 @@
       fillColor="#f00"
       :fillOpacity="0.35"
       :stroke="false"
+      :radius="l.radius"
     />
   </l-map>
 </template>
@@ -27,13 +28,22 @@ import { LMap, LTileLayer, LCircleMarker } from 'vue2-leaflet';
 
 export default {
   name: 'Map',
-  props: ['locations'],
+  props: ['data'],
   data: () => ({
     url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
     zoom: 4,
     center: [35.000074, 104.999927],
     bounds: null
   }),
+  computed: {
+    locations() {
+      const withConfirmedData = this.data.filter(i => i.dates[i.dates.length - 1].confirmed);
+      return withConfirmedData.map(item => ({
+        ...item,
+        radius: this.scale(item.dates[item.dates.length - 1].confirmed)
+      }));
+    }
+  },
   methods: {
     zoomUpdated(zoom) {
       this.zoom = zoom;
@@ -46,6 +56,13 @@ export default {
     },
     flyTo(lat, lon) {
       this.$refs.map.mapObject.flyTo([lat, lon]);
+    },
+    scale(d) {
+      const min = 1;
+      const factor = 5;
+      const g = Math.floor(Math.log(d) * factor) + min;
+      console.log(d, g);
+      return g;
     }
   },
   components: {

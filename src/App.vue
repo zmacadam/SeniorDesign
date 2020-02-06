@@ -71,7 +71,7 @@
         <v-row>
           <v-col cols="12" md="8">
             <v-card tile style="height: 70vh;" flat>
-              <LeafletMap :locations="cases.data" ref="map" @MARKER_CLICKED="viewDetails" />
+              <LeafletMap :data="cases.data" ref="map" @MARKER_CLICKED="viewDetails" />
             </v-card>
           </v-col>
           <v-col cols="12" md="4">
