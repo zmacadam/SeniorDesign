@@ -63,9 +63,7 @@ export default {
     scale(d) {
       const min = 1;
       const factor = 5;
-      const g = Math.floor(Math.log(d) * factor) + min;
-      console.log(d, g);
-      return g;
+      return Math.floor(Math.log(d) * factor) + min;
     },
     getUserLocation() {
       if (navigator.geolocation) {
