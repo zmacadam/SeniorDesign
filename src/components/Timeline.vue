@@ -28,17 +28,17 @@ export default {
     headers: [
       { text: 'DateTime', value: 'datetime' },
       { text: 'Description', value: 'description', width: '50%' },
-      { text: '', value: 'source', sortable: false },
-    ],
+      { text: '', value: 'source', sortable: false }
+    ]
   }),
   async mounted() {
     this.loading = true;
     const data = await API.getTimeline();
-    data.forEach((item) => {
+    data.forEach(item => {
       const times = item.time.map(i => ({
         datetime: +moment(`${item.date} ${i.time}`, 'D MMMM HH:mm').format('x'),
         source: i.source,
-        description: i.description,
+        description: i.description
       }));
       this.items = [...this.items, ...times];
     });
@@ -47,8 +47,8 @@ export default {
   filters: {
     toDate(val) {
       return moment(val).format('MMMM D HH:mm');
-    },
-  },
+    }
+  }
 };
 </script>
 

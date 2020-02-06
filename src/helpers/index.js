@@ -6,10 +6,10 @@ export default {
 
     return val.replace(
       /((http|https|ftp):\/\/[\w?=&./-;#~%-]+(?![\w\s?&./;#~%"=-]*>))/g,
-      '<a style="color: #FFF;" class="urlify" href="$1" target="_BLANK">$1</a> ',
+      '<a style="color: #FFF;" class="urlify" href="$1" target="_BLANK">$1</a> '
     );
   },
   fromNow(val) {
     return moment(val, 'ddd MMM DD HH:mm:ss Z YYYY').fromNow();
-  },
+  }
 };

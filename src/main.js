@@ -22,5 +22,5 @@ Vue.filter('fromNow', Helpers.fromNow);
 new Vue({
   vuetify,
   store,
-  render: h => h(App),
+  render: h => h(App)
 }).$mount('#app');

@@ -37,11 +37,7 @@
       </v-card>
     </div>
 
-    <v-btn
-      v-if="$vuetify.breakpoint.smAndDown"
-      text
-      block
-      @click="SET_TWEET_DIALOG(true)"
+    <v-btn v-if="$vuetify.breakpoint.smAndDown" text block @click="SET_TWEET_DIALOG(true)"
       >View More Tweets</v-btn
     >
   </div>
@@ -57,7 +53,7 @@ export default {
     items: [],
     loading: false,
     searchMetadata: {},
-    endReached: false,
+    endReached: false
   }),
   async mounted() {
     this.loading = true;
@@ -65,7 +61,7 @@ export default {
       q: 'coronavirus ncov 2019ncov wuhan -filter:retweets',
       count: this.count || 10,
       result_type: 'recent',
-      locale: 'en',
+      locale: 'en'
     });
     this.items = statuses;
     this.searchMetadata = searchMetadata;
@@ -83,7 +79,7 @@ export default {
           q: 'coronavirus ncov 2019ncov wuhan -filter:retweets',
           count: 10,
           result_type: 'recent',
-          max_id: maxId,
+          max_id: maxId
         });
         this.items = [...this.items, ...statuses];
         this.searchMetadata = searchMetadata;
@@ -92,8 +88,8 @@ export default {
         this.endReached = true;
       }
     },
-    ...mapMutations(['SET_TWEET_DIALOG']),
-  },
+    ...mapMutations(['SET_TWEET_DIALOG'])
+  }
 };
 </script>
 

@@ -1,5 +1,9 @@
 <template>
-  <apexcharts ref="chart" :options="chartOptions" :series="series"></apexcharts>
+  <v-card tile flat>
+    <v-card-text>
+      <apexcharts ref="chart" :options="chartOptions" :series="series"></apexcharts>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
@@ -9,7 +13,7 @@ export default {
   name: 'MainlandChina',
   props: ['data'],
   components: {
-    apexcharts: VueApexCharts,
+    apexcharts: VueApexCharts
   },
   data() {
     return {
@@ -18,33 +22,33 @@ export default {
           id: 'mainland-china',
           type: 'bar',
           toolbar: {
-            show: false,
-          },
+            show: false
+          }
         },
         animations: {
-          enabled: true,
+          enabled: true
         },
         xaxis: {
-          categories: [],
+          categories: []
         },
         tooltip: {
-          theme: 'dark',
+          theme: 'dark'
         },
         dataLabels: {
-          enabled: false,
+          enabled: false
         },
         markers: {
           size: 5,
           strokeColor: '#fff',
-          strokeWidth: 2,
+          strokeWidth: 2
         },
         colors: ['#FEAA00'],
         title: {
           text: 'Confirmed Cases in Mainland China',
-          align: 'left',
-        },
+          align: 'left'
+        }
       },
-      series: [],
+      series: []
     };
   },
 
@@ -53,17 +57,17 @@ export default {
       const categories = val.map(i => i['Province/State']);
       this.$refs.chart.updateOptions({
         xaxis: {
-          categories,
-        },
+          categories
+        }
       });
       const series = val.map(i => i.dates[i.dates.length - 1].confirmed);
       this.$refs.chart.updateSeries([
         {
           name: 'Total Cases',
-          data: series,
-        },
+          data: series
+        }
       ]);
-    },
-  },
+    }
+  }
 };
 </script>

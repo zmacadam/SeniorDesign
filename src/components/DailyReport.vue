@@ -1,5 +1,9 @@
 <template>
-  <apexcharts ref="chart" :options="chartOptions" :series="series"></apexcharts>
+  <v-card tile flat>
+    <v-card-text>
+      <apexcharts ref="chart" :options="chartOptions" :series="series"></apexcharts>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
@@ -10,7 +14,7 @@ export default {
   name: 'DailyReport',
   props: ['data'],
   components: {
-    apexcharts: VueApexCharts,
+    apexcharts: VueApexCharts
   },
   data() {
     return {
@@ -19,33 +23,33 @@ export default {
           id: 'daily-report',
           type: 'area',
           toolbar: {
-            show: false,
-          },
+            show: false
+          }
         },
         xaxis: {
-          categories: [],
+          categories: []
         },
         tooltip: {
-          theme: 'dark',
+          theme: 'dark'
         },
         dataLabels: {
-          enabled: false,
+          enabled: false
         },
         stroke: {
-          curve: 'straight',
+          curve: 'straight'
         },
         markers: {
           size: 5,
           strokeColor: '#fff',
-          strokeWidth: 2,
+          strokeWidth: 2
         },
         colors: ['#00897B', '#f00'],
         title: {
           text: 'Total Confirmed Cases and Deaths Daily',
-          align: 'left',
-        },
+          align: 'left'
+        }
       },
-      series: [],
+      series: []
     };
   },
 
@@ -56,27 +60,27 @@ export default {
       const categories = uniqueDates.slice(Math.max(uniqueDates.length - 10, 1));
       this.$refs.chart.updateOptions({
         xaxis: {
-          categories,
-        },
+          categories
+        }
       });
       const series = [
         {
           name: 'Total Cases',
-          data: Array(categories.length).fill(0),
+          data: Array(categories.length).fill(0)
         },
         {
           name: 'Total Deaths',
-          data: Array(categories.length).fill(0),
-        },
+          data: Array(categories.length).fill(0)
+        }
       ];
-      datesCombined.forEach((item) => {
+      datesCombined.forEach(item => {
         const categoryIdx = categories.indexOf(item.date);
         series[0].data[categoryIdx] += item.confirmed;
         series[1].data[categoryIdx] += item.death;
       });
 
       this.$refs.chart.updateSeries(series);
-    },
-  },
+    }
+  }
 };
 </script>

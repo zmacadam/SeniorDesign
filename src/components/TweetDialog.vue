@@ -50,7 +50,6 @@
             </v-card-actions>
           </v-card>
         </div>
-
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -65,10 +64,10 @@ export default {
     items: [],
     loading: false,
     searchMetadata: {},
-    endReached: false,
+    endReached: false
   }),
   computed: {
-    ...mapState(['tweetDialog']),
+    ...mapState(['tweetDialog'])
   },
   methods: {
     ...mapMutations(['SET_TWEET_DIALOG']),
@@ -78,7 +77,7 @@ export default {
         q: 'coronavirus ncov 2019ncov wuhan -filter:retweets',
         count: 10,
         result_type: 'recent',
-        locale: 'en',
+        locale: 'en'
       });
       this.items = statuses;
       this.searchMetadata = searchMetadata;
@@ -95,7 +94,7 @@ export default {
           q: 'coronavirus ncov 2019ncov wuhan -filter:retweets',
           count: 10,
           result_type: 'recent',
-          max_id: maxId,
+          max_id: maxId
         });
         this.items = [...this.items, ...statuses];
         this.searchMetadata = searchMetadata;
@@ -103,7 +102,7 @@ export default {
       } else {
         this.endReached = true;
       }
-    },
+    }
   },
   watch: {
     tweetDialog(val) {
@@ -113,7 +112,7 @@ export default {
         this.items = [];
         this.searchMetadata = {};
       }
-    },
-  },
+    }
+  }
 };
 </script>

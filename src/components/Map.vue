@@ -32,7 +32,7 @@ export default {
     url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
     zoom: 4,
     center: [35.000074, 104.999927],
-    bounds: null,
+    bounds: null
   }),
   methods: {
     zoomUpdated(zoom) {
@@ -46,12 +46,12 @@ export default {
     },
     flyTo(lat, lon) {
       this.$refs.map.mapObject.flyTo([lat, lon]);
-    },
+    }
   },
   components: {
     LMap,
     LTileLayer,
-    LCircleMarker,
-  },
+    LCircleMarker
+  }
 };
 </script>

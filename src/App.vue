@@ -41,7 +41,7 @@
               <span class="font-weight-bold"
                 ><ICountUp class="red--text text--darken-2" :endVal="l.confirmed"
               /></span>
-              {{ l["Country/Region"] }}
+              {{ l['Country/Region'] }}
             </v-list-item-title>
             <v-list-item-subtitle> Deaths: <ICountUp :endVal="l.death" /> </v-list-item-subtitle>
             <v-list-item-subtitle>
@@ -111,18 +111,10 @@
 
         <v-row>
           <v-col cols="12" md="6">
-            <v-card tile flat>
-              <v-card-text>
-                <daily-report :data="cases.data"></daily-report>
-              </v-card-text>
-            </v-card>
+            <daily-report :data="cases.data"></daily-report>
           </v-col>
           <v-col cols="12" md="6">
-            <v-card tile flat>
-              <v-card-text>
-                <mainland-china :data="mainlandChinaCases"></mainland-china>
-              </v-card-text>
-            </v-card>
+            <mainland-china :data="mainlandChinaCases"></mainland-china>
           </v-col>
         </v-row>
 
@@ -153,13 +145,13 @@
             </v-btn>
           </v-card-title>
           <v-card-text>
-            <p>Country/Region: {{ selected["Country/Region"] }}</p>
+            <p>Country/Region: {{ selected['Country/Region'] }}</p>
             <p v-show="selected['Province/State']">
-              Province/State: {{ selected["Province/State"] }}
+              Province/State: {{ selected['Province/State'] }}
             </p>
             <p>
               First confirmed date in country (Est.):
-              {{ selected["First confirmed date in country (Est.)"] }}
+              {{ selected['First confirmed date in country (Est.)'] }}
             </p>
             <p>
               Confirmed: <ICountUp class="red--text text--darken-2" :endVal="selected.confirmed" />
@@ -205,23 +197,23 @@ export default {
     Tweets,
     TweetDialog,
     Timeline,
-    Reference,
+    Reference
   },
 
   data: () => ({
     drawer: null,
     cases: {
-      data: [],
+      data: []
     },
     selected: {},
     dialog: false,
-    loading: false,
+    loading: false
   }),
 
   computed: {
     locations() {
       const data = [];
-      this.cases.data.forEach((item) => {
+      this.cases.data.forEach(item => {
         const idx = data.findIndex(i => i['Country/Region'] === item['Country/Region']);
         const { confirmed } = item.dates[item.dates.length - 1];
         const { recovered } = item.dates[item.dates.length - 1];
@@ -233,7 +225,7 @@ export default {
             confirmed,
             recovered,
             death,
-            dates: undefined,
+            dates: undefined
           });
         } else {
           data[idx].confirmed += confirmed;
@@ -245,7 +237,7 @@ export default {
     },
     mainlandChinaCases() {
       return this.cases.data.filter(i => i['Country/Region'] === 'Mainland China');
-    },
+    }
   },
 
   async created() {
@@ -270,14 +262,14 @@ export default {
         ...location,
         confirmed: +location.dates[location.dates.length - 1].confirmed,
         death: +location.dates[location.dates.length - 1].death,
-        recovered: +location.dates[location.dates.length - 1].recovered,
+        recovered: +location.dates[location.dates.length - 1].recovered
       };
       this.dialog = true;
     },
     endReached() {
       this.$refs.tweets.loadMore();
-    },
-  },
+    }
+  }
 };
 </script>
 
