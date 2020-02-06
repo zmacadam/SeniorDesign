@@ -167,6 +167,13 @@
       </v-dialog>
     </v-content>
 
+    <v-snackbar v-model="snackbar" bottom right :timeout="0">
+      An update is available
+      <v-btn dark text @click="reload">
+        Reload
+      </v-btn>
+    </v-snackbar>
+
     <tweet-dialog ref="tweetDialog"></tweet-dialog>
 
     <!-- <v-footer app>
@@ -207,7 +214,8 @@ export default {
     },
     selected: {},
     dialog: false,
-    loading: false
+    loading: false,
+    snackbar: false
   }),
 
   computed: {
@@ -247,6 +255,12 @@ export default {
     this.loading = false;
   },
 
+  mounted() {
+    document.addEventListener('swUpdated', () => {
+      this.snackbar = true;
+    });
+  },
+
   methods: {
     view(location) {
       if (this.$vuetify.breakpoint.smAndDown) {
@@ -268,6 +282,9 @@ export default {
     },
     endReached() {
       this.$refs.tweets.loadMore();
+    },
+    reload() {
+      window.location.reload(true);
     }
   }
 };

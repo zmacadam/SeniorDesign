@@ -68,7 +68,7 @@ export default {
     getUserLocation() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(({ coords }) => {
-          this.$refs.map.mapObject.flyTo([coords.latitude, coords.longitude]);
+          this.flyTo([coords.latitude, coords.longitude]);
         });
       }
     }
