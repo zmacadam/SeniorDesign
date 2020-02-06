@@ -32,6 +32,9 @@
               <v-list-item-subtitle>
                 <v-skeleton-loader width="140" type="text"></v-skeleton-loader>
               </v-list-item-subtitle>
+              <v-list-item-subtitle>
+                <v-skeleton-loader width="140" type="text"></v-skeleton-loader>
+              </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
         </div>
