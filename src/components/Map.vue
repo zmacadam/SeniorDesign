@@ -31,7 +31,7 @@ export default {
   props: ['data'],
   data: () => ({
     url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    zoom: 4,
+    zoom: 5,
     center: [35.000074, 104.999927],
     bounds: null
   }),
@@ -43,6 +43,9 @@ export default {
         radius: this.scale(item.dates[item.dates.length - 1].confirmed)
       }));
     }
+  },
+  mounted() {
+    this.getUserLocation();
   },
   methods: {
     zoomUpdated(zoom) {
@@ -63,6 +66,13 @@ export default {
       const g = Math.floor(Math.log(d) * factor) + min;
       console.log(d, g);
       return g;
+    },
+    getUserLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(({ coords }) => {
+          this.$refs.map.mapObject.flyTo([coords.latitude, coords.longitude]);
+        });
+      }
     }
   },
   components: {
