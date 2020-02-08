@@ -37,7 +37,9 @@ export default {
   }),
   computed: {
     locations() {
-      const withConfirmedData = this.data.filter(i => i.dates[i.dates.length - 1].confirmed);
+      const withConfirmedData = this.data.filter(
+        i => i.dates[i.dates.length - 1].confirmed
+      );
       return withConfirmedData.map(item => ({
         ...item,
         radius: this.scale(item.dates[item.dates.length - 1].confirmed)
@@ -63,7 +65,8 @@ export default {
     scale(d) {
       const min = 1;
       const factor = 5;
-      return Math.floor(Math.log(d) * factor) + min;
+      const zoomFactor = this.zoom >= 5 ? 1 : this.zoom / 10; // adjust divisor for best optics
+      return Math.floor(Math.log(d) * factor * zoomFactor) + min;
     },
     getUserLocation() {
       if (navigator.geolocation) {
