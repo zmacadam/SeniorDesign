@@ -228,12 +228,10 @@ export default {
     locations() {
       const data = [];
       this.cases.data.forEach(item => {
-        console.log(item);
         const idx = data.findIndex(i => i['Country/Region'] === item['Country/Region']);
         const { confirmed } = item.dates[item.dates.length - 1];
         const { recovered } = item.dates[item.dates.length - 1];
         const { death } = item.dates[item.dates.length - 1];
-        console.log(item['Province/State'], death);
         if (idx === -1) {
           data.push({
             ...item,
