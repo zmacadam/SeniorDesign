@@ -37,9 +37,7 @@ export default {
   }),
   computed: {
     locations() {
-      const withConfirmedData = this.data.filter(
-        i => i.dates[i.dates.length - 1].confirmed
-      );
+      const withConfirmedData = this.data.filter(i => i.dates[i.dates.length - 1].confirmed);
       return withConfirmedData.map(item => ({
         ...item,
         radius: this.scale(item.dates[item.dates.length - 1].confirmed)

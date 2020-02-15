@@ -13,7 +13,11 @@
               />
             </v-list-item-title>
             <v-list-item-subtitle>
-              <v-skeleton-loader v-if="!cases.total_confirmed" width="140" type="text"></v-skeleton-loader>
+              <v-skeleton-loader
+                v-if="!cases.total_confirmed"
+                width="140"
+                type="text"
+              ></v-skeleton-loader>
               <span v-else>Total Confirmed</span>
             </v-list-item-subtitle>
           </v-list-item-content>
@@ -58,7 +62,7 @@
     <v-app-bar app clipped-left>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title>
-        2019-nCoV
+        COVID-19
         <span v-show="$vuetify.breakpoint.smAndUp">Worldwide Confirmed Cases</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
@@ -87,7 +91,10 @@
                   <span class="title font-weight-light">Twitter</span>
                 </v-card-title>
                 <v-card-text>
-                  <tweets ref="tweets" @MORE_TWEETS_CLICKED="$refs.tweetDialog.dialog = true"></tweets>
+                  <tweets
+                    ref="tweets"
+                    @MORE_TWEETS_CLICKED="$refs.tweetDialog.dialog = true"
+                  ></tweets>
                 </v-card-text>
               </v-card>
             </perfect-scrollbar>
@@ -129,10 +136,9 @@
       <v-dialog width="500" v-model="dialog" :fullscreen="$vuetify.breakpoint.xsOnly">
         <v-card>
           <v-card-title>
-            <span
-              v-show="$vuetify.breakpoint.smAndUp"
-              class="headline"
-            >Confirmed Cases: {{ selected.country }}</span>
+            <span v-show="$vuetify.breakpoint.smAndUp" class="headline"
+              >Confirmed Cases: {{ selected.country }}</span
+            >
             <span v-show="$vuetify.breakpoint.xsOnly" class="headline">{{ selected.country }}</span>
             <v-spacer></v-spacer>
             <v-btn v-show="$vuetify.breakpoint.xsOnly" @click="dialog = false" icon>
@@ -141,7 +147,9 @@
           </v-card-title>
           <v-card-text>
             <p>Country/Region: {{ selected['Country/Region'] }}</p>
-            <p v-show="selected['Province/State']">Province/State: {{ selected['Province/State'] }}</p>
+            <p v-show="selected['Province/State']">
+              Province/State: {{ selected['Province/State'] }}
+            </p>
             <p>
               First confirmed date in country (Est.):
               {{ selected['First confirmed date in country (Est.)'] }}
@@ -220,13 +228,12 @@ export default {
     locations() {
       const data = [];
       this.cases.data.forEach(item => {
-        const idx = data.findIndex(
-          i => i['Country/Region'] === item['Country/Region']
-        );
+        console.log(item);
+        const idx = data.findIndex(i => i['Country/Region'] === item['Country/Region']);
         const { confirmed } = item.dates[item.dates.length - 1];
         const { recovered } = item.dates[item.dates.length - 1];
         const { death } = item.dates[item.dates.length - 1];
-
+        console.log(item['Province/State'], death);
         if (idx === -1) {
           data.push({
             ...item,
@@ -244,9 +251,7 @@ export default {
       return data;
     },
     mainlandChinaCases() {
-      return this.cases.data.filter(
-        i => i['Country/Region'] === 'Mainland China'
-      );
+      return this.cases.data.filter(i => i['Country/Region'] === 'Mainland China');
     }
   },
 

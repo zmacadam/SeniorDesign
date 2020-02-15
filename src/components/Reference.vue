@@ -10,11 +10,8 @@
           >bnonews.com</a
         >
         <br />
-        <a
-          class="no-style"
-          href="https://docs.google.com/spreadsheets/d/1UF2pSkFTURko2OvfHWWlFpDFAr1UxCBA4JLwlSP6KFo"
-          target="_BLANK"
-          >Johns Hopkins CSSE</a
+        <a class="no-style" href="https://github.com/CSSEGISandData/COVID-19" target="_BLANK"
+          >JHU CSSE</a
         >
       </div>
     </v-card-text>
