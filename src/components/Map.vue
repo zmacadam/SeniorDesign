@@ -8,7 +8,7 @@
     @update:center="centerUpdated"
     @update:bounds="boundsUpdated"
   >
-    <l-tile-layer :url="url"></l-tile-layer>
+    <l-tile-layer :url="tileLayerUrl"></l-tile-layer>
     <l-circle-marker
       @click="$emit('MARKER_CLICKED', l)"
       v-for="(l, idx) in locations"
@@ -25,23 +25,30 @@
 
 <script>
 import { LMap, LTileLayer, LCircleMarker } from 'vue2-leaflet';
+import { mapState } from 'vuex';
 
 export default {
   name: 'Map',
   props: ['data'],
   data: () => ({
-    url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    zoom: 5,
+    url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
+    zoom: 4,
     center: [35.000074, 104.999927],
     bounds: null
   }),
   computed: {
+    ...mapState(['isDarkTheme']),
     locations() {
       const withConfirmedData = this.data.filter(i => i.dates[i.dates.length - 1].confirmed);
       return withConfirmedData.map(item => ({
         ...item,
         radius: this.scale(item.dates[item.dates.length - 1].confirmed)
       }));
+    },
+    tileLayerUrl() {
+      const darkTheme = 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png';
+      const lightTheme = 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png';
+      return this.isDarkTheme ? darkTheme : lightTheme;
     }
   },
   mounted() {

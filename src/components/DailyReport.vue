@@ -8,7 +8,7 @@
 
 <script>
 import VueApexCharts from 'vue-apexcharts';
-// import moment from 'moment';
+import { mapState } from 'vuex';
 
 export default {
   name: 'DailyReport',
@@ -53,6 +53,10 @@ export default {
     };
   },
 
+  computed: {
+    ...mapState(['isDarkTheme'])
+  },
+
   watch: {
     data(val) {
       const datesCombined = val.map(i => i.dates).flat(1);
@@ -80,6 +84,14 @@ export default {
       });
 
       this.$refs.chart.updateSeries(series);
+    },
+    isDarkTheme(val) {
+      console.log(val);
+      this.$refs.chart.updateOptions({
+        tooltip: {
+          theme: val ? 'dark' : 'light'
+        }
+      });
     }
   }
 };

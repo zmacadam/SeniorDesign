@@ -5,7 +5,7 @@
     </v-card-title>
     <v-data-table :headers="headers" :items="items" :items-per-page="10">
       <template v-slot:item.source="{ item }">
-        <a target="_BLANK" style="text-decoration: none;" class="white--text" :href="item.source">
+        <a target="_BLANK" style="text-decoration: none;" :href="item.source">
           Source
         </a>
       </template>
@@ -26,7 +26,7 @@ export default {
     tab: null,
     loading: false,
     headers: [
-      { text: 'DateTime', value: 'datetime' },
+      { text: 'Date', value: 'datetime' },
       { text: 'Description', value: 'description', width: '50%' },
       { text: '', value: 'source', sortable: false }
     ]

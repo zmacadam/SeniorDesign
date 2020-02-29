@@ -4,13 +4,13 @@
       <div class="text-right">
         Reference: <br />
         <a
-          class="no-style"
+          class="no-decoration"
           href="https://bnonews.com/index.php/2020/01/timeline-coronavirus-epidemic/"
           target="_BLANK"
           >bnonews.com</a
         >
         <br />
-        <a class="no-style" href="https://github.com/CSSEGISandData/COVID-19" target="_BLANK"
+        <a class="no-decoration" href="https://github.com/CSSEGISandData/COVID-19" target="_BLANK"
           >JHU CSSE</a
         >
       </div>
@@ -19,12 +19,17 @@
 </template>
 
 <script>
-export default {};
+import { mapState } from 'vuex';
+
+export default {
+  computed: {
+    ...mapState(['isDarkTheme'])
+  }
+};
 </script>
 
 <style scoped>
-.no-style {
+.no-decoration {
   text-decoration: none;
-  color: #fff;
 }
 </style>

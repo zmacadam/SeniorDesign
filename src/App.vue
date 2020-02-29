@@ -1,5 +1,5 @@
 <template>
-  <v-app id="inspire">
+  <v-app>
     <v-navigation-drawer v-model="drawer" app clipped>
       <v-list three-line>
         <v-list-item>
@@ -66,6 +66,9 @@
         <span v-show="$vuetify.breakpoint.smAndUp">Worldwide Confirmed Cases</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-btn icon @click="TOGGLE_THEME">
+        <v-icon>mdi-theme-light-dark</v-icon>
+      </v-btn>
       <v-btn href="https://github.com/sorxrob/2019-ncov-frontend" target="_BLANK" icon>
         <v-icon>mdi-github-circle</v-icon>
       </v-btn>
@@ -190,6 +193,7 @@
 
 <script>
 import ICountUp from 'vue-countup-v2';
+import { mapState, mapMutations } from 'vuex';
 import LeafletMap from './components/Map.vue';
 import DailyReport from './components/DailyReport.vue';
 import MainlandChina from './components/MainlandChina.vue';
@@ -225,6 +229,7 @@ export default {
   }),
 
   computed: {
+    ...mapState(['isDarkTheme']),
     locations() {
       const data = [];
       this.cases.data.forEach(item => {
@@ -254,7 +259,7 @@ export default {
   },
 
   async created() {
-    this.$vuetify.theme.dark = true;
+    this.$vuetify.theme.dark = this.isDarkTheme;
     this.loading = true;
     this.cases = await API.getCases();
     this.loading = false;
@@ -266,7 +271,14 @@ export default {
     });
   },
 
+  watch: {
+    isDarkTheme(val) {
+      this.$vuetify.theme.dark = val;
+    }
+  },
+
   methods: {
+    ...mapMutations(['TOGGLE_THEME']),
     view(location) {
       if (this.$vuetify.breakpoint.smAndDown) {
         this.drawer = false;

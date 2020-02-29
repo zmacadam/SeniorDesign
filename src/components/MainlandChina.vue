@@ -8,6 +8,7 @@
 
 <script>
 import VueApexCharts from 'vue-apexcharts';
+import { mapState } from 'vuex';
 
 export default {
   name: 'MainlandChina',
@@ -52,6 +53,10 @@ export default {
     };
   },
 
+  computed: {
+    ...mapState(['isDarkTheme'])
+  },
+
   watch: {
     data(val) {
       const categories = val.map(i => i['Province/State']);
@@ -67,6 +72,14 @@ export default {
           data: series
         }
       ]);
+    },
+    isDarkTheme(val) {
+      console.log(val);
+      this.$refs.chart.updateOptions({
+        tooltip: {
+          theme: val ? 'dark' : 'light'
+        }
+      });
     }
   }
 };
