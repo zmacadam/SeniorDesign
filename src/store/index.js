@@ -15,7 +15,6 @@ export default new Vuex.Store({
     },
     TOGGLE_THEME(state) {
       state.isDarkTheme = !state.isDarkTheme;
-      console.log(state.isDarkTheme);
     }
   },
   actions: {},
