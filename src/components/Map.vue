@@ -46,8 +46,8 @@ export default {
       }));
     },
     tileLayerUrl() {
-      const darkTheme = 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png';
-      const lightTheme = 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png';
+      const darkTheme = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+      const lightTheme = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
       return this.isDarkTheme ? darkTheme : lightTheme;
     }
   },
