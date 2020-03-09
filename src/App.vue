@@ -149,26 +149,59 @@
             </v-btn>
           </v-card-title>
           <v-card-text>
-            <p>Country/Region: {{ selected['Country/Region'] }}</p>
-            <p v-show="selected['Province/State']">
-              Province/State: {{ selected['Province/State'] }}
-            </p>
-            <p>
-              First confirmed date in country (Est.):
-              {{ selected['First confirmed date in country (Est.)'] }}
-            </p>
-            <p>
-              Confirmed:
-              <ICountUp class="red--text text--darken-2" :endVal="selected.confirmed" />
-            </p>
-            <p>
-              Deaths:
-              <ICountUp :endVal="selected.death" />
-            </p>
-            <p>
-              Recovered:
-              <ICountUp :endVal="selected.recovered" />
-            </p>
+            <div v-if="$vuetify.breakpoint.mdAndUp">
+              <p>Country/Region: {{ selected['Country/Region'] }}</p>
+              <p v-show="selected['Province/State']">
+                Province/State: {{ selected['Province/State'] }}
+              </p>
+
+              <p>
+                Confirmed:
+                <ICountUp class="red--text text--darken-2" :endVal="selected.confirmed" />
+              </p>
+              <p>
+                Deaths:
+                <ICountUp :endVal="selected.death" />
+              </p>
+              <p>
+                Recovered:
+                <ICountUp :endVal="selected.recovered" />
+              </p>
+            </div>
+            <div
+              class="d-flex flex-column justify-center align-center"
+              style="height: 80vh;"
+              v-else
+            >
+              <p class="text-center">
+                <span class="display-1">{{ selected['Country/Region'] }}</span> <br />
+                <span class="title">Country Region</span>
+              </p>
+              <p class="text-center" v-if="selected['Province/State']">
+                <span class="display-1">{{ selected['Province/State'] }}</span> <br />
+                <span class="title">Province/State</span>
+              </p>
+
+              <p class="text-center">
+                <span class="display-1"
+                  ><ICountUp class="red--text text--darken-2" :endVal="selected.confirmed"
+                /></span>
+                <br />
+                <span class="title">Confirmed</span>
+              </p>
+
+              <p class="text-center">
+                <span class="display-1"><ICountUp :endVal="selected.death"/></span>
+                <br />
+                <span class="title">Deaths</span>
+              </p>
+
+              <p class="text-center">
+                <span class="display-1"><ICountUp :endVal="selected.recovered"/></span>
+                <br />
+                <span class="title">Recovered</span>
+              </p>
+            </div>
           </v-card-text>
           <v-card-actions v-show="$vuetify.breakpoint.smAndUp">
             <v-spacer></v-spacer>
@@ -238,20 +271,22 @@ export default {
         const { recovered } = item.dates[item.dates.length - 1];
         const { death } = item.dates[item.dates.length - 1];
         if (idx === -1) {
-          data.push({
+          const obj = {
             ...item,
             confirmed,
             recovered,
-            death,
-            dates: undefined
-          });
+            death
+          };
+          delete obj['Province/State'];
+          delete obj.dates;
+          data.push(obj);
         } else {
           data[idx].confirmed += confirmed;
           data[idx].recovered += recovered;
           data[idx].death += death;
         }
       });
-      return data;
+      return data.sort((a, b) => b.confirmed - a.confirmed);
     },
     mainlandChinaCases() {
       return this.cases.data.filter(i => i['Country/Region'] === 'Mainland China');
