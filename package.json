@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@mdi/font": "^5.0.45",
     "animated-number-vue": "^1.0.0",
     "apexcharts": "^3.15.3",
     "axios": "^0.19.2",

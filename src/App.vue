@@ -66,12 +66,35 @@
         <span v-show="$vuetify.breakpoint.smAndUp">Worldwide Confirmed Cases</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn icon @click="TOGGLE_THEME">
-        <v-icon>mdi-theme-light-dark</v-icon>
-      </v-btn>
-      <v-btn href="https://github.com/sorxrob/2019-ncov-frontend" target="_BLANK" icon>
-        <v-icon>mdi-github-circle</v-icon>
-      </v-btn>
+      <v-tooltip left :dark="isDarkTheme">
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on" @click="$refs.searchDialog.dialog = true">
+            <v-icon>mdi-map-search</v-icon>
+          </v-btn>
+        </template>
+        <span>Search</span>
+      </v-tooltip>
+      <v-tooltip left :dark="isDarkTheme">
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on" @click="TOGGLE_THEME">
+            <v-icon>mdi-theme-light-dark</v-icon>
+          </v-btn>
+        </template>
+        <span>Switch theme</span>
+      </v-tooltip>
+      <v-tooltip bottom :dark="isDarkTheme">
+        <template v-slot:activator="{ on }">
+          <v-btn
+            v-on="on"
+            href="https://github.com/sorxrob/2019-ncov-frontend"
+            target="_BLANK"
+            icon
+          >
+            <v-icon>mdi-cloud-download</v-icon>
+          </v-btn>
+        </template>
+        <span>Repo</span>
+      </v-tooltip>
     </v-app-bar>
 
     <v-content>
@@ -107,7 +130,7 @@
                 <span class="title font-weight-light">Twitter</span>
               </v-card-title>
               <v-card-text>
-                <tweets ref="tweets" :count="5"></tweets>
+                <Tweets ref="tweets" :count="5" />
               </v-card-text>
             </v-card>
           </v-col>
@@ -115,22 +138,23 @@
 
         <v-row>
           <v-col cols="12" md="6">
-            <daily-report :data="cases.data"></daily-report>
+            <DailyReport :data="cases.data" />
           </v-col>
           <v-col cols="12" md="6">
-            <mainland-china :data="mainlandChinaCases"></mainland-china>
+            <!-- <mainland-china :data="mainlandChinaCases"></mainland-china> -->
+            <RecoveredChart :data="cases.data" />
           </v-col>
         </v-row>
 
         <v-row>
           <v-col cols="12">
-            <timeline></timeline>
+            <Timeline />
           </v-col>
         </v-row>
 
         <v-row>
           <v-col cols="12">
-            <reference></reference>
+            <Reference />
           </v-col>
         </v-row>
       </v-container>
@@ -174,30 +198,36 @@
               v-else
             >
               <p class="text-center">
-                <span class="display-1">{{ selected['Country/Region'] }}</span> <br />
+                <span class="display-1">{{ selected['Country/Region'] }}</span>
+                <br />
                 <span class="title">Country Region</span>
               </p>
               <p class="text-center" v-if="selected['Province/State']">
-                <span class="display-1">{{ selected['Province/State'] }}</span> <br />
+                <span class="display-1">{{ selected['Province/State'] }}</span>
+                <br />
                 <span class="title">Province/State</span>
               </p>
 
               <p class="text-center">
-                <span class="display-1"
-                  ><ICountUp class="red--text text--darken-2" :endVal="selected.confirmed"
-                /></span>
+                <span class="display-1">
+                  <ICountUp class="red--text text--darken-2" :endVal="selected.confirmed" />
+                </span>
                 <br />
                 <span class="title">Confirmed</span>
               </p>
 
               <p class="text-center">
-                <span class="display-1"><ICountUp :endVal="selected.death"/></span>
+                <span class="display-1">
+                  <ICountUp :endVal="selected.death" />
+                </span>
                 <br />
                 <span class="title">Deaths</span>
               </p>
 
               <p class="text-center">
-                <span class="display-1"><ICountUp :endVal="selected.recovered"/></span>
+                <span class="display-1">
+                  <ICountUp :endVal="selected.recovered" />
+                </span>
                 <br />
                 <span class="title">Recovered</span>
               </p>
@@ -216,7 +246,9 @@
       <v-btn dark text @click="reload">Reload</v-btn>
     </v-snackbar>
 
-    <tweet-dialog ref="tweetDialog"></tweet-dialog>
+    <TweetDialog ref="tweetDialog" />
+
+    <SearchDialog ref="searchDialog" :data="cases.data" @PLACE_SELECTED="viewDetails" />
 
     <!-- <v-footer app>
       <span>&copy; 2020</span>
@@ -229,11 +261,13 @@ import ICountUp from 'vue-countup-v2';
 import { mapState, mapMutations } from 'vuex';
 import LeafletMap from './components/Map.vue';
 import DailyReport from './components/DailyReport.vue';
-import MainlandChina from './components/MainlandChina.vue';
+import RecoveredChart from './components/RecoveredChart.vue';
+// import MainlandChina from './components/MainlandChina.vue';
 import Tweets from './components/Tweets.vue';
 import TweetDialog from './components/TweetDialog.vue';
 import Timeline from './components/Timeline.vue';
 import Reference from './components/Reference.vue';
+import SearchDialog from './components/SearchDialog.vue';
 import API from './API';
 
 export default {
@@ -242,12 +276,14 @@ export default {
   components: {
     LeafletMap,
     DailyReport,
-    MainlandChina,
+    // MainlandChina,
+    RecoveredChart,
     ICountUp,
     Tweets,
     TweetDialog,
     Timeline,
-    Reference
+    Reference,
+    SearchDialog
   },
 
   data: () => ({
