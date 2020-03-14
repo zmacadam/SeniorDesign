@@ -58,7 +58,7 @@ export default {
   async mounted() {
     this.loading = true;
     const { statuses, search_metadata: searchMetadata } = await API.getTweets({
-      q: 'coronavirus ncov 2019ncov wuhan -filter:retweets',
+      q: 'coronavirus ncov 2019ncov covid-19 wuhan -filter:retweets',
       count: this.count || 10,
       result_type: 'recent',
       locale: 'en'
