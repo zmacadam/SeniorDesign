@@ -32,7 +32,7 @@ export default {
   props: ['data'],
   data: () => ({
     url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
-    zoom: 4,
+    zoom: 2,
     center: [35.000074, 104.999927],
     bounds: null
   }),
