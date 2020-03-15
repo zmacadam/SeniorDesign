@@ -2,27 +2,6 @@
   <v-app>
     <v-navigation-drawer v-model="drawer" app clipped>
       <v-list three-line>
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title class="title">
-              <v-skeleton-loader v-if="!cases.total_confirmed" type="text"></v-skeleton-loader>
-              <ICountUp
-                class="red--text text--darken-2 display-2"
-                v-else
-                :endVal="cases.total_confirmed"
-              />
-            </v-list-item-title>
-            <v-list-item-subtitle>
-              <v-skeleton-loader
-                v-if="!cases.total_confirmed"
-                width="140"
-                type="text"
-              ></v-skeleton-loader>
-              <span v-else>Total Confirmed</span>
-            </v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-        <v-divider></v-divider>
         <div v-if="loading">
           <v-list-item link v-for="i in 20" :key="i">
             <v-list-item-content>
@@ -99,6 +78,15 @@
 
     <v-content>
       <v-container>
+        <v-row>
+          <v-col cols="12">
+            <TotalCases
+              :infected="cases.total_confirmed"
+              :recovered="cases.total_recovered"
+              :deaths="cases.total_death"
+            />
+          </v-col>
+        </v-row>
         <v-row>
           <v-col cols="12" md="8">
             <v-card tile style="height: 70vh;" flat>
@@ -281,6 +269,7 @@ import Reference from './components/Reference.vue';
 import SearchDialog from './components/SearchDialog.vue';
 import FatalityRateByAge from './components/FatalityRateByAge.vue';
 import FatalityRateBySex from './components/FatalityRateBySex.vue';
+import TotalCases from './components/TotalCases.vue';
 import API from './API';
 
 export default {
@@ -297,12 +286,16 @@ export default {
     Reference,
     SearchDialog,
     FatalityRateByAge,
-    FatalityRateBySex
+    FatalityRateBySex,
+    TotalCases
   },
 
   data: () => ({
     drawer: null,
     cases: {
+      total_confirmed: 0,
+      total_recovered: 0,
+      total_death: 0,
       data: []
     },
     selected: {},
