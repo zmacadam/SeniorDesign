@@ -13,6 +13,10 @@
         <a class="no-decoration" href="https://github.com/CSSEGISandData/COVID-19" target="_BLANK"
           >JHU CSSE</a
         >
+        <br />
+        <a class="no-decoration" href="https://www.worldometers.info/coronavirus/" target="_BLANK"
+          >worldometers.info</a
+        >
       </div>
     </v-card-text>
   </v-card>
