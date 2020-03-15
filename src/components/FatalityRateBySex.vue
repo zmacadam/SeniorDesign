@@ -60,7 +60,10 @@ export default {
             }
           }
         },
-        colors: ['#008FFB', '#DB6395']
+        colors: ['#008FFB', '#DB6395'],
+        legend: {
+          position: 'top'
+        }
       };
     },
     series() {
