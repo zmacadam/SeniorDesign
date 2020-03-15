@@ -1,7 +1,7 @@
 <template>
   <v-card tile flat>
     <v-card-text>
-      <apexcharts ref="chart" :options="chartOptions" :series="series"></apexcharts>
+      <apexcharts height="300" ref="chart" :options="chartOptions" :series="series"></apexcharts>
     </v-card-text>
   </v-card>
 </template>

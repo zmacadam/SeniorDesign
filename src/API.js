@@ -19,5 +19,9 @@ export default {
   async getTimeline() {
     const { data } = await http.get('/api/timeline');
     return data;
+  },
+  async getFatalityRate() {
+    const { data } = await http.get('/api/fatality-rate');
+    return data;
   }
 };

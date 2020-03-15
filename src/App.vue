@@ -141,8 +141,20 @@
             <DailyReport :data="cases.data" />
           </v-col>
           <v-col cols="12" md="6">
-            <!-- <mainland-china :data="mainlandChinaCases"></mainland-china> -->
             <RecoveredChart :data="cases.data" />
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col cols="12" md="6">
+            <FatalityRateByAge title="Fatality Rate by Age" :data="fatalityRate.byAge" />
+          </v-col>
+          <v-col cols="12" md="6">
+            <FatalityRateBySex
+              title="Fatality Rate by Sex"
+              :data="fatalityRate.bySex"
+              :colors="['#152C82', '#DB6395']"
+            />
           </v-col>
         </v-row>
 
@@ -262,12 +274,13 @@ import { mapState, mapMutations } from 'vuex';
 import LeafletMap from './components/Map.vue';
 import DailyReport from './components/DailyReport.vue';
 import RecoveredChart from './components/RecoveredChart.vue';
-// import MainlandChina from './components/MainlandChina.vue';
 import Tweets from './components/Tweets.vue';
 import TweetDialog from './components/TweetDialog.vue';
 import Timeline from './components/Timeline.vue';
 import Reference from './components/Reference.vue';
 import SearchDialog from './components/SearchDialog.vue';
+import FatalityRateByAge from './components/FatalityRateByAge.vue';
+import FatalityRateBySex from './components/FatalityRateBySex.vue';
 import API from './API';
 
 export default {
@@ -276,14 +289,15 @@ export default {
   components: {
     LeafletMap,
     DailyReport,
-    // MainlandChina,
     RecoveredChart,
     ICountUp,
     Tweets,
     TweetDialog,
     Timeline,
     Reference,
-    SearchDialog
+    SearchDialog,
+    FatalityRateByAge,
+    FatalityRateBySex
   },
 
   data: () => ({
@@ -294,7 +308,11 @@ export default {
     selected: {},
     dialog: false,
     loading: false,
-    snackbar: false
+    snackbar: false,
+    fatalityRate: {
+      byAge: [],
+      bySex: []
+    }
   }),
 
   computed: {
@@ -333,6 +351,7 @@ export default {
     this.$vuetify.theme.dark = this.isDarkTheme;
     this.loading = true;
     this.cases = await API.getCases();
+    this.fatalityRate = await API.getFatalityRate();
     this.loading = false;
   },
 
