@@ -72,14 +72,14 @@ export default {
             url: 'https://the2019ncov.com'
           });
           this.snackbar.text = 'Shared successfully.';
+          this.snackbar.show = true;
         } catch (e) {
-          this.snackbar.text = 'An error occurred.';
+          // share cancelled
         }
       } else {
         this.snackbar.text = 'Unsupported.';
+        this.snackbar.show = true;
       }
-
-      this.snackbar.show = true;
     }
   }
 };
