@@ -65,7 +65,8 @@ export default {
               return `${val}%`;
             }
           }
-        }
+        },
+        colors: ['#00897B']
       };
     },
     series() {
