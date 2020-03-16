@@ -148,6 +148,15 @@
 
         <v-row>
           <v-col cols="12">
+            <FatalityRateByComorbidity
+              title="Fatality Rate by Comorbidity"
+              :data="fatalityRate.byComorbidity"
+            />
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col cols="12">
             <Timeline />
           </v-col>
         </v-row>
@@ -269,6 +278,7 @@ import Reference from './components/Reference.vue';
 import SearchDialog from './components/SearchDialog.vue';
 import FatalityRateByAge from './components/FatalityRateByAge.vue';
 import FatalityRateBySex from './components/FatalityRateBySex.vue';
+import FatalityRateByComorbidity from './components/FatalityRateByComorbidity.vue';
 import TotalCases from './components/TotalCases.vue';
 import API from './API';
 
@@ -287,6 +297,7 @@ export default {
     SearchDialog,
     FatalityRateByAge,
     FatalityRateBySex,
+    FatalityRateByComorbidity,
     TotalCases
   },
 
@@ -304,7 +315,8 @@ export default {
     snackbar: false,
     fatalityRate: {
       byAge: [],
-      bySex: []
+      bySex: [],
+      byComorbidity: []
     }
   }),
 
