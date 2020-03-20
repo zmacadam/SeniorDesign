@@ -1,8 +1,8 @@
 # 2019-ncov-frontend
 
-> Coronavirus (2019-nCoV) Frontend
+> Coronavirus (COVID-19) Frontend
 
-Backend can be found here [2019-ncov-api](https://github.com/sorxrob/2019-ncov-api).
+Backend setup can be found here [2019-ncov-api](https://github.com/sorxrob/2019-ncov-api).
 
 ## Project setup
 
@@ -28,9 +28,11 @@ npm run build
 npm run lint
 ```
 
-### Customize configuration
+## License & copyright
 
-See [Configuration Reference](https://cli.vuejs.org/config/).
+© Robert C Soriano
+
+Licensed under the [MIT License](LICENSE).
 
 ## Acknowledgments
 
