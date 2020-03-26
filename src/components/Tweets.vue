@@ -37,9 +37,12 @@
       </v-card>
     </div>
 
-    <v-btn v-if="$vuetify.breakpoint.smAndDown" text block @click="SET_TWEET_DIALOG(true)"
-      >View More Tweets</v-btn
-    >
+    <v-btn
+      v-if="$vuetify.breakpoint.smAndDown"
+      text
+      block
+      @click="SET_TWEET_DIALOG(true)"
+    >View More Tweets</v-btn>
   </div>
 </template>
 
@@ -58,7 +61,7 @@ export default {
   async mounted() {
     this.loading = true;
     const { statuses, search_metadata: searchMetadata } = await API.getTweets({
-      q: 'coronavirus ncov 2019ncov covid-19 wuhan -filter:retweets',
+      q: 'coronavirus ncov 2019ncov covid-19 wuhan covid -filter:retweets',
       count: this.count || 10,
       result_type: 'recent',
       locale: 'en'
@@ -75,7 +78,10 @@ export default {
         this.loading = true;
         const urlParams = new URLSearchParams(this.searchMetadata.next_results);
         const maxId = urlParams.get('max_id');
-        const { statuses, search_metadata: searchMetadata } = await API.getTweets({
+        const {
+          statuses,
+          search_metadata: searchMetadata
+        } = await API.getTweets({
           q: 'coronavirus ncov 2019ncov wuhan -filter:retweets',
           count: 10,
           result_type: 'recent',

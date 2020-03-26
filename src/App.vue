@@ -88,12 +88,12 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12" md="8">
+          <v-col cols="12">
             <v-card tile style="height: 70vh;" flat>
               <LeafletMap :data="cases.data" ref="map" @MARKER_CLICKED="viewDetails" />
             </v-card>
           </v-col>
-          <v-col cols="12" md="4">
+          <!-- <v-col cols="12" md="4">
             <perfect-scrollbar
               style="overscroll-behavior: none;"
               v-if="$vuetify.breakpoint.mdAndUp"
@@ -121,7 +121,7 @@
                 <Tweets ref="tweets" :count="5" />
               </v-card-text>
             </v-card>
-          </v-col>
+          </v-col> -->
         </v-row>
 
         <v-row>
@@ -271,7 +271,7 @@ import { mapState, mapMutations } from 'vuex';
 import LeafletMap from './components/Map.vue';
 import DailyReport from './components/DailyReport.vue';
 import RecoveredChart from './components/RecoveredChart.vue';
-import Tweets from './components/Tweets.vue';
+// import Tweets from './components/Tweets.vue';
 import TweetDialog from './components/TweetDialog.vue';
 import Timeline from './components/Timeline.vue';
 import Reference from './components/Reference.vue';
@@ -290,7 +290,7 @@ export default {
     DailyReport,
     RecoveredChart,
     ICountUp,
-    Tweets,
+    // Tweets,
     TweetDialog,
     Timeline,
     Reference,
