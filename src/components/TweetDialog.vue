@@ -14,7 +14,7 @@
       <v-card-text>
         <v-card :key="t.id" outlined v-for="t in items" class="mb-2">
           <v-card-text>
-            <p class="font-weight-bold" v-html="$options.filters.URLify(t.text)"></p>
+            <p class="font-weight-bold" v-html="$options.filters.URLify(t.full_text)"></p>
             <p class="text-right">{{ t.created_at | fromNow }} · {{ t.user.name }}</p>
           </v-card-text>
 
@@ -63,7 +63,7 @@ export default {
   data: () => ({
     items: [],
     loading: false,
-    searchMetadata: {},
+    maxId: null,
     endReached: false
   }),
   computed: {
@@ -73,31 +73,33 @@ export default {
     ...mapMutations(['SET_TWEET_DIALOG']),
     async getTweets() {
       this.loading = true;
-      const { statuses, search_metadata: searchMetadata } = await API.getTweets({
-        q: 'coronavirus ncov 2019ncov wuhan -filter:retweets',
-        count: 10,
-        result_type: 'recent',
-        locale: 'en'
+      const statuses = await API.getTweets({
+        count: this.count || 10,
+        screen_name: 'WHO',
+        tweet_mode: 'extended'
       });
       this.items = statuses;
-      this.searchMetadata = searchMetadata;
+      this.maxId = statuses[statuses.length - 1].id;
       this.loading = false;
     },
     async loadMore() {
       if (this.endReached) return;
 
-      if (this.searchMetadata.next_results) {
+      if (this.maxId) {
         this.loading = true;
-        const urlParams = new URLSearchParams(this.searchMetadata.next_results);
-        const maxId = urlParams.get('max_id');
-        const { statuses, search_metadata: searchMetadata } = await API.getTweets({
-          q: 'coronavirus ncov 2019ncov wuhan -filter:retweets',
-          count: 10,
-          result_type: 'recent',
-          max_id: maxId
+        const statuses = await API.getTweets({
+          count: this.count || 10,
+          screen_name: 'WHO',
+          max_id: this.maxId,
+          tweet_mode: 'extended'
         });
+        statuses.splice(0, 1);
         this.items = [...this.items, ...statuses];
-        this.searchMetadata = searchMetadata;
+        if (!statuses.length) {
+          this.maxId = null;
+        } else {
+          this.maxId = statuses[statuses.length - 1].id;
+        }
         this.loading = false;
       } else {
         this.endReached = true;
