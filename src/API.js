@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const http = axios.create({
   baseURL:
-    process.env.NODE_ENV === 'production' ? 'https://api.the2019ncov.com' : 'http://localhost:3000'
+    process.env.NODE_ENV === 'production' ? 'https://2019ncov-api.now.sh' : 'http://localhost:3000'
 });
 
 export default {
