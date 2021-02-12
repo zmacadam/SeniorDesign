@@ -1,0 +1,101 @@
+[
+    {
+      "date": "2020-11-12",
+      "id": "AL",
+      "fillKey": "bin3",
+      "cases": 208637,
+      "deaths": 3201,
+      "confirmed_cases": 176355,
+      "confirmed_deaths": 2958,
+      "probable_cases": 32282,
+      "probable_deaths": 243
+    },
+    {
+      "date": "2020-11-12",
+      "id": "AK",
+      "fillKey": "bin1",
+      "cases": 21211,
+      "deaths": 90,
+      "confirmed_cases": 0,
+      "confirmed_deaths": 90,
+      "probable_cases": 21211,
+      "probable_deaths": 0
+    },
+    {
+      "date": "2020-11-12",
+      "id": "AZ",
+      "fillKey": "bin3",
+      "cases": 265195,
+      "deaths": 6228,
+      "confirmed_cases": null,
+      "confirmed_deaths": null,
+      "probable_cases": null,
+      "probable_deaths": null
+    },
+    {
+      "date": "2020-11-12",
+      "id": "AR",
+      "fillKey": "bin2",
+      "cases": 126197,
+      "deaths": 2126,
+      "confirmed_cases": 113943,
+      "confirmed_deaths": 1947,
+      "probable_cases": 12254,
+      "probable_deaths": 179
+    },
+    {
+      "date": "2020-11-12",
+      "id": "CA",
+      "fillKey": "bin6",
+      "cases": 999498,
+      "deaths": 18109,
+      "confirmed_cases": 996409,
+      "confirmed_deaths": 18109,
+      "probable_cases": 3089,
+      "probable_deaths": 0
+    },
+    {
+      "date": "2020-11-12",
+      "id": "CO",
+      "fillKey": "bin2",
+      "cases": 143553,
+      "deaths": 2481,
+      "confirmed_cases": null,
+      "confirmed_deaths": null,
+      "probable_cases": null,
+      "probable_deaths": null
+    },
+    {
+      "date": "2020-11-12",
+      "id": "CT",
+      "fillKey": "bin2",
+      "cases": 84741,
+      "deaths": 4716,
+      "confirmed_cases": null,
+      "confirmed_deaths": null,
+      "probable_cases": null,
+      "probable_deaths": null
+    },
+    {
+      "date": "2020-11-12",
+      "id": "DE",
+      "fillKey": "bin1",
+      "cases": 27342,
+      "deaths": 724,
+      "confirmed_cases": null,
+      "confirmed_deaths": null,
+      "probable_cases": null,
+      "probable_deaths": null
+    },
+    {
+      "date": "2020-11-12",
+      "id": "DC",
+      "fillKey": "bin1",
+      "cases": 18379,
+      "deaths": 657,
+      "confirmed_cases": 18379,
+      "confirmed_deaths": 657,
+      "probable_cases": 0,
+      "probable_deaths": 0
+    }
+   ]
