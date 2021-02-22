@@ -203,18 +203,33 @@ body{
 }
 
 </style>
+
 <script>
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import data from "./usa.json";
 //import axios from "axios";
-
+if('geolocation' in navigator) {
+  console.log('geo avai');
+} else {
+  console.log('geo not avai');
+}
+var lat,long;
+navigator.geolocation.getCurrentPosition((position) => {
+  //doSomething(position.coords.latitude, position.coords.longitude);
+  console.log(position);
+  lat = position.coords.latitude;
+  long = position.coords.longitude;
+  console.log(lat.toFixed(2));
+  console.log(long.toFixed(2));
+});
 export default {
-  
+  components:
+  {},
   name: "Map API",
   data() {
     return {
-      center: [27.8, -80],
+      center: [37.72, -97.35],
       data: [],
       map: null,
       clientSecret: "FTZGMLOIQWFY3A0ELEZIZSUU3M4EKOJKEPXKWUWTMWK1EY4H",
@@ -233,14 +248,21 @@ export default {
           id: "mapbox/streets-v11",
           accessToken:
             "pk.eyJ1IjoiYWJpZGlzaGFqaWEiLCJhIjoiY2l3aDFiMG96MDB4eDJva2l6czN3MDN0ZSJ9.p9SUzPUBrCbH7RQLZ4W4lQ",
+          maxBoundsViscosity: 1.0,
+          minZoom: 4
         }
+        
       ).addTo(this.map);
+      L.marker([31.5, -92]).addTo(this.map)
+    .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+    .openPopup();
+
       L.geoJSON(data , {
         onEachFeature: this.onEachFeature,
+        highlightFeature: this.highlightFeature,
         style: this.styleMap,
       })
       .addTo(this.map)
-      .on("click", this.onClick);
     },
     styleMap(feature){
       const casex = feature.properties.cases;
@@ -259,26 +281,13 @@ export default {
                         "Total Deaths: " + feature.properties.deaths + "<br/>"+
                         "Confirmed Cases: " + feature.properties.confirmed_cases + "<br/>"+
                         "Confirmed Death: " + feature.properties.confirmed_deaths + "<br/>");
-        layer.on('mouseover', () => { layer.openPopup(); });
+        this.map.doubleClickZoom.disable(); 
         layer.on('mouseout', () => { layer.closePopup(); });
+        layer.on('click', () => { this.map.fitBounds(layer.getBounds()); });
+        layer.on('mouseover', () => { layer.openPopup(); });
+        layer.on('contextmenu', () => { this.map.setView(this.center, 5);});
       }
     },
-    // onClick(e) {
-    //   const name = e.layer.feature.properties.name;
-    //   axios
-    //     .get(
-    //       `https://api.foursquare.com/v2/venues/search?client_id=${this.clientID}&client_secret=${this.clientSecret}&v=20180323&limit=1&near=San Francisco, CA&query=${name}`
-    //     )
-    //     .then((data) => {
-    //       this.attraction = {
-    //         name: name,
-    //         address: data.data.response.venues[0].location.formattedAddress.join(
-    //           " "
-    //         ),
-    //         category: data.data.response.venues[0].categories[0].name,
-    //       };
-    //     });
-    // },
   },
   mounted() {
     this.setupLeafletMap();
