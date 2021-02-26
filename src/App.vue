@@ -29,6 +29,11 @@
         </div>
       </div>
     </div>
+     <div id ="chartss" class="Chart" style="margin-left: 20%">
+      <h1 style="text-align:center;">Linechart</h1>
+      <line-example/>
+    </div>
+    <br>
     <div class="left">
         <h3 style="display:inline-block; margin-left: 40%">COVID-19 DATA AS OF  </h3><input style="display:inline-block; margin-left: 1%" id="d0" type="date" min="2020-01-22" value="2020-11-14">
         <div class='my-legend'>
@@ -42,7 +47,6 @@
             </ul>
             </div>
         </div>
-        <br>
         <form autocomplete="off" onsubmit="return false">
             <div style="margin-left:47%">
                 <div class="wrap">
@@ -201,20 +205,49 @@ body{
 .my-legend a {
     color: #777;
 }
-
+.Chart {
+    padding: 5px;
+    box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, .4);
+    border-radius: 5px;
+    margin: 20px 0;
+  }
+  #chartss {
+  width: 50vw;
+  height: 50vh;
+}
 </style>
+
 <script>
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import data from "./usa.json";
+import LineExample from './LineExample'
 //import axios from "axios";
-
+if('geolocation' in navigator) {
+  console.log('geo avai');
+} else {
+  console.log('geo not avai');
+}
+var lat,long;
+navigator.geolocation.getCurrentPosition((position) => {
+  //doSomething(position.coords.latitude, position.coords.longitude);
+  console.log(position);
+  lat = position.coords.latitude;
+  long = position.coords.longitude;
+  console.log(lat.toFixed(2));
+  console.log(long.toFixed(2));
+});
 export default {
-  
+  components:
+  {
+    LineExample
+  },
   name: "Map API",
   data() {
     return {
-      center: [27.8, -80],
+      dataPoints: null,
+      height: 20,
+      center: [37.72, -97.35],
       data: [],
       map: null,
       clientSecret: "FTZGMLOIQWFY3A0ELEZIZSUU3M4EKOJKEPXKWUWTMWK1EY4H",
@@ -233,14 +266,21 @@ export default {
           id: "mapbox/streets-v11",
           accessToken:
             "pk.eyJ1IjoiYWJpZGlzaGFqaWEiLCJhIjoiY2l3aDFiMG96MDB4eDJva2l6czN3MDN0ZSJ9.p9SUzPUBrCbH7RQLZ4W4lQ",
+          maxBoundsViscosity: 1.0,
+          minZoom: 4
         }
+        
       ).addTo(this.map);
+      L.marker([31.5, -92]).addTo(this.map)
+    .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+    .openPopup();
+
       L.geoJSON(data , {
         onEachFeature: this.onEachFeature,
+        highlightFeature: this.highlightFeature,
         style: this.styleMap,
       })
       .addTo(this.map)
-      .on("click", this.onClick);
     },
     styleMap(feature){
       const casex = feature.properties.cases;
@@ -259,30 +299,46 @@ export default {
                         "Total Deaths: " + feature.properties.deaths + "<br/>"+
                         "Confirmed Cases: " + feature.properties.confirmed_cases + "<br/>"+
                         "Confirmed Death: " + feature.properties.confirmed_deaths + "<br/>");
-        layer.on('mouseover', () => { layer.openPopup(); });
+        this.map.doubleClickZoom.disable(); 
         layer.on('mouseout', () => { layer.closePopup(); });
+        layer.on('click', () => { this.map.fitBounds(layer.getBounds()); });
+        layer.on('mouseover', () => { layer.openPopup(); });
+        layer.on('contextmenu', () => { this.map.setView(this.center, 5);});
       }
     },
-    // onClick(e) {
-    //   const name = e.layer.feature.properties.name;
-    //   axios
-    //     .get(
-    //       `https://api.foursquare.com/v2/venues/search?client_id=${this.clientID}&client_secret=${this.clientSecret}&v=20180323&limit=1&near=San Francisco, CA&query=${name}`
-    //     )
-    //     .then((data) => {
-    //       this.attraction = {
-    //         name: name,
-    //         address: data.data.response.venues[0].location.formattedAddress.join(
-    //           " "
-    //         ),
-    //         category: data.data.response.venues[0].categories[0].name,
-    //       };
-    //     });
-    // },
+    increaseHeight () {
+        this.height += 10
+      },
+      getRandomInt () {
+        return Math.floor(Math.random() * (50 - 5 + 1)) + 5
+      },
+      fillData () {
+        this.dataPoints = {
+          labels: ['January' + this.getRandomInt(), 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+          datasets: [
+            {
+              label: 'Data One',
+              backgroundColor: '#f87979',
+              data: [this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt()]
+            }
+          ]
+        }
+      }
   },
   mounted() {
+    setInterval(() => {
+        this.fillData()
+      }, 2000)
     this.setupLeafletMap();
   },
+  computed: {
+      myStyles () {
+        return {
+          height: `${this.height}px`,
+          position: 'relative'
+        }
+      }
+    }
 };
 </script>
 
