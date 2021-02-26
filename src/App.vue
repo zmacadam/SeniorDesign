@@ -29,6 +29,11 @@
         </div>
       </div>
     </div>
+     <div id ="chartss" class="Chart" style="margin-left: 20%">
+      <h1 style="text-align:center;">Linechart</h1>
+      <line-example/>
+    </div>
+    <br>
     <div class="left">
         <h3 style="display:inline-block; margin-left: 40%">COVID-19 DATA AS OF  </h3><input style="display:inline-block; margin-left: 1%" id="d0" type="date" min="2020-01-22" value="2020-11-14">
         <div class='my-legend'>
@@ -42,7 +47,6 @@
             </ul>
             </div>
         </div>
-        <br>
         <form autocomplete="off" onsubmit="return false">
             <div style="margin-left:47%">
                 <div class="wrap">
@@ -201,13 +205,23 @@ body{
 .my-legend a {
     color: #777;
 }
-
+.Chart {
+    padding: 5px;
+    box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, .4);
+    border-radius: 5px;
+    margin: 20px 0;
+  }
+  #chartss {
+  width: 50vw;
+  height: 50vh;
+}
 </style>
 
 <script>
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import data from "./usa.json";
+import LineExample from './LineExample'
 //import axios from "axios";
 if('geolocation' in navigator) {
   console.log('geo avai');
@@ -225,10 +239,14 @@ navigator.geolocation.getCurrentPosition((position) => {
 });
 export default {
   components:
-  {},
+  {
+    LineExample
+  },
   name: "Map API",
   data() {
     return {
+      dataPoints: null,
+      height: 20,
       center: [37.72, -97.35],
       data: [],
       map: null,
@@ -288,10 +306,39 @@ export default {
         layer.on('contextmenu', () => { this.map.setView(this.center, 5);});
       }
     },
+    increaseHeight () {
+        this.height += 10
+      },
+      getRandomInt () {
+        return Math.floor(Math.random() * (50 - 5 + 1)) + 5
+      },
+      fillData () {
+        this.dataPoints = {
+          labels: ['January' + this.getRandomInt(), 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+          datasets: [
+            {
+              label: 'Data One',
+              backgroundColor: '#f87979',
+              data: [this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt()]
+            }
+          ]
+        }
+      }
   },
   mounted() {
+    setInterval(() => {
+        this.fillData()
+      }, 2000)
     this.setupLeafletMap();
   },
+  computed: {
+      myStyles () {
+        return {
+          height: `${this.height}px`,
+          position: 'relative'
+        }
+      }
+    }
 };
 </script>
 
