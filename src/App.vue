@@ -66,9 +66,6 @@
 </template>
 
 <style>
-
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-
 $primary: green;
 
 body{
@@ -221,14 +218,29 @@ body{
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import data from "./usa.json";
-import LineExample from './LineExample'
+import data1 from "./USA/TX.geo.json";
+import LineExample from './LineExample';
+//import VueLeafletSearch from "./VueLeafletSearch.vue";
+import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 //import axios from "axios";
 if('geolocation' in navigator) {
   console.log('geo avai');
 } else {
   console.log('geo not avai');
 }
+const provider = new OpenStreetMapProvider();
+//const results = await provider.search({ query: input.value });
+
+const searchControl = new GeoSearchControl({
+  //style: 'bar',
+  provider: provider,
+});
 var lat,long;
+var u,v;
+var bounds = [
+[-74.04728500751165, 40.68392799015035], // Southwest coordinates
+[-73.91058699000139, 40.87764500765852] // Northeast coordinates
+];
 navigator.geolocation.getCurrentPosition((position) => {
   //doSomething(position.coords.latitude, position.coords.longitude);
   console.log(position);
@@ -241,6 +253,7 @@ export default {
   components:
   {
     LineExample
+    //VueLeafletSearch
   },
   name: "Map API",
   data() {
@@ -250,8 +263,6 @@ export default {
       center: [37.72, -97.35],
       data: [],
       map: null,
-      clientSecret: "FTZGMLOIQWFY3A0ELEZIZSUU3M4EKOJKEPXKWUWTMWK1EY4H",
-      clientID: "GOSFGAOZKCSLMWADY1ORYJV2A4GUNNHAHBVWY500S1IM42CS",
     };
   },
   methods: {
@@ -260,28 +271,36 @@ export default {
       L.tileLayer(
         "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
         {
-          attribution:
-            'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
           maxZoom: 18,
-          id: "mapbox/streets-v11",
+          id: "cuongtcu/cklqx9ybu25l617mfjq3g526q",
+          //id: "mapbox/dark-v10",
           accessToken:
-            "pk.eyJ1IjoiYWJpZGlzaGFqaWEiLCJhIjoiY2l3aDFiMG96MDB4eDJva2l6czN3MDN0ZSJ9.p9SUzPUBrCbH7RQLZ4W4lQ",
+             "pk.eyJ1IjoiY3Vvbmd0Y3UiLCJhIjoiY2tsbWw5aWh5MGE3YzJubzhrNXZjcDljZyJ9.FtSgLpflpNxcdYKlZwFrNg",
           maxBoundsViscosity: 1.0,
-          minZoom: 4
+          minZoom: 4,
+          maxBounds: bounds
+          //VueLeafletSearch
         }
-        
       ).addTo(this.map);
-      L.marker([31.5, -92]).addTo(this.map)
-    .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-    .openPopup();
+      searchControl.addTo(this.map);
+    //  L.marker([31.5, -92]).addTo(this.map)
+    //.bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+    //.openPopup();
 
-      L.geoJSON(data , {
+      u = L.geoJSON(data , {
         onEachFeature: this.onEachFeature,
-        highlightFeature: this.highlightFeature,
+        //highlightFeature: this.highlightFeature,
         style: this.styleMap,
-      })
-      .addTo(this.map)
+      });
+      u.addTo(this.map)
+
+      v = L.geoJSON(data1 , {
+        onEachFeature: this.onEachFeature,
+        //highlightFeature: this.highlightFeature,
+        style: this.styleMap1,
+      });
     },
+  
     styleMap(feature){
       const casex = feature.properties.cases;
           let color = "brown";
@@ -290,6 +309,10 @@ export default {
           if(casex >=50001 && casex <100000)  color = "#ee404d";
           if(casex >=100001 && casex <250000) color = "#9b0707";
           if(casex >=250001) color ="#690506";
+          return { color: color };
+    },
+    styleMap1(){
+          let color = "brown";
           return { color: color };
     },
     onEachFeature(feature, layer) {
@@ -301,9 +324,9 @@ export default {
                         "Confirmed Death: " + feature.properties.confirmed_deaths + "<br/>");
         this.map.doubleClickZoom.disable(); 
         layer.on('mouseout', () => { layer.closePopup(); });
-        layer.on('click', () => { this.map.fitBounds(layer.getBounds()); });
+        layer.on('click', () => {u.removeFrom(this.map); v.addTo(this.map); this.map.fitBounds(layer.getBounds()); });
         layer.on('mouseover', () => { layer.openPopup(); });
-        layer.on('contextmenu', () => { this.map.setView(this.center, 5);});
+        layer.on('contextmenu', () => {v.removeFrom(this.map); u.addTo(this.map); this.map.setView(this.center, 5);});
       }
     },
     increaseHeight () {
@@ -334,7 +357,8 @@ export default {
   computed: {
       myStyles () {
         return {
-          height: `${this.height}px`,
+          //height: `${this.height}px`,
+          height: `150px`,
           position: 'relative'
         }
       }
