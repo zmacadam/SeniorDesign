@@ -56,7 +56,7 @@ export default {
     dialog: false,
     search: null,
     result: [],
-    resultText: 'Result will appear here.'
+    resultText: 'Search result'
   }),
   methods: {
     change($e) {
