@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Line, Bar } from 'react-chartjs-2';
 
-import { fetchDailyData } from '../../api';
+import { fetchDailyData, fetchUSByDate, fetchUSByDateRange } from '../../api';
 
 import styles from './Chart.module.css';
+
+let test = new Date();
+let test1 = new Date();
+let test2 = new Date();
+test = '2021-03-22';
+test1 = '2020-03-20';
+test2 = '2021-03-22';
 
 const Chart = ({ data: { confirmed, recovered, deaths }, country }) => {
   const [dailyData, setDailyData] = useState({});
@@ -11,8 +18,18 @@ const Chart = ({ data: { confirmed, recovered, deaths }, country }) => {
   useEffect(() => {
     const fetchMyAPI = async () => {
       const initialDailyData = await fetchDailyData();
+      const nbData = await fetchUSByDate(test);
+      const nbDataRange = await fetchUSByDateRange(test1, test2);
 
-      setDailyData(initialDailyData);
+      console.log(initialDailyData);
+      console.log(nbData);
+      console.log(nbData.date);
+      console.log(nbData.stats[0]);
+      console.log(nbData.stats[0].cases);
+      console.log(nbDataRange);
+      // console.log(nbDataRange[0].stats[0].cases);
+      // setDailyData(initialDailyData);
+      setDailyData(nbDataRange);
     };
 
     fetchMyAPI();
@@ -74,15 +91,16 @@ const Chart = ({ data: { confirmed, recovered, deaths }, country }) => {
         data={{
           labels: dailyData.map(({ date }) => new Date(date).toLocaleDateString()),
           datasets: [{
-            data: dailyData.map((data) => data.confirmed),
+            data: dailyData.map(({ stats }) => stats[0].cases),
             label: 'Infected',
             borderColor: '#3333ff',
+            backgroundColor: 'rgba(0, 0, 255, 0.5)',
             fill: true,
           },
           ],
         }}
         options={{
-          legend: { display: false },
+          legend: { display: false, reverse: true },
           title: { display: true, text: `Confirmed Cases ${country}` },
         }}
       />
@@ -95,7 +113,7 @@ const Chart = ({ data: { confirmed, recovered, deaths }, country }) => {
         data={{
           labels: dailyData.map(({ date }) => new Date(date).toLocaleDateString()),
           datasets: [{
-            data: dailyData.map((data) => data.deaths),
+            data: dailyData.map(({ stats }) => stats[0].deaths),
             label: 'Deaths',
             borderColor: 'red',
             backgroundColor: 'rgba(255, 0, 0, 0.5)',
@@ -104,7 +122,7 @@ const Chart = ({ data: { confirmed, recovered, deaths }, country }) => {
           ],
         }}
         options={{
-          legend: { display: false },
+          legend: { display: false, reverse: true },
           title: { display: true, text: `Confirmed Deaths ${country}` },
         }}
       />
@@ -117,8 +135,8 @@ const Chart = ({ data: { confirmed, recovered, deaths }, country }) => {
         data={{
           labels: dailyData.map(({ date }) => new Date(date).toLocaleDateString()),
           datasets: [{
-            data: dailyData.map((data) => data.recovered),
-            label: 'Recovered',
+            data: dailyData.map(({ stats }) => stats[0].peopleVaccinated),
+            label: 'Vaccinated',
             borderColor: 'green',
             backgroundColor: 'rgba(0, 255, 0, 0.5)',
             fill: true,
@@ -127,7 +145,7 @@ const Chart = ({ data: { confirmed, recovered, deaths }, country }) => {
         }}
         options={{
           legend: { display: false },
-          title: { display: true, text: `Confirmed Recoveries ${country}` },
+          title: { display: true, text: `Confirmed Vaccinations ${country}` },
         }}
       />
     ) : null
