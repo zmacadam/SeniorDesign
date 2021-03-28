@@ -74,7 +74,7 @@ export const fetchCountyByDate = async (state, date) => {
   let changeableUrl = mapurl;
   if (date) {
     changeableUrl = `${mapurl}OneStateByDate?date=${date}&&state=${state}`;
-    console.log(changeableUrl);
+    // console.log(changeableUrl);
   }
 
   try {

@@ -41,6 +41,7 @@ class USMap extends React.Component {
                 left: 10,
                 right: 10
             };
+        let curstate;
         let stateColor = d3.scaleThreshold()
             .domain([10001, 50001, 100001, 250000, 250001])
             .range(['#e2ecfa', '#db8e98', '#ee404d', '#9b0707', '#690506']);
@@ -57,13 +58,8 @@ class USMap extends React.Component {
             .attr('height', height + margin.top + margin.bottom)
             .attr('width', width + margin.left + margin.right);
         const us = this.state.us;
-        // console.log(us);
         const statedata = this.props.statedata;
         const cond = this.props.cond;
-        // console.log(statedata);
-        // console.log(cond);
-        // console.log("here");
-        // console.log(us);
         svg.append('rect')
             .attr('class', 'background center-container')
             .attr('height', height + margin.top + margin.bottom)
@@ -84,16 +80,10 @@ class USMap extends React.Component {
             .attr('height', height + margin.top + margin.bottom);
         const counties =topojson.feature(us, us.objects.counties).features;
         const states =topojson.feature(us, us.objects.states).features;
-        console.log(statedata.states);
         states.forEach(function (f) {
             f.props = statedata.states.find(function (d) {
                 // console.log(d.fips + "@@" + f.id);
                 return d.fips*1000/1000 === f.id })
-            // if(f.props)
-            // {
-            //     console.log(f.props);
-            //     console.log(f.props.stats[0]);
-            // }
 
         })
         g.append("g")
@@ -103,9 +93,12 @@ class USMap extends React.Component {
             .enter().append("path")
             .attr("d", path)
             .style('fill', function (d) {
-                // console.log(d);
-                return "#9b0707";
-            })
+                if(d.props)
+                {
+                    // console.log(d.props.name);
+                    // return countyColor(d.props.stats[0].cases)
+                    return "#e2ecfa";
+                } })
             .attr("class", "county-boundary")
             .on("click", reset)
             .on("mouseover", function(d)
@@ -139,6 +132,7 @@ class USMap extends React.Component {
                 statetip.hide(d,this);
             });
 
+        // console.log(g.attr("class", "state"));
         g.append("path")
             .datum(topojson.mesh(us, us.objects.states, function (a, b) {
                 return a !== b;
@@ -157,17 +151,42 @@ class USMap extends React.Component {
                         "Cases: " +  d.props.stats[0].cases + "<br/>" +
                         "</div>";
                 }
+                else
+                {
+                    return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
+                        "State: "  + d.id + "<br/>" +
+                        "Cases: "  + 0 + "<br/>" +
+                        "</div>";
+                }
             });
         g.call(statetip);
         const countytip = d3tip()
             .attr('class', 'd3-tip')
             .offset([140, 140])
             .html(function(d) {
+                // console.log(d);
                 if(cond === 'cases' && d.props)
+                {
+                    g.selectAll("path")
+                        .style('fill', function (d) {
+                            if(d.props && parseInt(d.id/1000) === curstate)
+                            {
+
+                                // console.log(d.id + "@@" + d.props.name);
+                                // return countyColor(d.props.stats[0].cases)
+                                return countyColor(d.props.stats[0].cases)
+                            }
+                        })
+                    return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
+                        "State: "  + d.props.name + "<br/>" +
+                        "Cases: "  + d.props.stats[0].cases + "<br/>" +
+                        "</div>";
+                }
+                else
                 {
                     return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                         "State: "  + d.id + "<br/>" +
-                        "Cases: "  + d.props.stats[0].cases + "<br/>" +
+                        "Cases: "  + 0 + "<br/>" +
                         "</div>";
                 }
             });
@@ -176,43 +195,47 @@ class USMap extends React.Component {
 
         function clicked(d) {
             // console.log("here");
-            async function updatedata() {
-                county = await fetchCountyByDate(d.props.name, test);
-                console.log(county);
-                // console.log(d.id*1000/1000);
-                counties.forEach(function (f) {
-                    // console.log(parseInt(f.id/1000));
-                    if(parseInt(f.id/1000) === d.id*1000/1000)
-                    {
-                        f.props = county.state.counties.find(function (e) {
-                            // console.log(e.fips + "@@" + f.id);
-                            return e.fips*1000/1000 === f.id })
-                        // console.log(f.props.stats[0].cases);
-                    }
-                })
+            if(d.props)
+            {
+                async function updatedata() {
+                    county = await fetchCountyByDate(d.props.name, test);
+                    // console.log(county);
+                    // console.log(d.id*1000/1000);
+                    counties.forEach(function (f) {
+                        // console.log(parseInt(f.id/1000));
+                        curstate = parseInt(d.id)
+                        if(parseInt(f.id/1000) === d.id*1000/1000)
+                        {
+                            f.props = county.state.counties.find(function (e) {
+                                // console.log(e.fips + "@@" + f.id);
+                                return e.fips*1000/1000 === f.id })
+                            // console.log(f.props.stats[0].cases);
+                        }
+                    })
+                }
+                updatedata();
+                // tip.show(d);
+                // console.log("ok");
+                if (d3.select('.background').node() === this) return reset();
+
+                if (active.node() === this) return reset();
+
+                active.classed("active", false);
+                active = d3.select(this).classed("active", true);
+
+                var bounds = path.bounds(d),
+                    dx = bounds[1][0] - bounds[0][0],
+                    dy = bounds[1][1] - bounds[0][1],
+                    x = (bounds[0][0] + bounds[1][0]) / 2,
+                    y = (bounds[0][1] + bounds[1][1]) / 2,
+                    scale = .9 / Math.max(dx / width, dy / height),
+                    translate = [width / 2 - scale * x, height / 2 - scale * y];
+
+                g.transition()
+                    .duration(750)
+                    .style("stroke-width", 1.5 / scale + "px")
+                    .attr("transform", "translate(" + translate + ")scale(" + scale + ")");
             }
-            updatedata();
-            // tip.show(d);
-            // console.log("ok");
-            if (d3.select('.background').node() === this) return reset();
-
-            if (active.node() === this) return reset();
-
-             active.classed("active", false);
-             active = d3.select(this).classed("active", true);
-
-            var bounds = path.bounds(d),
-                dx = bounds[1][0] - bounds[0][0],
-                dy = bounds[1][1] - bounds[0][1],
-                x = (bounds[0][0] + bounds[1][0]) / 2,
-                y = (bounds[0][1] + bounds[1][1]) / 2,
-                scale = .9 / Math.max(dx / width, dy / height),
-                translate = [width / 2 - scale * x, height / 2 - scale * y];
-
-            g.transition()
-                .duration(750)
-                .style("stroke-width", 1.5 / scale + "px")
-                .attr("transform", "translate(" + translate + ")scale(" + scale + ")");
         }
 
         function reset() {
@@ -224,7 +247,12 @@ class USMap extends React.Component {
                 .duration(750)
                 .style("stroke-width", "1.5px")
                 .attr('transform', 'translate('+margin.left+','+margin.top+')');
-
+            g.selectAll("path")
+                .style('fill', function (d) {
+                    if(d.props)
+                    {
+                        return stateColor(d.props.stats[0].cases)
+                    } })
         }
     }
 
