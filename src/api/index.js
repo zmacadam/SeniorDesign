@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-
 const url = 'https://covid19.mathdro.id/api';
 const mapurl = '/api/data/';
 
@@ -32,14 +31,14 @@ export const fetchData = async (country) => {
 
 // Instead of Global, it fetches the daily data for the US
 export const fetchDailyData = async () => {
-    try {
-      const { data } = await axios.get('https://api.covidtracking.com/v1/us/daily.json');
-  
-      return data.map(({ positive, recovered, death, dateChecked: date }) => ({ confirmed: positive, recovered, deaths: death, date }));
-    } catch (error) {
-      return error;
-    }
-  };
+  try {
+    const { data } = await axios.get('https://api.covidtracking.com/v1/us/daily.json');
+
+    return data.map(({ positive, recovered, death, dateChecked: date }) => ({ confirmed: positive, recovered, deaths: death, date }));
+  } catch (error) {
+    return error;
+  }
+};
 
 export const fetchCountries = async () => {
   try {
@@ -51,9 +50,8 @@ export const fetchCountries = async () => {
   }
 };
 
-
-//=================================================================================================================================================================//
-//Map data//
+//= ================================================================================================================================================================//
+// Map data//
 export const fetchAllStatesByDate = async (date) => {
   let changeableUrl = mapurl;
 
@@ -63,8 +61,42 @@ export const fetchAllStatesByDate = async (date) => {
   }
 
   try {
-    const data= await axios.get(changeableUrl);
+    const data = await axios.get(changeableUrl);
     return data.data;
+  } catch (error) {
+    return error;
+  }
+};
+// Chart Data 1 Date
+export const fetchUSByDate = async (date) => {
+  let changeableUrl = mapurl;
+
+  if (date) {
+    changeableUrl = `${mapurl}USByDate?date=${date}`;
+    // console.log(changeableUrl);
+  }
+
+  try {
+    const data = await axios.get(changeableUrl);
+    return data.data;
+  } catch (error) {
+    return error;
+  }
+};
+// Chart Data by Date Range
+export const fetchUSByDateRange = async (startDate, endDate) => {
+  let changeableUrl = mapurl;
+
+  if (startDate && endDate) {
+    changeableUrl = `${mapurl}USByDateRange?startDate=${startDate}&&endDate=${endDate}`;
+    console.log(changeableUrl);
+  }
+
+  try {
+    const { data } = await axios.get(changeableUrl);
+    // const { stats } = data;
+    // data.map(({ stats, date }) => ({ stats, date }));
+    return data.reverse();
   } catch (error) {
     return error;
   }
@@ -78,7 +110,7 @@ export const fetchCountyByDate = async (state, date) => {
   }
 
   try {
-    const data= await axios.get(changeableUrl);
+    const data = await axios.get(changeableUrl);
     return data.data;
   } catch (error) {
     return error;
