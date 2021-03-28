@@ -42,6 +42,7 @@ class USMap extends React.Component {
                 right: 10
             };
         let curstate;
+        let date = this.props.date;
         let stateColor = d3.scaleThreshold()
             .domain([10001, 50001, 100001, 250000, 250001])
             .range(['#e2ecfa', '#db8e98', '#ee404d', '#9b0707', '#690506']);
@@ -198,7 +199,7 @@ class USMap extends React.Component {
             if(d.props)
             {
                 async function updatedata() {
-                    county = await fetchCountyByDate(d.props.name, test);
+                    county = await fetchCountyByDate(d.props.name, date);
                     // console.log(county);
                     // console.log(d.id*1000/1000);
                     counties.forEach(function (f) {
