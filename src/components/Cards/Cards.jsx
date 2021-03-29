@@ -71,11 +71,16 @@ const Info = ({ data: { confirmed, recovered, deaths, vaccinations, hospitalizat
 
 };
 
-const Cond = function() {
-//     console.log(cond);
-    return cond;
-};
-console.log(Cond.cond);
+// const Cond = function() {
+// //     console.log(cond);
+//     return cond;
+// };
+const Cond = getCond();
+
+// console.log(Cond.cond);
+function getCond() {
+    return cond
+}
 
 
 
