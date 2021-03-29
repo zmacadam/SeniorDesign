@@ -33,6 +33,7 @@ class USMap extends React.Component {
 
     componentDidUpdate() {
         let checked=true;
+        let check1=true;
         let test = new Date();
         let today = new Date();
         let cond = this.props.cond;
@@ -165,6 +166,22 @@ class USMap extends React.Component {
                 .attr("class", "state")
                 .on("click", clicked)
                 .on("mouseover", function (d) {
+                    async function updatedata() {
+                        statedata = await fetchAllStatesByDate(date);
+                        // console.log(county);
+                        // console.log(d.id*1000/1000);
+                        states.forEach(function (f) {
+                            f.props = statedata.states.find(function (d) {
+                                // console.log(d.fips + "@@" + f.id);
+                                return d.fips*1000/1000 === f.id })
+
+                        })
+                    }
+                    if(check1)
+                    {
+                        updatedata();
+                        check1=false;
+                    }
                     statetip.show(d, this);
                 })
                 .on("mouseout", function (d) {
