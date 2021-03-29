@@ -2,7 +2,7 @@ import React from 'react';
 import d3tip from 'd3-tip';
 import * as topojson from "topojson-client/src";
 import * as d3 from 'd3';
-import {fetchCountyByDate} from '../../api/';
+import {fetchAllStatesByDate, fetchCountyByDate} from '../../api/';
 import axios from "axios";
 
  import {Info, Cond} from '../Cards/Cards.jsx';
@@ -32,8 +32,10 @@ class USMap extends React.Component {
     }
 
     componentDidUpdate() {
+        let checked=true;
         let test = new Date();
         let today = new Date();
+        let cond = this.props.cond;
         let dd = String(today.getDate()).padStart(2, '0');
         let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
         let yyyy = today.getFullYear();
@@ -45,10 +47,7 @@ class USMap extends React.Component {
                 right: 10
             };
         let curstate;
-
-        const cond = Cond;
-
-        console.log(Cond);
+        let date = this.props.date;
 
 
         let stateColorCases = d3.scaleThreshold() //blues
@@ -104,7 +103,7 @@ class USMap extends React.Component {
             .attr('height', height + margin.top + margin.bottom)
             .attr('width', width + margin.left + margin.right);
         const us = this.state.us;
-        const statedata = this.props.statedata;
+        let statedata = this.props.statedata;
 //         const cond = this.props.cond;
 
 //         const cond = Info.cond;
@@ -136,59 +135,51 @@ class USMap extends React.Component {
                 return d.fips*1000/1000 === f.id })
 
         })
-        g.append("g")
-            .attr("id", "counties")
-            .selectAll("path")
-            .data(counties)
-            .enter().append("path")
-            .attr("d", path)
-            .style('fill', function (d) {
-                if(d.props)
-                {
-                    // console.log(d.props.name);
-                    // return countyColor(d.props.stats[0].cases)
-                    return "#e2ecfa";
-                } })
-            .attr("class", "county-boundary")
-            .on("click", reset)
-            .on("mouseover", function(d)
-            {
-                countytip.show(d,this);
-            })
-            .on("mouseout", function(d)
-            {
-                countytip.hide(d,this);
-            });
-        g.append("g")
-            .attr("id", "states")
-            .selectAll("path")
-            .data(states)
-            .enter().append("path")
-            .style('fill', function (d) {
-                if(d.props)
-                {
-                    // console.log(d.props.name);
-                    return stateColor(d.props.stats[0].cases)
-                } })
-            .attr("d", path)
-            .attr("class", "state")
-            .on("click", clicked)
-            .on("mouseover", function(d)
-            {
-                statetip.show(d,this);
-            })
-            .on("mouseout", function(d)
-            {
-                statetip.hide(d,this);
-            });
+        function createmap() {
+            g.append("g")
+                .attr("id", "counties")
+                .selectAll("path")
+                .data(counties)
+                .enter().append("path")
+                .attr("d", path)
+                .attr("class", "county-boundary")
+                .on("click", reset)
+                .on("mouseover", function (d) {
+                    countytip.show(d, this);
+                })
+                .on("mouseout", function (d) {
+                    countytip.hide(d, this);
+                });
+            g.append("g")
+                .attr("id", "states")
+                .selectAll("path")
+                .data(states)
+                .enter().append("path")
+                .style('fill', function (d) {
+                    if (d.props) {
+                        // console.log(d.props.name);
+                        return stateColor(d.props.stats[0].cases)
+                    }
+                })
+                .attr("d", path)
+                .attr("class", "state")
+                .on("click", clicked)
+                .on("mouseover", function (d) {
+                    statetip.show(d, this);
+                })
+                .on("mouseout", function (d) {
+                    statetip.hide(d, this);
+                });
 
-        // console.log(g.attr("class", "state"));
-        g.append("path")
-            .datum(topojson.mesh(us, us.objects.states, function (a, b) {
-                return a !== b;
-            }))
-            .attr("id", "state-borders")
-            .attr("d", path);
+            // console.log(g.attr("class", "state"));
+            g.append("path")
+                .datum(topojson.mesh(us, us.objects.states, function (a, b) {
+                    return a !== b;
+                }))
+                .attr("id", "state-borders")
+                .attr("d", path);
+        }
+        createmap();
 
         const statetip = d3tip()
             .attr('class', 'd3-tip')
@@ -278,7 +269,12 @@ class USMap extends React.Component {
             if(d.props)
             {
                 async function updatedata() {
-                    county = await fetchCountyByDate(d.props.name, test);
+                    if(checked)
+                    {
+                        d3.select('g').select('svg').remove();
+                        checked=false;
+                    }
+                    county = await fetchCountyByDate(d.props.name, date);
                     // console.log(county);
                     // console.log(d.id*1000/1000);
                     counties.forEach(function (f) {
@@ -319,6 +315,18 @@ class USMap extends React.Component {
         }
 
         function reset() {
+            async function updatedata() {
+                statedata = await fetchAllStatesByDate(date);
+                // console.log(county);
+                // console.log(d.id*1000/1000);
+                states.forEach(function (f) {
+                    f.props = statedata.states.find(function (d) {
+                        // console.log(d.fips + "@@" + f.id);
+                        return d.fips*1000/1000 === f.id })
+
+                })
+            }
+            updatedata();
             active.classed("active", false);
             active = d3.select(null);
 
@@ -335,13 +343,15 @@ class USMap extends React.Component {
                     } })
         }
     }
+    componentWillUnmount() {
+        d3.select('g').select('svg').remove();
+    }
 
     render() {
         const {us} = this.state;
         if (!us) {
             return null;
         }
-
         return <g ref={this.myRef}/>;
     }
 }
