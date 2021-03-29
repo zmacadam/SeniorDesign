@@ -4,6 +4,9 @@ import * as topojson from "topojson-client/src";
 import * as d3 from 'd3';
 import {fetchCountyByDate} from '../../api/';
 import axios from "axios";
+
+// import Info from '../Cards/Cards.jsx';
+
 class USMap extends React.Component {
     constructor(props) {
         super(props);
@@ -42,10 +45,21 @@ class USMap extends React.Component {
                 right: 10
             };
         let curstate;
-        let date = this.props.date;
-        let stateColor = d3.scaleThreshold()
+//         let stateColor = this.props.stateColor;
+
+        let stateColorCases = d3.scaleThreshold() //blues
+            .domain([10001, 50001, 100001, 250000, 250001])
+            .range(['#AAFFFC', '#66D9FF', '#44ABFF', '#2372FF', '#052FFF']);
+
+        let stateColorRecovered = d3.scaleThreshold() //greens
+                    .domain([10001, 50001, 100001, 250000, 250001])
+                    .range(['#BBFF52', '#53DF31', '#27BF2A', '#1E9F3E', '#178048']);
+
+//         let stateColorDeaths = d3.scaleThreshold() //stateColor for now but change to stateColorDeaths**
+        let stateColor = d3.scaleThreshold() //reds
             .domain([10001, 50001, 100001, 250000, 250001])
             .range(['#e2ecfa', '#db8e98', '#ee404d', '#9b0707', '#690506']);
+
         var countyColor = d3.scaleThreshold()
             .domain([101, 1001, 10001, 50001, 100001])
             .range(['#e2ecfa', '#db8e98', '#ee404d', '#9b0707', '#690506'])
@@ -61,6 +75,11 @@ class USMap extends React.Component {
         const us = this.state.us;
         const statedata = this.props.statedata;
         const cond = this.props.cond;
+
+//         const cond = Info.cond;
+
+         console.log(cond);
+
         svg.append('rect')
             .attr('class', 'background center-container')
             .attr('height', height + margin.top + margin.bottom)
@@ -152,6 +171,14 @@ class USMap extends React.Component {
                         "Cases: " +  d.props.stats[0].cases + "<br/>" +
                         "</div>";
                 }
+                else if(cond === 'recovered' && d.props){
+                }
+                else if(cond === 'deaths' && d.props){
+                }
+                else if(cond === 'vaccinations' && d.props){
+                }
+                else if(cond === 'hospitalizations' && d.props){
+                }
                 else
                 {
                     return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
@@ -199,7 +226,7 @@ class USMap extends React.Component {
             if(d.props)
             {
                 async function updatedata() {
-                    county = await fetchCountyByDate(d.props.name, date);
+                    county = await fetchCountyByDate(d.props.name, test);
                     // console.log(county);
                     // console.log(d.id*1000/1000);
                     counties.forEach(function (f) {
