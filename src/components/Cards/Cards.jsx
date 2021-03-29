@@ -3,14 +3,22 @@ import {Grid } from '@material-ui/core';
 import CardComponent from './Card/Card';
 import styles from './Cards.module.css';
 
-const Info = ({ data: { confirmed, recovered, deaths, lastUpdate } }) => {
+
+let cond = 'cases';
+
+
+
+const Info = ({ data: { confirmed, recovered, deaths, vaccinations, hospitalizations, lastUpdate } }) => {
   if (!confirmed) {
     return 'Loading...';
   }
 
   // let whichButton = null;
+//     let props = 'cases';
+
 
   return (
+
     <div className={styles.container}>
         {/*<Typography gutterBottom variant="h4" component="h2">Covid Tracker</Typography>*/}
       <Grid container spacing={1} justify="center">
@@ -20,7 +28,7 @@ const Info = ({ data: { confirmed, recovered, deaths, lastUpdate } }) => {
           value={confirmed.value}
           cardSubtitle="Total number of active cases"
           buttonTitle="Infected"
-          buttFunction= { () => buttClickInfected() }
+          buttFunction= { (cond) => buttClickInfected() }
         />
         <CardComponent
           className={styles.recovered}
@@ -28,7 +36,7 @@ const Info = ({ data: { confirmed, recovered, deaths, lastUpdate } }) => {
           value={recovered.value}
           cardSubtitle="Total number of recoveries"
           buttonTitle="Recovered"
-          buttFunction= { () => buttClickRecovered() }
+          buttFunction= { (cond) => buttClickRecovered() }
         />
         <CardComponent
           className={styles.deaths}
@@ -36,7 +44,7 @@ const Info = ({ data: { confirmed, recovered, deaths, lastUpdate } }) => {
           value={deaths.value}
           cardSubtitle="Total number of deaths"
           buttonTitle="Deaths"
-          buttFunction= { () => buttClickDeaths() }
+          buttFunction= { (cond) => buttClickDeaths() }
         />
         <CardComponent
             className={styles.vaccinated}
@@ -45,7 +53,7 @@ const Info = ({ data: { confirmed, recovered, deaths, lastUpdate } }) => {
             value={0}
             cardSubtitle="Total number of vaccinations"
             buttonTitle="Vaccinations"
-            buttFunction= {() => buttClickVacc()}
+            buttFunction= {(cond) => buttClickVacc()}
         />
         <CardComponent
             className={styles.hospitalized}
@@ -54,33 +62,62 @@ const Info = ({ data: { confirmed, recovered, deaths, lastUpdate } }) => {
             value={0}
             cardSubtitle="Total number of hospitalizations"
             buttonTitle="Hospitalizations"
-            buttFunction= {() => buttClickHosp()}
+            buttFunction= {(cond) => buttClickHosp()}
         />
 
       </Grid>
     </div>
   );
+
 };
 
+const Cond = function() {
+//     console.log(cond);
+    return cond;
+};
+console.log(Cond.cond);
+
+
+
+
+
 function buttClickInfected() {
-    document.getElementById("states").style.fill = 'blue';
-//     whichButton = 'infected';
+//     document.getElementById("states").style.fill = 'blue';
+//     console.log("cases");
+     let cond = 'cases';
+    console.log(cond);
+//     let stateColor = 'blue';
+
+    return(cond)
 }
 function buttClickRecovered() {
-    document.getElementById("states").style.fill = 'green';
+//     document.getElementById("states").style.fill = 'green';
 //     whichButton = 'recovered';
+    let cond = 'recovered';
+    return (cond);
 }
 function buttClickDeaths() {
-    document.getElementById("states").style.fill = 'red';
+//     document.getElementById("states").style.fill = 'red';
 //     whichButton = 'deaths';
+    let cond = 'deaths';
+    return (cond);
+
 }
 function buttClickVacc() {
-    document.getElementById("states").style.fill = 'purple';
+//     document.getElementById("states").style.fill = 'purple';
 //     whichButton = 'vaccinated';
+    let cond = 'vaccinations';
+    return (cond);
 }
 function buttClickHosp() {
-    document.getElementById("states").style.fill = 'pink';
+//     document.getElementById("states").style.fill = 'pink';
 //     whichButton = 'hospitalized';
+    let cond = 'hospitalizations';
+    return (cond);
 }
 
-export default Info;
+// export default Info;
+export {
+    Info,
+    Cond
+};
