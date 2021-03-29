@@ -5,7 +5,7 @@ import * as d3 from 'd3';
 import {fetchCountyByDate} from '../../api/';
 import axios from "axios";
 
-// import Info from '../Cards/Cards.jsx';
+ import {Info, Cond} from '../Cards/Cards.jsx';
 
 class USMap extends React.Component {
     constructor(props) {
@@ -78,7 +78,7 @@ class USMap extends React.Component {
 
 //         const cond = Info.cond;
 
-         console.log(cond);
+         console.log(Cond);
 
         svg.append('rect')
             .attr('class', 'background center-container')
