@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Info, Chart, USMap } from '../../components';
+import { Info, Chart, USMap, News } from '../../components';
 import range from 'lodash/range';
 import { getMonth, getYear } from 'date-fns';
 import '../../App.css';
@@ -135,6 +135,7 @@ const Maps = () => {
                 {data && statedata && cond && ( <USMap date={"2021-04-04"} statedata={statedata} cond={cond} />)}
             </div>
             {data && <Chart nbdate={"2021-04-04"} data={data} country="US" />}
+            <News nbdate={"2021-04-04"} />
         </div>
     );
 }
