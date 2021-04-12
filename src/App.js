@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import home from './pages/home';
 import About from './pages/About';
 import Symptom from './pages/Symptom';
+import Vaccine from './pages/Vaccine';
 
 const App = () => {
     return (
@@ -18,6 +19,7 @@ const App = () => {
                 <Switch>
                     <Route exact path ='/' component={home}/>
                     <Route path="/symptom" component={Symptom} />
+                    <Route path="/vaccine" component={Vaccine} />
                     <Route path="/about" component={About} />
                 </Switch>
             </div>

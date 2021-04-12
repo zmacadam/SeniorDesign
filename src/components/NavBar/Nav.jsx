@@ -20,6 +20,17 @@ const Nav = () => {
         >
           <li>Symptom</li>
         </Link>
+          <Link
+              style={{
+                  color: "white",
+                  textDecoration: "none",
+                  marginTop: "10px",
+                  marginRight: "40px",
+              }}
+              to="/vaccine"
+          >
+              <li>Vaccine</li>
+          </Link>
         <Link
           style={{ color: "white", textDecoration: "none", marginTop: "10px" }}
           to="/about"
