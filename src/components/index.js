@@ -6,3 +6,7 @@ from './USMap/USMaps';
 export { default as Info }
 from './Cards/Cards';
 // export {Cond } from './Cards/Cards';
+export { default as Calendar }
+    from './Calendar/Calendar';
+export { default as Maps }
+    from './Maps/Maps';

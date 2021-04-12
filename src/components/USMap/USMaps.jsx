@@ -4,32 +4,29 @@ import * as topojson from "topojson-client/src";
 import * as d3 from 'd3';
 import {fetchAllStatesByDate, fetchCountyByDate} from '../../api/';
 import axios from "axios";
+import moment from 'moment';
 
-const USMaps = ({dates,statedatas,conds}) => {
+const USMaps = ({date,statedata,cond}) => {
     const myRef = useRef(null);
     const[us,setus] = useState(null);
-    const[stage,setstage] = useState(null);
+    // const[stage,setstage] = useState(0);
+    const [test,settest] = useState(new Date());
+    // let test = new Date();
+    let today = new Date();
+    // const [cond,setCond] = useState(null);
+    // let cond = {conds}.conds;
+    // console.log(cond);
+    // let dd = String(today.getDate()-3).padStart(2, '0');
+    // let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    // let yyyy = today.getFullYear();
+    // test = yyyy + '-' + mm + '-' + dd;
     let checked=true;
     let check1=true;
     let check2=true;
-    let test = new Date();
-    let today = new Date();
-    const [cond,setCond] = useState(null);
-    // let cond = {conds}.conds;
-    // console.log(cond);
-    let dd = String(today.getDate()-3).padStart(2, '0');
-    let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    let yyyy = today.getFullYear();
-    test = yyyy + '-' + mm + '-' + dd;
     let curstate;
-    let statedata = {statedatas}.statedatas;
-    let date = {dates};
-    // console.log(date);
-    if(date>test)
-        date=test;
     let stateColor = null;
+    let stage;
     let countyColor = null;
-    let curcond='cases';
     const margin = {
         top: 10,
         bottom: 10,
@@ -49,14 +46,21 @@ const USMaps = ({dates,statedatas,conds}) => {
                 //  console.log(us[0].data);
                 setus(us => usa[0].data);
             });
-        setCond({conds}.conds);
+        settest(test => test.setDate(test.getDate()-4));
     }, []);
+    useEffect(()=> {
+        if(date)
+        {
+            stage=stage+1;
+        }
+    },[date]);
 
     useEffect(()=> {
         if(us && myRef.current && date && statedata && cond) {
-            console.log(date);
-            console.log(statedata);
-            console.log(cond);
+            // console.log("@@" + moment(today).format('YYYY-MM-DD'));
+            // console.log(date);
+            // console.log(statedata);
+            // console.log(cond);
             let stateColorCases = d3.scaleThreshold() //blues
                 .domain([10001, 50001, 100001, 250000, 250001])
                 .range(['#AAFFFC', '#66D9FF', '#44ABFF', '#2372FF', '#052FFF']);
@@ -121,7 +125,7 @@ const USMaps = ({dates,statedatas,conds}) => {
 
             let width = 960 - margin.left - margin.right;
             let height = 600- margin.left - margin.right;
-            console.log(myRef.current);
+            // console.log(myRef.current);
             const svg = d3.select(myRef.current)
                 .append('svg')
                 .attr('class', 'center-container')
@@ -147,18 +151,29 @@ const USMaps = ({dates,statedatas,conds}) => {
                 .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
                 .attr('width', width + margin.left + margin.right)
                 .attr('height', height + margin.top + margin.bottom);
-            console.log(us);
+            // console.log(us);
             const counties =topojson.feature(us, us.objects.counties).features;
             const states =topojson.feature(us, us.objects.states).features;
             states.forEach(function (f) {
-                console.log(statedata);
+                // console.log(statedata);
                 f.props = statedata.states.find(function (d) {
                     // console.log(d.fips + "@@" + f.id);
                     return d.fips*1000/1000 === f.id })
 
             })
             // function createmap() {
-            console.log(g);
+            // console.log(g);
+            if(date)
+            {
+                console.log("ok");
+                d3.select('g').select('svg').remove();
+            }
+            if(stage>1)
+            {
+                d3.select('g').select('svg').remove();
+                console.log("heresss");
+            }
+            console.log("here");
             g.append("g")
                 .attr("id", "counties")
                 .selectAll("path")
@@ -396,13 +411,13 @@ const USMaps = ({dates,statedatas,conds}) => {
                 if(d.props)
                 {
                     async function updatedata() {
-                        if(checked)
+                        if(date)
                         {
                             d3.select('g').select('svg').remove();
                             checked=false;
                         }
                         county = await fetchCountyByDate(d.props.name, date);
-                        // console.log(county);
+                        console.log(county);
                         // console.log(d.id*1000/1000);
                         counties.forEach(function (f) {
                             // console.log(parseInt(f.id/1000));
@@ -469,55 +484,7 @@ const USMaps = ({dates,statedatas,conds}) => {
                         } })
             }
         }
-    }, [us,myRef.current,cond]);
-
-    useEffect(()=>{
-        if(cond)
-        {
-            let stateColorCases = d3.scaleThreshold() //blues
-                .domain([10001, 50001, 100001, 250000, 250001])
-                .range(['#AAFFFC', '#66D9FF', '#44ABFF', '#2372FF', '#052FFF']);
-
-            let stateColorRecovered = d3.scaleThreshold() //greens
-                .domain([10001, 50001, 100001, 250000, 250001])
-                .range(['#dee5d1', '#91b588', '#76b378', '#1E9F3E', '#178048']);
-
-            let stateColorDeaths = d3.scaleThreshold() //reds
-                .domain([10001, 50001, 100001, 250000, 250001])
-                .range(['#F08080', '#CD5C5C', '#FF0000', '#B22222', '#8b0000']);
-
-            let stateColorVac = d3.scaleThreshold() //purples
-                .domain([10001, 50001, 100001, 250000, 250001])
-                .range(['#CCCEFF', '#ABAAFF', '#A388FF', '#A966FF', '#BC44FF']);
-
-            let stateColorHosp = d3.scaleThreshold() //pinks
-                .domain([10001, 50001, 100001, 250000, 250001])
-                .range(['#F5CCFF', '#ffaaff', '#FF88F2', '#FF67CF', '#FF49A2']);
-
-            let countyColorCases = d3.scaleThreshold() //blues
-                .domain([10001, 50001, 100001, 250000, 250001])
-                .range(['#AAFFFC', '#66D9FF', '#44ABFF', '#2372FF', '#052FFF']);
-
-            let countyColorRecovered = d3.scaleThreshold() //greens
-                .domain([10001, 50001, 100001, 250000, 250001])
-                .range(['#dee5d1', '#91b588', '#76b378', '#1E9F3E', '#178048']);
-
-            let countyColorDeaths = d3.scaleThreshold() //reds
-                .domain([10001, 50001, 100001, 250000, 250001])
-                .range(['#F08080', '#CD5C5C', '#FF0000', '#B22222', '#8b0000']);
-
-            let countyColorVac = d3.scaleThreshold() //purples
-                .domain([10001, 50001, 100001, 250000, 250001])
-                .range(['#CCCEFF', '#ABAAFF', '#A388FF', '#A966FF', '#BC44FF']);
-
-            let countyColorHosp = d3.scaleThreshold() //pinks
-                .domain([10001, 50001, 100001, 250000, 250001])
-                .range(['#F5CCFF', '#FFAAFF', '#FF88F2', '#FF67CF', '#FF49A2']);
-
-        }
-    },[cond]);
-
-
+    }, [us,myRef.current,cond,date,statedata]);
 
     return (
         <svg
