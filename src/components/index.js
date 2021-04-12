@@ -10,3 +10,5 @@ export { default as Calendar }
     from './Calendar/Calendar';
 export { default as Maps }
     from './Maps/Maps';
+export { default as Nav }
+    from './NavBar/Nav';
