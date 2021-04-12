@@ -12,3 +12,5 @@ export { default as Maps }
     from './Maps/Maps';
 export { default as Nav }
     from './NavBar/Nav';
+export { default as News }
+    from './News/News';
