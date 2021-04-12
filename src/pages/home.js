@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Info, Chart, USMap, Calendar,Maps} from '../components';
+import { Info, Chart, USMap, Calendar,Maps, News} from '../components';
 import styles from "../App.module.css";
 import { fetchAllStatesByDate, fetchData, fetchUSByDate } from '../api';
 import SearchPage from '../components/SearchBar/SearchPage.js';
