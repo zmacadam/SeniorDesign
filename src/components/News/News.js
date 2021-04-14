@@ -4,13 +4,11 @@ import NewsItem from './NewsItem';
 
 const News = (nbDate) => {
   const [articles, setArticles] = useState([]);
-  const toDate = nbDate;
-  console.log(toDate);
 
   useEffect(() => {
     const getArticles = async () => {
       const res = await Axios.get(
-        `https://newsapi.org/v2/everything?q=Texas+Covid+Government&to=${toDate}&apiKey=616cce31e0804904bc48ac01f41fe27e`,
+        `https://newsapi.org/v2/everything?q=Texas+Covid+Government&to=${nbDate}&apiKey=616cce31e0804904bc48ac01f41fe27e`,
       );
 
       setArticles(res.data.articles);
