@@ -405,12 +405,13 @@ const USMaps = ({date,statedata,cond}) => {
                 // console.log("here");
                 if(d.props)
                 {
+                    console.log(d.props.name);
                     async function updatedata() {
-                        if(date)
-                        {
-                            d3.select('g').select('svg').exit().remove();
-                            checked=false;
-                        }
+                        // if(date)
+                        // {
+                        //     d3.select('g').select('svg').exit().remove();
+                        //     checked=false;
+                        // }
                         if(date<moment(test.current).format('YYYY-MM-DD'))
                             county = await fetchCountyByDate(d.props.name, date);
                         else
@@ -421,6 +422,7 @@ const USMaps = ({date,statedata,cond}) => {
                             curstate = parseInt(d.id)
                             if(parseInt(f.id/1000) === d.id*1000/1000)
                             {
+                                console.log(county);
                                 f.props = county.state.counties.find(function (e) {
                                     // console.log(e.fips + "@@" + f.id);
                                     return e.fips*1000/1000 === f.id })

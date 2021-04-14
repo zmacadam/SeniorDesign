@@ -1,24 +1,9 @@
 import axios from 'axios';
 
 const url = 'https://covid19.mathdro.id/api';
-const url1 = 'https://covid-tracker-server-api.herokuapp.com/'
+const url1 = 'http://ec2-3-83-230-148.compute-1.amazonaws.com:8080/'
 const mapurl = '/api/data/';
 
-export const fetchData = async(country) => {
-    let changeableUrl = url;
-
-    if (country) {
-        changeableUrl = `${url}/countries/${country}`;
-    }
-
-    try {
-        const { data: { confirmed, recovered, deaths, lastUpdate } } = await axios.get(changeableUrl);
-
-        return { confirmed, recovered, deaths, lastUpdate };
-    } catch (error) {
-        return error;
-    }
-};
 
 // export const fetchDailyData = async () => {
 //   try {
@@ -53,21 +38,6 @@ export const fetchCountries = async() => {
 
 //= ================================================================================================================================================================//
 // Map data//
-export const fetchAllStatesByDate = async(date) => {
-    let changeableUrl = mapurl;
-
-    if (date) {
-        changeableUrl = `${url1}${mapurl}AllStatesByDate?date=${date}`;
-        // console.log(changeableUrl);
-    }
-
-    try {
-        const data = await axios.get(changeableUrl);
-        return data.data;
-    } catch (error) {
-        return error;
-    }
-};
 // Chart Data 1 Date
 export const fetchUSByDate = async(date) => {
     let changeableUrl = url1;
@@ -89,7 +59,7 @@ export const fetchUSByDateRange = async(startDate, endDate) => {
     let changeableUrl = mapurl;
 
     if (startDate && endDate) {
-        changeableUrl = `${mapurl}USByDateRange?start=${startDate}&&end=${endDate}`;
+        changeableUrl = `${url1}${mapurl}USByDateRange?start=${startDate}&&end=${endDate}`;
         // console.log(changeableUrl);
     }
 
@@ -108,7 +78,7 @@ export const fetchStateNoCountiesByDateRange = async(startDate, endDate, stateNa
     let changeableUrl = mapurl;
 
     if (startDate && endDate && stateName) {
-        changeableUrl = `${mapurl}StateNoCountiesByDateRange?start=${startDate}&&end=${endDate}&&state=${stateName}`;
+        changeableUrl = `${url1}${mapurl}StateNoCountiesByDateRange?start=${startDate}&&end=${endDate}&&state=${stateName}`;
         // console.log(changeableUrl);
     }
 
@@ -134,7 +104,7 @@ export const fetchOneStateByDateRange = async(endDate, stateName) => {
     curDate = `${yyyy}-${mm}-0${dayCount}`;
 
     if (endDate && stateName) {
-        changeableUrl = `${mapurl}OneStateByDate?date=${curDate}&&state=${stateName}`;
+        changeableUrl = `${url1}${mapurl}OneStateByDate?date=${curDate}&&state=${stateName}`;
         // console.log(changeableUrl);
     }
 
@@ -151,7 +121,7 @@ export const fetchOneStateByDateRange = async(endDate, stateName) => {
             if (dayCount < 10) {
                 curDate = `${yyyy}-${mm}-0${dayCount}`;
             }
-            changeableUrl = `${mapurl}OneStateByDate?date=${curDate}&&state=${stateName}`;
+            changeableUrl = `${url1}${mapurl}OneStateByDate?date=${curDate}&&state=${stateName}`;
             data = await axios.get(changeableUrl);
         }
         // const { data } = await axios.get(changeableUrl);
@@ -162,15 +132,33 @@ export const fetchOneStateByDateRange = async(endDate, stateName) => {
     }
 };
 
-export const fetchCountyByDate = async(state, date) => {
+export const fetchAllStatesByDate = async(date) => {
     let changeableUrl = mapurl;
+
     if (date) {
-        changeableUrl = `${mapurl}OneStateByDate?date=${date}&&state=${state}`;
+        changeableUrl = `${url1}${mapurl}AllStatesByDate?date=${date}`;
         // console.log(changeableUrl);
     }
 
     try {
         const data = await axios.get(changeableUrl);
+        return data.data;
+        console.log(data.data);
+    } catch (error) {
+        return error;
+    }
+};
+
+export const fetchCountyByDate = async(state, date) => {
+    let changeableUrl = mapurl;
+    if (date) {
+        changeableUrl = `${url1}${mapurl}OneStateByDate?date=${date}&&state=${state}`;
+        console.log(changeableUrl);
+    }
+
+    try {
+        const data = await axios.get(changeableUrl);
+        console.log(data.data);
         return data.data;
     } catch (error) {
         return error;
