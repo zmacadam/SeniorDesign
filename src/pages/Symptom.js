@@ -10,7 +10,7 @@ import Touch from "../img/touch-face-hand-stones-that-point-face-eyes-nose-mouth
 import Cover from "../img/Coronavirus-EN-2.png";
 import Stayhome from "../img/download.jfif";
 import Call from "../img/original.jfif";
-function Symptom() {
+const Symptom = () => {
   return (
     <div style={{ margin: "20px" }}>
       <Tabs>

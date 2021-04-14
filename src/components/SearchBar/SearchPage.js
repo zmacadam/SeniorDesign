@@ -3,7 +3,7 @@ import SearchBar from './SearchBar';
 import CountyList from './CountyList';
 
 const stateData = require('./StateData.json');
-const countyData = require('./CountyData.json');
+// const countyData = require('./CountyData.json');
 
 const SearchPage = (props) => {
   const [input, setInput] = useState('');
