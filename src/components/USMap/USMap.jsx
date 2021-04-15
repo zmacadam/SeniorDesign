@@ -178,6 +178,7 @@ class USMap extends React.Component {
             });
         g.append("g")
             .attr("id", "states")
+            .attr("id", "Texas")
             .selectAll("path")
             .data(states)
             .enter().append("path")
@@ -241,7 +242,7 @@ class USMap extends React.Component {
             .on("mouseout", function (d) {
                 statetip.hide(d, this);
             });
-
+            console.log("state: " + g);
         // console.log(g.attr("class", "state"));
         g.append("path")
             .datum(topojson.mesh(us, us.objects.states, function (a, b) {

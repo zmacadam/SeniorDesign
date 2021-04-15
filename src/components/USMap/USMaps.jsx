@@ -154,6 +154,7 @@ const USMaps = ({date,statedata,cond}) => {
             // console.log(us);
             const counties =topojson.feature(us, us.objects.counties).features;
             const states =topojson.feature(us, us.objects.states).features;
+            console.log(states)
             states.forEach(function (f) {
                 // console.log(statedata);
                 f.props = statedata.states.find(function (d) {
@@ -165,15 +166,12 @@ const USMaps = ({date,statedata,cond}) => {
             // console.log(g);
             if(date)
             {
-                console.log("ok");
                 d3.select('g').select('svg').remove();
             }
             if(stage>1)
             {
                 d3.select('g').select('svg').remove();
-                console.log("heresss");
             }
-            console.log("here");
             g.append("g")
                 .attr("id", "counties")
                 .selectAll("path")
@@ -233,6 +231,22 @@ const USMaps = ({date,statedata,cond}) => {
 
                 })
                 .attr("d", path)
+                .attr("id", function(d) {
+                    async function updatedata() {
+                        statedata = await fetchAllStatesByDate(date);
+                        states.forEach(function (f) {
+                            f.props = statedata.states.find(function (d) {
+                                // console.log(d.fips + "@@" + f.id);
+                                return d.fips*1000/1000 === f.id })
+                        })
+                    }
+
+                    updatedata();
+                    if(d.props) {
+                        return d.props.name;
+                    }
+                    else return "";
+                })
                 .attr("class", "state")
                 .on("click", clicked)
                 .on("mouseover", function (d) {
@@ -254,6 +268,8 @@ const USMaps = ({date,statedata,cond}) => {
                 .on("mouseout", function (d) {
                     statetip.hide(d, this);
                 });
+                console.log("STATE:");
+                console.log(g);
 
             // console.log(g.attr("class", "state"));
             g.append("path")
@@ -408,6 +424,7 @@ const USMaps = ({date,statedata,cond}) => {
 
             function clicked(d) {
                 // console.log("here");
+                console.log(d);
                 if(d.props)
                 {
                     async function updatedata() {

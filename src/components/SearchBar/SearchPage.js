@@ -16,6 +16,26 @@ const SearchPage = (props) => {
     setCountyListDefault(stateData.data)
   }
 
+  const onSearchBlur = function(input) {
+    stateZoom(input);
+  }
+
+  const onSearchKeyUp = function(e) {
+    if(e.key === "Enter") {
+      e.target.blur();
+    }
+  }
+
+  const stateZoom = function(input) {
+    var state;
+    if(input) {
+      state = document.getElementById(input);
+    }
+    if(state){
+      state.dispatchEvent(new Event('click'));
+    }
+  }
+
   const updateInput = async (input) => {
      const filtered = countyListDefault.filter(county => {
       return county.toLowerCase().includes(input.toLowerCase())
@@ -31,6 +51,8 @@ const SearchPage = (props) => {
       <SearchBar 
        input={input} 
        onChange={updateInput}
+       onBlur={onSearchBlur}
+       onKeyPress={onSearchKeyUp}
       />
       <CountyList countyList={countyList}/>
     </>

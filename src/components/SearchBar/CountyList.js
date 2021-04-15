@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Info, Chart, USMap, News } from '../../components';
 
 const countyList = ({countyList=[]}) => {
   return (

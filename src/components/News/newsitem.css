@@ -3,6 +3,7 @@
     padding: 20px;
     border: 1px solid;
     margin-bottom: 20px;
+    box-shadow: 1px 1px #333 5px;
 }
 
 .news-img {
