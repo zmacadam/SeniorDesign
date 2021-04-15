@@ -121,7 +121,7 @@ const Combine = () => {
                 maxDate={addDays(new Date(), -2)}
             />
             <br />
-            <SearchPage/>
+            <SearchPage cond={cond} setCond={setCond}/>
             <br />
             <div>
                 <button className={styles.button} onClick={() => setCond('cases')}> Cases </button>

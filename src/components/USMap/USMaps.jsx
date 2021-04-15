@@ -225,19 +225,9 @@ const USMaps = ({date,statedata,cond}) => {
 
                 })
                 .attr("d", path)
-                .attr("id", function(d) {
-                    async function updatedata() {
-                        statedata = await fetchAllStatesByDate(date);
-                        states.forEach(function (f) {
-                            f.props = statedata.states.find(function (d) {
-                                // console.log(d.fips + "@@" + f.id);
-                                return d.fips*1000/1000 === f.id })
-                        })
-                    }
-
-                    updatedata();
+                .attr("id", function(d) { // set id to lowercase state name eg. "texas"
                     if(d.props) {
-                        return d.props.name;
+                        return d.props.name.toLowerCase();
                     }
                     else return "";
                 })

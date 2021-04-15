@@ -7,9 +7,22 @@ const countyList = ({countyList=[]}) => {
     { countyList.map((data,index) => {
         if (data) {
           return (
-            <option key={data}>
-              {data}
-            </option>
+            <div>
+              <option key={data + " Cases"}>
+                {data + " Cases"}
+              </option>
+              <option key={data + " New Cases"}>
+                {data + " New Cases"}
+              </option>
+              <option key={data + " Deaths"}>
+                {data + " Deaths"}
+              </option>
+              <option key={data + " Vaccinations"}>
+                {data + " Vaccinations"}
+              </option>
+              
+            </div>
+            
     	   )	
     	 }
     	 return null
