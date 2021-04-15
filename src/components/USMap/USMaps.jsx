@@ -2,21 +2,30 @@ import React, {useState, useEffect, useRef} from 'react';
 import d3tip from 'd3-tip';
 import * as topojson from "topojson-client/src";
 import * as d3 from 'd3';
-import {fetchAllStatesByDate, fetchCountyByDate} from '../../api/';
+import {fetchAllStatesByDate, fetchCountyByDate, fetchUSByDate} from '../../api/';
 import axios from "axios";
-import moment from 'moment';
+import {Chart} from "../index";
+import range from 'lodash/range';
 import { getMonth, getYear } from 'date-fns';
+import '../../App.css';
+import styles from '../../App.module.css';
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
+import 'react-datepicker/dist/react-datepicker.css';
+import addDays from 'add-days';
 
-const USMaps = ({date,statedata,cond}) => {
+import SearchPage from '../../components/SearchBar/SearchPage.js';
+const USMaps = ({date,cond}) => {
     const myRef = useRef(null);
+    const [data, setData] = useState(null);
+    const [statedata, setMapData] = useState(null);
     const[us,setus] = useState(null);
-    // const[stage,setstage] = useState(0);
-    // const [test,settest] = useState(new Date());
+    const[check,setcheck] = useState(false);
+    // const [cond, setCond] = useState(null);
     let county = useRef(null);
     let counties = useRef(null);
     let states = useRef(null);
-    // = useRef(null);
-    let test = useRef(new Date());
+    let test1 = useRef(new Date());
     let checked=true;
     let curstate;
     let stateColor = null;
@@ -29,7 +38,9 @@ const USMaps = ({date,statedata,cond}) => {
         right: 10
     };
     let active = d3.select(null);
+
     useEffect(() =>{
+        const condDefault = 'cases';
         var url1 = axios.get("https://raw.githubusercontent.com/BiKunTin/datastore/main/us-counties.topojson");
         // var url1 = axios.get('../us-counties.topojson');
         Promise
@@ -39,15 +50,34 @@ const USMaps = ({date,statedata,cond}) => {
                 //  console.log(us[0].data);
                 setus(us => usa[0].data);
             });
-        // settest(test => test.setDate(test.getDate()-3));
-        test = test.current.setDate(test.current.getDate()-3);
+        test1 = test1.current.setDate(test1.current.getDate()-3);
+        // setCond((cond) => condDefault);
+        setcheck(check => true);
+
     }, []);
     useEffect(()=> {
-        if(date)
+        if(check && date)
         {
-            stage=stage+1;
+            let datas;let data3;
+            async function updatedata() {
+                console.log(check + moment(test1.current).format('YYYY-MM-DD') + "@@" + date);
+                if(date<moment(test1.current).format('YYYY-MM-DD'))
+                    datas = await fetchUSByDate(date);
+                else
+                    datas = await fetchUSByDate(moment(test1.current).format('YYYY-MM-DD'));
+                // datas = await fetchUSByDate("2021-04-04");
+                if(date<moment(test1.current).format('YYYY-MM-DD'))
+                    data3 = await fetchAllStatesByDate(date);
+                else
+                    data3 = await fetchAllStatesByDate(moment(test1.current).format('YYYY-MM-DD'));
+                //data3 = await fetchAllStatesByDate("2021-04-04");
+                setMapData((statedata) => data3);
+                setData((data) => datas.stats[0]);
+            }
+            // console.log(data);
+            updatedata();
         }
-    },[date]);
+    },[check]);
 
     useEffect(()=> {
         const svg = d3.select(myRef.current);
@@ -157,7 +187,7 @@ const USMaps = ({date,statedata,cond}) => {
             })
             // function createmap() {
             // console.log(g);
-            // if(date<moment(test).format('YYYY-MM-DD'))
+            // if(date<moment(test1).format('YYYY-MM-DD'))
             // {
             //     console.log(stage.current);
             //     d3.select('g').select('svg').remove();
@@ -184,17 +214,19 @@ const USMaps = ({date,statedata,cond}) => {
                 .enter().append("path")
                 .style('fill', function (d) {
                     async function updatedata() {
-                        // console.log(moment(test).format('YYYY-MM-DD'));
-                        if(date<moment(test.current).format('YYYY-MM-DD'))
-                            statedata = await fetchAllStatesByDate(date);
+                        // console.log(moment(test1).format('YYYY-MM-DD'));
+
+                        let stdata;
+                        if(date<moment(test1.current).format('YYYY-MM-DD'))
+                            stdata = await fetchAllStatesByDate(date);
                         else
-                            statedata = await fetchAllStatesByDate(moment(test.current).format('YYYY-MM-DD'));
+                            stdata = await fetchAllStatesByDate(moment(test1.current).format('YYYY-MM-DD'));
                         // console.log(county);
                         // console.log(d.id*1000/1000);
                         // e.log('@@' + cond)
                         states.forEach(function (f) {
                             // console.log(date);
-                            f.props = statedata.states.find(function (d) {
+                            f.props = stdata.states.find(function (d) {
                                 // console.log(d.fips + "@@" + f.id);
                                 return d.fips*1000/1000 === f.id })
 
@@ -229,16 +261,17 @@ const USMaps = ({date,statedata,cond}) => {
                 .on("click", clicked)
                 .on("mouseover", function (d) {
                     async function updatedata() {
-                        if(date<moment(test.current).format('YYYY-MM-DD'))
-                            statedata = await fetchAllStatesByDate(date);
+                        let stdata;
+                        if(date<moment(test1.current).format('YYYY-MM-DD'))
+                            stdata = await fetchAllStatesByDate(date);
                         else
-                            statedata = await fetchAllStatesByDate(moment(test.current).format('YYYY-MM-DD'));
+                            stdata = await fetchAllStatesByDate(moment(test1.current).format('YYYY-MM-DD'));
 
                         // console.log(county);
                         // console.log(d.id*1000/1000);
                         // console.log('@@' + cond)
                         states.forEach(function (f) {
-                            f.props = statedata.states.find(function (d) {
+                            f.props = stdata.states.find(function (d) {
                                 // console.log(d.fips + "@@" + f.id);
                                 return d.fips*1000/1000 === f.id })
 
@@ -412,10 +445,10 @@ const USMaps = ({date,statedata,cond}) => {
                         //     d3.select('g').select('svg').exit().remove();
                         //     checked=false;
                         // }
-                        if(date<moment(test.current).format('YYYY-MM-DD'))
+                        if(date<moment(test1.current).format('YYYY-MM-DD'))
                             county = await fetchCountyByDate(d.props.name, date);
                         else
-                            county = await fetchCountyByDate(d.props.name, moment(test.current).format('YYYY-MM-DD'));
+                            county = await fetchCountyByDate(d.props.name, moment(test1.current).format('YYYY-MM-DD'));
                         // console.log(d.id*1000/1000);
                         counties.forEach(function (f) {
                             // console.log(parseInt(f.id/1000));
@@ -457,15 +490,16 @@ const USMaps = ({date,statedata,cond}) => {
 
             function reset() {
                 async function updatedata() {
-                    if(date<moment(test.current).format('YYYY-MM-DD'))
-                        statedata = await fetchAllStatesByDate(date);
+                    let stdata;
+                    if(date<moment(test1.current).format('YYYY-MM-DD'))
+                        stdata = await fetchAllStatesByDate(date);
                     else
-                        statedata = await fetchAllStatesByDate(moment(test.current).format('YYYY-MM-DD'));
+                        stdata = await fetchAllStatesByDate(moment(test1.current).format('YYYY-MM-DD'));
 
                     // console.log(county);
                     // console.log(d.id*1000/1000);
                     states.forEach(function (f) {
-                        f.props = statedata.states.find(function (d) {
+                        f.props = stdata.states.find(function (d) {
                             // console.log(d.fips + "@@" + f.id);
                             return d.fips*1000/1000 === f.id })
                     })
@@ -487,8 +521,8 @@ const USMaps = ({date,statedata,cond}) => {
                         } })
             }
         }
-        svg.exit().remove();
-    }, [us,myRef.current,cond,statedata,date]);
+        d3.select('svg').select('g').exit().remove();
+    }, [us,myRef.current,cond,date]);
     if(!statedata)
     {
         return (
@@ -496,12 +530,16 @@ const USMaps = ({date,statedata,cond}) => {
         );
     }
     return (
-        <svg
-            className="d3-component"
-            width={960}
-            height={600}
-            ref={myRef}
-        />
+        <div className={styles.container}>
+            <br/>
+            <svg
+                className="d3-component"
+                width={960}
+                height={600}
+                ref={myRef}
+            />
+            {data  && cond && <Chart nbdate={date} data={data} country="US" cond={cond} />}
+        </div>
     );
 }
 

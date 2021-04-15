@@ -132,9 +132,8 @@ const Combine = () => {
             </div>
             <br />
             <div className={styles.maps}>
-                {data && statedata && cond && ( <USMap date={moment(startDate).format('YYYY-MM-DD')} statedata={statedata} cond={cond} />)}
+                {data && statedata && cond && ( <USMap date={moment(startDate).format('YYYY-MM-DD')} cond={cond} />)}
             </div>
-            {data && <Chart nbdate={"2021-04-04"} data={data} country="US" />}
             <News nbdate={"2021-04-04"} />
         </div>
     );
