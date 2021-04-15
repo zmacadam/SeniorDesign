@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Info, Chart, USMap, News } from '../../components';
+import {Info, Chart, USMap, News, Infos} from '../../components';
 import range from 'lodash/range';
 import { getMonth, getYear } from 'date-fns';
 import '../../App.css';
@@ -10,7 +10,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import addDays from 'add-days';
 import { fetchAllStatesByDate, fetchData, fetchUSByDate } from '../../api';
 import SearchPage from '../../components/SearchBar/SearchPage.js';
-
+import {Grid } from '@material-ui/core';
 const Combine = () => {
     const [data, setData] = useState(null);
     const [statedata, setMapData] = useState(null);
@@ -131,10 +131,12 @@ const Combine = () => {
                 <button className={styles.button} onClick={() => setCond('hospitalizations')}> Hospitalizations </button>
             </div>
             <br />
+        <Grid container spacing={1} justify="center">
             <div className={styles.maps}>
                 {data && statedata && cond && ( <USMap date={moment(startDate).format('YYYY-MM-DD')} cond={cond} />)}
             </div>
-            <News nbdate={"2021-04-04"} />
+            <Infos/>
+        </Grid>
         </div>
     );
 }

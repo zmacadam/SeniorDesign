@@ -14,3 +14,5 @@ export { default as Nav }
     from './NavBar/Nav';
 export { default as News }
     from './News/News';
+export { default as Infos }
+    from './Infos/Infos';

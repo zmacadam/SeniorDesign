@@ -4,7 +4,7 @@ import * as topojson from "topojson-client/src";
 import * as d3 from 'd3';
 import {fetchAllStatesByDate, fetchCountyByDate, fetchUSByDate} from '../../api/';
 import axios from "axios";
-import {Chart} from "../index";
+import {Chart, Infos} from "../index";
 import range from 'lodash/range';
 import { getMonth, getYear } from 'date-fns';
 import '../../App.css';
