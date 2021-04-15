@@ -2,7 +2,7 @@
     "name": "Covid_Tracker",
     "version": "0.1.0",
     "private": true,
-    "proxy": "https://covid-tracker-server-api.herokuapp.com",
+    "proxy": "http://ec2-3-83-230-148.compute-1.amazonaws.com:8080/",
     "dependencies": {
         "@material-ui/core": "^4.9.7",
         "@svg-maps/taiwan": "^1.1.0",

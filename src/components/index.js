@@ -8,8 +8,8 @@ from './Cards/Cards';
 // export {Cond } from './Cards/Cards';
 export { default as Calendar }
     from './Calendar/Calendar';
-export { default as Maps }
-    from './Maps/Maps';
+export { default as Combine }
+    from './Combine/Combine';
 export { default as Nav }
     from './NavBar/Nav';
 export { default as News }

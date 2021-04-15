@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import DatePicker from 'react-datepicker';
-import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
 import addDays from 'add-days';
 import range from 'lodash/range';
@@ -23,16 +22,6 @@ const Calendar = () => {
         'November',
         'December',
     ];
-    const today = new Date();
-    const [test,settest] = useState(new Date());
-    useEffect(() => {
-        // console.log(today);
-        settest(test => test.setDate(test.getDate()-4));
-    },[]);
-    useEffect(() => {
-        // console.log(today);
-        if(startDate<test)  settest(test => startDate);
-    },[startDate]);
     return (
         <div>
             <DatePicker

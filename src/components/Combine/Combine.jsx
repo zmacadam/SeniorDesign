@@ -11,7 +11,7 @@ import addDays from 'add-days';
 import { fetchAllStatesByDate, fetchData, fetchUSByDate } from '../../api';
 import SearchPage from '../../components/SearchBar/SearchPage.js';
 
-const Maps = () => {
+const Combine = () => {
     const [data, setData] = useState(null);
     const [statedata, setMapData] = useState(null);
     const [startDate, setStartDate] = useState(new Date());
@@ -30,28 +30,22 @@ const Maps = () => {
         'November',
         'December',
     ];
-    // let test = new Date();
-    const today = new Date();
     const [test,settest] = useState(new Date());
 
     const [cond, setCond] = useState(null);
 
     useEffect(() => {
         // console.log(today);
-        settest(test => test.setDate(test.getDate()-4));
+        settest(test => test.setDate(test.getDate()-3));
     },[]);
-    useEffect(() => {
-        // console.log(today);
-        if(startDate<test)  settest(test => startDate);
-    },[startDate]);
 
     useEffect(() => {
         if(test)
         {
-            let datas; let data3;
             const condDefault = 'cases';
+            let datas; let data3;
             async function updatedata() {
-                datas = await fetchData();
+                // datas = await fetchData();
                 // console.log("@@" + moment(test).format('YYYY-MM-DD'));
                 datas = await fetchUSByDate("2021-04-04");
                 data3 = await fetchAllStatesByDate("2021-04-04");
@@ -64,6 +58,12 @@ const Maps = () => {
         }
 
     }, [test]);
+    if(!data || !statedata)
+    {
+        return (
+            <div>Loading...</div>
+        );
+    }
     return (
         <div className={styles.container}>
             {data && <Info data={data} />}
@@ -132,11 +132,11 @@ const Maps = () => {
             </div>
             <br />
             <div className={styles.maps}>
-                {data && statedata && cond && ( <USMap date={"2021-04-04"} statedata={statedata} cond={cond} />)}
+                {data && statedata && cond && ( <USMap date={moment(startDate).format('YYYY-MM-DD')} statedata={statedata} cond={cond} />)}
             </div>
             {data && <Chart nbdate={"2021-04-04"} data={data} country="US" />}
             <News nbdate={"2021-04-04"} />
         </div>
     );
 }
-export default Maps;
+export default Combine;

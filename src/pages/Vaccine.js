@@ -1,7 +1,7 @@
 import React from "react";
 import "../App.css";
 
-function Vaccine() {
+const Vaccine = () =>  {
     return (
         <div>
             <div
@@ -69,7 +69,6 @@ function Vaccine() {
                     {" "}
                     <a
                         href="https://vaccinefinder.org/search/"
-                        target="_blank"
                     >
                         Click here
                     </a>{" "}

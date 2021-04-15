@@ -225,22 +225,6 @@ const USMaps = ({date,statedata,cond}) => {
 
                 })
                 .attr("d", path)
-                .attr("id", function(d) {
-                    async function updatedata() {
-                        statedata = await fetchAllStatesByDate(date);
-                        states.forEach(function (f) {
-                            f.props = statedata.states.find(function (d) {
-                                // console.log(d.fips + "@@" + f.id);
-                                return d.fips*1000/1000 === f.id })
-                        })
-                    }
-
-                    updatedata();
-                    if(d.props) {
-                        return d.props.name;
-                    }
-                    else return "";
-                })
                 .attr("class", "state")
                 .on("click", clicked)
                 .on("mouseover", function (d) {
@@ -266,8 +250,6 @@ const USMaps = ({date,statedata,cond}) => {
                 .on("mouseout", function (d) {
                     statetip.hide(d, this);
                 });
-                console.log("STATE:");
-                console.log(g);
 
             // console.log(g.attr("class", "state"));
             g.append("path")
@@ -421,16 +403,14 @@ const USMaps = ({date,statedata,cond}) => {
 
             function clicked(d) {
                 // console.log("here");
-                console.log(d);
                 if(d.props)
                 {
-                    console.log(d.props.name);
                     async function updatedata() {
-                        // if(date)
-                        // {
-                        //     d3.select('g').select('svg').exit().remove();
-                        //     checked=false;
-                        // }
+                        if(date)
+                        {
+                            d3.select('g').select('svg').exit().remove();
+                            checked=false;
+                        }
                         if(date<moment(test.current).format('YYYY-MM-DD'))
                             county = await fetchCountyByDate(d.props.name, date);
                         else
@@ -441,7 +421,6 @@ const USMaps = ({date,statedata,cond}) => {
                             curstate = parseInt(d.id)
                             if(parseInt(f.id/1000) === d.id*1000/1000)
                             {
-                                console.log(county);
                                 f.props = county.state.counties.find(function (e) {
                                     // console.log(e.fips + "@@" + f.id);
                                     return e.fips*1000/1000 === f.id })
