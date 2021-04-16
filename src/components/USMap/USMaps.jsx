@@ -95,7 +95,7 @@ const USMaps = ({date,cond}) => {
                 .range(['#AAFFFC', '#66D9FF', '#44ABFF', '#2372FF', '#052FFF']);
 
             let stateColorRecovered = d3.scaleThreshold() //greens
-                .domain([10001, 50001, 100001, 250000, 250001])
+                .domain([1001, 5001, 10001, 25000, 25001])
                 .range(['#dee5d1', '#91b588', '#76b378', '#1E9F3E', '#178048']);
 
             let stateColorDeaths = d3.scaleThreshold() //reds
@@ -107,27 +107,27 @@ const USMaps = ({date,cond}) => {
                 .range(['#CCCEFF', '#ABAAFF', '#A388FF', '#A966FF', '#BC44FF']);
 
             let stateColorHosp = d3.scaleThreshold() //pinks
-                .domain([10001, 50001, 100001, 250000, 250001])
+                .domain([1001, 5001, 10001, 25000, 25001])
                 .range(['#F5CCFF', '#ffaaff', '#FF88F2', '#FF67CF', '#FF49A2']);
 
             let countyColorCases = d3.scaleThreshold() //blues
-                .domain([10001, 50001, 100001, 250000, 250001])
+                .domain([1001, 5001, 10001, 25000, 25001])
                 .range(['#AAFFFC', '#66D9FF', '#44ABFF', '#2372FF', '#052FFF']);
 
             let countyColorRecovered = d3.scaleThreshold() //greens
-                .domain([10001, 50001, 100001, 250000, 250001])
+                .domain([101, 501, 1001, 2500, 2501])
                 .range(['#dee5d1', '#91b588', '#76b378', '#1E9F3E', '#178048']);
 
             let countyColorDeaths = d3.scaleThreshold() //reds
-                .domain([10001, 50001, 100001, 250000, 250001])
+                .domain([1001, 5001, 10001, 25000, 25001])
                 .range(['#F08080', '#CD5C5C', '#FF0000', '#B22222', '#8b0000']);
 
             let countyColorVac = d3.scaleThreshold() //purples
-                .domain([10001, 50001, 100001, 250000, 250001])
+                .domain([1001, 5001, 10001, 25000, 25001])
                 .range(['#CCCEFF', '#ABAAFF', '#A388FF', '#A966FF', '#BC44FF']);
 
             let countyColorHosp = d3.scaleThreshold() //pinks
-                .domain([10001, 50001, 100001, 250000, 250001])
+                .domain([101, 501, 1001, 2500, 2501])
                 .range(['#F5CCFF', '#FFAAFF', '#FF88F2', '#FF67CF', '#FF49A2']);
             if(cond === 'cases')
             {
