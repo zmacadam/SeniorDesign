@@ -86,6 +86,10 @@ const USMaps = ({date,cond}) => {
             // console.log(date);
             // console.log(statedata);
             // console.log(cond);
+            for(var i=1;i<100;i++)
+            {
+                svg.select("g").remove();
+            }
             let stateColorCases = d3.scaleThreshold() //blues
                 .domain([10001, 50001, 100001, 250000, 250001])
                 .range(['#AAFFFC', '#66D9FF', '#44ABFF', '#2372FF', '#052FFF']);
@@ -524,10 +528,24 @@ const USMaps = ({date,cond}) => {
                     .attr('transform', 'translate('+margin.left+','+margin.top+')');
                 g.selectAll("path")
                     .style('fill', function (d) {
-                        if(d.props)
-                        {
-                            return stateColor(d.props.stats[0].cases)
-                        } })
+                        if (d.props && cond==='cases') {
+                            // console.log(d.props);
+    //                         console.log(d.props.name);
+                            return stateColor(d.props.stats[0].cases);
+                        }
+                        else if(d.props && cond==='newcases'){
+                            return stateColor(d.props.stats[0].newCases);
+                        }
+                        else if(d.props && cond==='deaths'){
+                            return stateColor(d.props.stats[0].deaths);
+                        }
+                        else if(d.props && cond==='vaccinations'){
+                            return stateColor(d.props.stats[0].peopleVaccinated);
+                        }
+                        else if(d.props && cond==='hospitalizations'){
+                            return stateColor(d.props.stats[0].hospitalized);
+                        }
+                     })
             }
         }
         d3.select('svg').select('g').exit().remove();
