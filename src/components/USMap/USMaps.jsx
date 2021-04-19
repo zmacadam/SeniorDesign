@@ -24,7 +24,7 @@ const USMaps = ({date, cond}) => {
     function activatelayer() {
         setcheck2(check2 => check2 == false ? true : false);
     }
-    const [cardx,setcard] = useState(null);
+
     const [sname, setsname] = useState("USA");
     const [snamestate, setsnamestate] = useState(null);
     const myRef = useRef(null);
@@ -34,6 +34,15 @@ const USMaps = ({date, cond}) => {
     const [us, setus] = useState(null);
     const [check, setcheck] = useState(false);
     const [check1, setcheck1] = useState(false);
+
+
+    const [ccases,setccases] = useState(null);
+    const [cdeath,setcdeath] = useState(null);
+    const [cnewc,setcnewc] = useState(null);
+    const [cvac,setcvac] = useState(null);
+    const [chos,setchos] = useState(null);
+
+
     // const [cond, setCond] = useState(null);
     let stateColorCases = d3.scaleThreshold() //blues
         .domain([10001, 50001, 100001, 250000, 250001])
@@ -130,7 +139,12 @@ const USMaps = ({date, cond}) => {
                     data3 = await fetchAllStatesByDate(moment(test1.current).format('YYYY-MM-DD'));
                 //data3 = await fetchAllStatesByDate("2021-04-04");
                 setMapData((statedata) => data3);
-                setData((data) => datas.stats[0]);
+                setData2(data2 => datas);
+                setccases(ccases => datas.stats[0].cases);
+                setcdeath(cdeath => datas.stats[0].deaths);
+                setcnewc(cnewc => datas.stats[0].newCases);
+                setchos(chos => datas.stats[0].hospitalized);
+                setcvac(cvac => datas.stats[0].peopleVaccinated);
             }
 
             // ////console.log(data);
@@ -327,31 +341,31 @@ const USMaps = ({date, cond}) => {
                 .offset([140, 140])
                 .html(function (d) {
                     if (cond === 'cases' && d.props) {
-                        setcard(cardx => d.props.stats[0].cases);
+
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                             "State: " + d.props.name + "<br/>" +
                             "Cases: " + d.props.stats[0].cases + "<br/>" +
                             "</div>";
                     } else if (cond === 'newcases' && d.props) {
-                        setcard(cardx => d.props.stats[0].newCases);
+                        // setcard(cardx => d.props.stats[0].newCases);
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                             "State: " + d.props.name + "<br/>" +
                             "New Cases: " + d.props.stats[0].newCases + "<br/>" +
                             "</div>";
                     } else if (cond === 'deaths' && d.props) {
-                        setcard(cardx => d.props.stats[0].deaths);
+                        // setcard(cardx => d.props.stats[0].deaths);
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                             "State: " + d.props.name + "<br/>" +
                             "Deaths: " + d.props.stats[0].deaths + "<br/>" +
                             "</div>";
                     } else if (cond === 'vaccinations' && d.props) {
-                        setcard(cardx => d.props.stats[0].peopleVaccinated);
+                        // setcard(cardx => d.props.stats[0].peopleVaccinated);
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                             "State: " + d.props.name + "<br/>" +
                             "People Vaccinated: " + d.props.stats[0].peopleVaccinated + "<br/>" +
                             "</div>";
                     } else if (cond === 'hospitalizations' && d.props) {
-                        setcard(cardx => d.props.stats[0].hospitalized);
+                        // setcard(cardx => d.props.stats[0].hospitalized);
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                             "State: " + d.props.name + "<br/>" +
                             "Hospitalized: " + d.props.stats[0].hospitalized + "<br/>" +
@@ -453,6 +467,11 @@ const USMaps = ({date, cond}) => {
                 setcheck1(check1 => true);
                 ////console.log(d);
                 if (d.props) {
+                    setccases(ccases => d.props.stats[0].cases);
+                    setcdeath(cdeath => d.props.stats[0].deaths);
+                    setcnewc(cnewc => d.props.stats[0].newCases);
+                    setchos(chos => d.props.stats[0].hospitalized);
+                    setcvac(cvac => d.props.stats[0].peopleVaccinated);
                     setsname(sname => d.props.name);
                     setsnamestate(snamestate=> d.props.name);
                     ////console.log(d.props.name);
@@ -509,6 +528,11 @@ const USMaps = ({date, cond}) => {
 
             function reset() {
                 async function updatedata() {
+                    setccases(ccases => data2.stats[0].cases);
+                    setcdeath(cdeath => data2.stats[0].deaths);
+                    setcnewc(cnewc => data2.stats[0].newCases);
+                    setchos(chos => data2.stats[0].hospitalized);
+                    setcvac(cvac => data2.stats[0].peopleVaccinated);
                     setsname(sname => "USA");
                     setcheck1(check1 => false);
                     setcheck2(check2 => false);
@@ -569,18 +593,41 @@ const USMaps = ({date, cond}) => {
     }
     return (
         <div>
-            {!check1 ? <Info data={data2} />: null}
-            <Grid container spacing={0}>
+            <Grid container spacing={1} justify="center">
+                <CardComponent
+                    className={stylescard.infected}
+                    cardTitle= {sname + " " + cond}
+                    value={ccases}
+                    cardSubtitle="Total number of active cases"
+                    //           buttonTitle="Infected"
+                    //           buttFunction= { (cond) => buttClickInfected() }
+                />
+                <CardComponent
+                    className={stylescard.recovered}
+                    cardTitle= {sname + " " + cond}
+                    value={cnewc}
+                />
+                <CardComponent
+                    className={stylescard.deaths}
+                    cardTitle= {sname + " " + cond}
+                    value={cdeath}
+                />
+                <CardComponent
+                    className={stylescard.vaccinated}
+                    cardTitle= {sname + " " + cond}
+                    value={cvac}
+                />
+                <CardComponent
+                    className={stylescard.hospitalized}
+                    cardTitle= {sname + " " + cond}
+                    value={chos}
+                />
+            </Grid>
+            <Grid container spacing={1}>
                 <Grid item xs={3}>
-                    {/*<div className={styles.container}>*/}
-                    {!check1 ? <Info data={data2} />: null}
                     {/* {data && date && <Chart nbdate={date} data={data} country="US" cond={cond} />} */}
                         {check2 ?
-                        <Chart nbdate={date} country={sname} cond={cond} width={"400px"} height={"300px"}/> : <CardComponent
-                                className={stylescard.infected}
-                                cardTitle= {sname + " " + cond}
-                                value={cardx}
-                            />}
+                        <Chart nbdate={date} country={sname} cond={cond} width={"400px"} height={"300px"}/> : null}
                     {/*</div>*/}
                 </Grid>
                 <Grid item xs={6}>

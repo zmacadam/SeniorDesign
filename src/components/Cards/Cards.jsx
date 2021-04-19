@@ -24,7 +24,7 @@ const Info = ({data: {cases, deaths, hospitalized,newCases, peopleVaccinated}})=
 
     <div>
         {/*<Typography gutterBottom variant="h4" component="h2">Covid Tracker</Typography>*/}
-      {/*<Grid container spacing={1} justify="center">*/}
+      <Grid container spacing={1} justify="center">
         <CardComponent
           className={styles.infected}
           cardTitle="Cases"
@@ -67,8 +67,7 @@ const Info = ({data: {cases, deaths, hospitalized,newCases, peopleVaccinated}})=
 //             buttonTitle="Hospitalizations"
 //             buttFunction= {(cond) => buttClickHosp()}
         />
-
-      {/*</Grid>*/}
+      </Grid>
     </div>
   );
 
