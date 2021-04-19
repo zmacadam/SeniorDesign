@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useLayoutEffect} from 'react';
 import d3tip from 'd3-tip';
 import * as topojson from "topojson-client/src";
 import * as d3 from 'd3';
@@ -105,13 +105,16 @@ const USMaps = ({date, cond}) => {
                 else
                     datas = await fetchUSByDate(moment(test1.current).format('YYYY-MM-DD'));
                 // datas = await fetchUSByDate("2021-04-04");
-                if (date < moment(test1.current).format('YYYY-MM-DD'))
+                if (date < moment(test1.current).format('YYYY-MM-DD')) {
                     data3 = await fetchAllStatesByDate(date);
-                else
+                    setMapData(data3);
+                }
+                else {
                     data3 = await fetchAllStatesByDate(moment(test1.current).format('YYYY-MM-DD'));
-                //data3 = await fetchAllStatesByDate("2021-04-04");
-                setData((data) => datas.stats[0]);
-                setMapData(data3);
+                    //data3 = await fetchAllStatesByDate("2021-04-04");
+                    setData((data) => datas.stats[0]);
+                    setMapData(data3);
+                }
             }
 
             // ////console.log(data);
@@ -129,38 +132,6 @@ const USMaps = ({date, cond}) => {
             for (var i = 1; i < 100; i++) {
                 svg.select("g").remove();
             }
-            if (cond === 'cases') {
-                stateDomain = stateValues(statedata, 'casesPercent');
-                console.log(stateDomain);
-                stateColor = d3.scaleThreshold()
-                    .domain(stateDomain)
-                    .range(blues);
-            } else if (cond === 'newcases') {
-                stateDomain = stateValues(statedata, 'newCasesPercent');
-                console.log(stateDomain);
-                stateColor = d3.scaleThreshold()
-                    .domain(stateDomain)
-                    .range(greens);
-            } else if (cond === 'deaths') {
-                stateDomain = stateValues(statedata, 'deathsPercent');
-                console.log(stateDomain);
-                stateColor = d3.scaleThreshold()
-                    .domain(stateDomain)
-                    .range(reds);
-            } else if (cond === 'hospitalizations') {
-                stateDomain = stateValues(statedata, 'hospitalizedPercent');
-                console.log(stateDomain);
-                stateColor = d3.scaleThreshold()
-                    .domain(stateDomain)
-                    .range(purples);
-            } else if (cond === 'vaccinations') {
-                stateDomain = stateValues(statedata, 'totalVaccinationsPercent');
-                console.log(stateDomain);
-                stateColor = d3.scaleThreshold()
-                    .domain(stateDomain)
-                    .range(pinks);
-            }
-
 
             let width = 960 - margin.left - margin.right;
             let height = 600 - margin.left - margin.right;
@@ -226,85 +197,115 @@ const USMaps = ({date, cond}) => {
                 .on("mouseout", function (d) {
                     countytip.hide(d, this);
                 });
-            g.append("g")
-                .attr("id", "states")
-                .selectAll("path")
-                .data(states)
-                .enter().append("path")
-                .style('fill', function (d) {
-                    async function updatedata() {
-                        // ////console.log(moment(test1).format('YYYY-MM-DD'));
+                async function updatedata() {
+                    // ////console.log(moment(test1).format('YYYY-MM-DD'));
 
-                        let stdata;
-                        if (date < moment(test1.current).format('YYYY-MM-DD'))
-                            stdata = await fetchAllStatesByDate(date);
-                        else
-                            stdata = await fetchAllStatesByDate(moment(test1.current).format('YYYY-MM-DD'));
-                        // ////console.log(county);
-                        // ////console.log(d.id*1000/1000);
-                        // e.log('@@' + cond)
-                        states.forEach(function (f) {
-                            // ////console.log(date);
-                            f.props = stdata.states.find(function (d) {
-                                // ////console.log(d.fips + "@@" + f.id);
-                                return d.fips * 1000 / 1000 === f.id
+                    let stdata;
+                    if (date < moment(test1.current).format('YYYY-MM-DD'))
+                        stdata = await fetchAllStatesByDate(date);
+                    else
+                        stdata = await fetchAllStatesByDate(moment(test1.current).format('YYYY-MM-DD'));
+                    if (cond === 'cases') {
+                        stateDomain = stateValues(stdata, 'casesPercent');
+                        stateColor = d3.scaleThreshold()
+                            .domain(stateDomain)
+                            .range(blues);
+                    } else if (cond === 'newcases') {
+                        stateDomain = stateValues(stdata, 'newCasesPercent');
+                        console.log(stateDomain);
+                        stateColor = d3.scaleThreshold()
+                            .domain(stateDomain)
+                            .range(greens);
+                    } else if (cond === 'deaths') {
+                        stateDomain = stateValues(stdata, 'deathsPercent');
+                        console.log(stateDomain);
+                        stateColor = d3.scaleThreshold()
+                            .domain(stateDomain)
+                            .range(reds);
+                    } else if (cond === 'hospitalizations') {
+                        stateDomain = stateValues(stdata, 'hospitalizedPercent');
+                        console.log(stateDomain);
+                        stateColor = d3.scaleThreshold()
+                            .domain(stateDomain)
+                            .range(purples);
+                    } else if (cond === 'vaccinations') {
+                        stateDomain = stateValues(stdata, 'totalVaccinationsPercent');
+                        console.log(stateDomain);
+                        stateColor = d3.scaleThreshold()
+                            .domain(stateDomain)
+                            .range(pinks);
+                    }
+                    g.append("g")
+                        .attr("id", "states")
+                        .selectAll("path")
+                        .data(states)
+                        .enter().append("path")
+                        .style('fill', function (d) {
+                            // ////console.log(county);
+                            // ////console.log(d.id*1000/1000);
+                            // e.log('@@' + cond)
+                            states.forEach(function (f) {
+                                // ////console.log(date);
+                                f.props = stdata.states.find(function (d) {
+                                    // ////console.log(d.fips + "@@" + f.id);
+                                    return d.fips * 1000 / 1000 === f.id
+                                })
+
                             })
+                            if (d.props && cond === 'cases') {
+                                console.log(stateColor(d.props.stats[0].casesPercent));
+                                return stateColor(d.props.stats[0].casesPercent);
+                            } else if (d.props && cond === 'newcases') {
+                                return stateColor(d.props.stats[0].newCasesPercent);
+                            } else if (d.props && cond === 'deaths') {
+                                return stateColor(d.props.stats[0].deaths);
+                            } else if (d.props && cond === 'vaccinations') {
+                                return stateColor(d.props.stats[0].totalVaccinationsPercent);
+                            } else if (d.props && cond === 'hospitalizations') {
+                                return stateColor(d.props.stats[0].hospitalizedPercent);
+                            } else {
+                                return "black";
+                            }
+
 
                         })
-                    }
-
-                    updatedata();
-                    if (d.props && cond === 'cases') {
-                        // ////console.log(d.props);
-//                         ////console.log(d.props.name);
-                        return stateColor(d.props.stats[0].casesPercent);
-                    } else if (d.props && cond === 'newcases') {
-                        return stateColor(d.props.stats[0].newCasesPercent);
-                    } else if (d.props && cond === 'deaths') {
-                        return stateColor(d.props.stats[0].deaths);
-                    } else if (d.props && cond === 'vaccinations') {
-                        return stateColor(d.props.stats[0].totalVaccinationsPercent);
-                    } else if (d.props && cond === 'hospitalizations') {
-                        return stateColor(d.props.stats[0].hospitalizedPercent);
-                    } else {
-                        return "black";
-                    }
-
-                })
-                .attr("d", path)
-                .attr("id", function (d) { // set id to lowercase state name eg. "texas"
-                    if (d.props) {
-                        return d.props.name.toLowerCase();
-                    } else return "";
-                })
-                .attr("class", "state")
-                .on("click", clicked)
-                .on("mouseover", function (d) {
-                    async function updatedata() {
-                        let stdata;
-                        if (date < moment(test1.current).format('YYYY-MM-DD'))
-                            stdata = await fetchAllStatesByDate(date);
-                        else
-                            stdata = await fetchAllStatesByDate(moment(test1.current).format('YYYY-MM-DD'));
-
-                        // ////console.log(county);
-                        // ////console.log(d.id*1000/1000);
-                        // ////console.log('@@' + cond)
-                        states.forEach(function (f) {
-                            f.props = stdata.states.find(function (d) {
-                                // ////console.log(d.fips + "@@" + f.id);
-                                return d.fips * 1000 / 1000 === f.id
-                            })
-
+                        .attr("d", path)
+                        .attr("id", function (d) { // set id to lowercase state name eg. "texas"
+                            if (d.props) {
+                                return d.props.name.toLowerCase();
+                            } else return "";
                         })
-                    }
+                        .attr("class", "state")
+                        .on("click", clicked)
+                        .on("mouseover", function (d) {
+                            async function updatedata() {
+                                let stdata;
+                                if (date < moment(test1.current).format('YYYY-MM-DD'))
+                                    stdata = await fetchAllStatesByDate(date);
+                                else
+                                    stdata = await fetchAllStatesByDate(moment(test1.current).format('YYYY-MM-DD'));
 
-                    updatedata();
-                    statetip.show(d, this);
-                })
-                .on("mouseout", function (d) {
-                    statetip.hide(d, this);
-                });
+                                // ////console.log(county);
+                                // ////console.log(d.id*1000/1000);
+                                // ////console.log('@@' + cond)
+                                states.forEach(function (f) {
+                                    f.props = stdata.states.find(function (d) {
+                                        // ////console.log(d.fips + "@@" + f.id);
+                                        return d.fips * 1000 / 1000 === f.id
+                                    })
+
+                                })
+                            }
+
+                            updatedata();
+                            statetip.show(d, this);
+                        })
+                        .on("mouseout", function (d) {
+                            statetip.hide(d, this);
+                        });
+                }
+
+                updatedata();
             ////console.log("STATE:");
             ////console.log(g);
 
