@@ -303,21 +303,21 @@ const USMaps = ({date, cond}) => {
                         .on("mouseout", function (d) {
                             statetip.hide(d, this);
                         });
+                    // ////console.log(g.attr("class", "state"));
+                    g.append("path")
+                        .datum(topojson.mesh(us, us.objects.states, function (a, b) {
+                            return a !== b;
+                        }))
+                        .attr("id", "state-borders")
+                        .attr("d", path);
+                    // }
+                    // createmap();
+
                 }
 
                 updatedata();
             ////console.log("STATE:");
             ////console.log(g);
-
-            // ////console.log(g.attr("class", "state"));
-            g.append("path")
-                .datum(topojson.mesh(us, us.objects.states, function (a, b) {
-                    return a !== b;
-                }))
-                .attr("id", "state-borders")
-                .attr("d", path);
-            // }
-            // createmap();
 
             const statetip = d3tip()
                 .attr('class', 'd3-tip')
