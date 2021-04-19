@@ -366,7 +366,7 @@ const USMaps = ({date, cond}) => {
                                 }
                             })
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
-                            "State: " + d.props.name + "<br/>" +
+                            "County: " + d.props.name + "<br/>" +
                             "Cases: " + d.props.stats[0].cases + "<br/>" +
                             "</div>";
                     } else if (cond === 'newcases' && d.props) {
@@ -380,7 +380,7 @@ const USMaps = ({date, cond}) => {
                                 }
                             })
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
-                            "State: " + d.props.name + "<br/>" +
+                            "County: " + d.props.name + "<br/>" +
                             "New Cases: " + d.props.stats[0].newCases + "<br/>" +
                             "</div>";
                     } else if (cond === 'deaths' && d.props) {
@@ -394,7 +394,7 @@ const USMaps = ({date, cond}) => {
                                 }
                             })
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
-                            "State: " + d.props.name + "<br/>" +
+                            "County: " + d.props.name + "<br/>" +
                             "Death: " + d.props.stats[0].deaths + "<br/>" +
                             "</div>";
                     } else if (cond === 'vaccinations' && d.props) {
@@ -408,7 +408,7 @@ const USMaps = ({date, cond}) => {
                                 }
                             })
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
-                            "State: " + d.props.name + "<br/>" +
+                            "County: " + d.props.name + "<br/>" +
                             "People Vaccinated: " + d.props.stats[0].peopleVaccinated + "<br/>" +
                             "</div>";
                     } else if (cond === 'hospitalizations' && d.props) {
@@ -422,12 +422,12 @@ const USMaps = ({date, cond}) => {
                                 }
                             })
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
-                            "State: " + d.props.name + "<br/>" +
+                            "County: " + d.props.name + "<br/>" +
                             "People Vaccinated: " + d.props.stats[0].hospitalized + "<br/>" +
                             "</div>";
                     } else {
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
-                            "State: " + d.id + "<br/>" +
+                            "County: " + d.id + "<br/>" +
                             "Cases: " + 0 + "<br/>" +
                             "</div>";
                     }
