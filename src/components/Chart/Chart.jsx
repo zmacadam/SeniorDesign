@@ -1,0 +1,630 @@
+import React, { useState, useEffect } from 'react';
+import { Line, Bar } from 'react-chartjs-2';
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import "react-tabs/style/react-tabs.css";
+import { fetchDailyData, fetchUSByDate, fetchUSByDateRange, fetchStateNoCountiesByDateRange } from '../../api';
+import styles from './Chart.module.css';
+
+// Temporary var for state name, should be changed from const to var later
+const stateName = 'Texas';
+let test = new Date();
+let test1 = new Date();
+let test2 = new Date();
+// let testLastWeek = new Date("2021/04/11");
+// let testLastMonth = new Date("2021/03/18");
+let testLastWeek = new Date();
+let testLastMonth = new Date();
+// const { date } = this.props;
+test = '2021-03-20';
+test1 = '2020-03-20';
+test2 = '2021-03-22';
+// testLastWeek = '2021-04-11';
+// testLastMonth = '2021-03-18';
+
+
+let ifState = false;
+
+function dataMap(data) {
+    if(data.hasOwnProperty('state'))
+        return data.map((index) => index.state.stats[0].cases);
+    else
+        return data.map((index) => index.stats[0].cases);
+ }
+
+function setDateBackMonth(date){
+    let year = parseInt(date.substring(0,4));
+    let month = parseInt(date.substring(5,7)-1);
+    let day = parseInt(date.substring(8,10));
+
+    if(month < 1){
+        year--;
+        month = 12;
+    }
+
+    if(month.toString().length<2)
+        month = '0' + month;
+    if(day.toString().length<2)
+        day = '0' + day;
+
+    return year + '-'+month+'-'+day;
+}
+
+function setDateBackWeek(date){
+    let year = parseInt(date.substring(0,4));
+    let month = parseInt(date.substring(5,7));
+    let day = parseInt(date.substring(8,10)-7);
+
+    if(day < 1){
+        month--;
+        let temp = 31 + day;
+        day = temp;
+    }
+
+    if(month < 1){
+        year--;
+        month = 12;
+    }
+
+    if(month.toString().length<2)
+            month = '0' + month;
+    if(day.toString().length<2)
+            day = '0' + day;
+
+    return year + '-'+month+'-'+day;
+
+}
+
+
+const Chart = ({country, nbdate, cond ,width, height}) => {
+
+
+    const [dailyData, setDailyData] = useState({});
+    const [weekData, setWeekData] = useState({});
+    const [monthData, setMonthData] = useState({});
+
+
+    testLastMonth = setDateBackMonth(nbdate);
+    testLastWeek = setDateBackWeek(nbdate);
+
+
+//     console.log(cond);
+//     console.log(country);
+    if(country !== 'USA')
+        ifState = true;
+    else
+        ifState = false;
+
+    useEffect(() => {
+        const fetchMyAPI = async () => {
+
+            const nbDataRange = await fetchUSByDateRange(test1, nbdate);
+
+            const nbDataRangeWeek = await fetchUSByDateRange(testLastWeek, nbdate);
+            const nbDataRangeMonth = await fetchUSByDateRange(testLastMonth, nbdate);
+//             console.log(nbDataRange);
+//             console.log(nbDataRange[367].stats[0]);
+
+            const nbStateDataWeek = await fetchStateNoCountiesByDateRange(testLastWeek, nbdate, country);
+            const nbStateDataMonth = await fetchStateNoCountiesByDateRange(testLastMonth, nbdate, country);
+            const nbStateData = await fetchStateNoCountiesByDateRange(test1, nbdate, country);
+
+//             console.log(dataMap(nbStateData));
+
+
+            if(ifState){
+                setWeekData(nbStateDataWeek);
+                setMonthData(nbStateDataMonth);
+                setDailyData(nbStateData);
+                }
+            else{
+                setWeekData(nbDataRangeWeek);
+                setMonthData(nbDataRangeMonth);
+                setDailyData(nbDataRange);
+            }
+
+
+        };
+
+        fetchMyAPI();
+    }, [country]);
+
+    useEffect(() => {
+        const fetchMyAPI = async () => {
+
+            if(country !== 'USA'){
+                ifState = true;
+            }
+            else
+                ifState = false;
+
+            const nbDataRangeWeek = await fetchUSByDateRange(testLastWeek, nbdate);
+            const nbDataRangeMonth = await fetchUSByDateRange(testLastMonth, nbdate);
+            const nbDataRange = await fetchUSByDateRange(test1, nbdate);
+
+            const nbStateDataWeek = await fetchStateNoCountiesByDateRange(testLastWeek, nbdate, country);
+            const nbStateDataMonth = await fetchStateNoCountiesByDateRange(testLastMonth, nbdate, country);
+            const nbStateData = await fetchStateNoCountiesByDateRange(test1, nbdate, country);
+            // console.log(nbdate);
+//              console.log(nbDataRange);
+//              console.log(nbStateData);
+
+            if(ifState){
+                setWeekData(nbStateDataWeek);
+                setMonthData(nbStateDataMonth);
+                setDailyData(nbStateData);
+            }
+            else{
+                setWeekData(nbDataRangeWeek);
+                setMonthData(nbDataRangeMonth);
+                setDailyData(nbDataRange);
+            }
+
+
+
+        };
+
+        fetchMyAPI();
+    }, [nbdate, country]);
+    // Uncomment the block of line charts below to display a range of US Total Data By DateRange
+    let lineChart1 = null;
+    let lineChart2 = null;
+    let lineChart3 = null;
+
+//     console.log(dailyData[0]);
+// data: dailyData.map(({ stats }) => stats[0].cases),
+    const lineChart1Cases = (
+        dailyData[0] ? (
+            <Line width={width} height={height}
+                data={{
+                    labels: dailyData.map(({ date }) => new Date(date).toLocaleDateString()),
+                    datasets: [{
+                        data: dailyData.map(({ stats }) => stats[0].cases),
+                        label: 'Cases By Year',
+                        borderColor: '#3333ff',
+                        backgroundColor: 'rgba(0, 0, 255, 0.5)',
+                        fill: true,
+                    },
+                    ],
+                }}
+                options={{
+                    legend: { display: false, reverse: true },
+                    title: { display: true, text: `${country} Cases by Year` },
+                }}
+            />
+        ) : null
+    );
+
+
+
+    const lineChart2Cases = (
+        monthData[0] ? (
+            <Line width={width} height={height}
+                data={{
+                    labels: monthData.map(({ date }) => new Date(date).toLocaleDateString()),
+                    datasets: [{
+                        data: monthData.map(({ stats }) => stats[0].cases),
+                        label: 'Cases by Month',
+                        borderColor: 'blue',
+                        backgroundColor: 'rgba(0, 0, 255, 0.5)',
+                        fill: true,
+                    },
+                    ],
+                }}
+                options={{
+                    legend: { display: false },
+                    title: { display: true, text: `${country} Cases by Month` },
+                }}
+            />
+        ) : null
+    );
+
+    const lineChart3Cases = (
+        weekData[0] ? (
+            <Line width={width} height={height}
+                data={{
+                    labels: weekData.map(({ date }) => new Date(date).toLocaleDateString()),
+                    datasets: [{
+                        data: weekData.map(({ stats }) => stats[0].cases),
+                        label: 'Cases by Week',
+                        borderColor: 'blue',
+                        backgroundColor: 'rgba(0, 0, 255, 0.5)',
+                        fill: true,
+                    },
+                    ],
+                }}
+                options={{
+                    legend: { display: false, reverse: true },
+                    title: { display: true, text: `${country} Cases by Week` },
+                }}
+            />
+        ) : null
+    );
+    const lineChart1Deaths = (
+        dailyData[0] ? (
+            <Line width={width} height={height}
+                data={{
+                    labels: dailyData.map(({ date }) => new Date(date).toLocaleDateString()),
+                    datasets: [{
+                        data: dailyData.map(({ stats }) => stats[0].deaths),
+                        label: 'Deaths By Year',
+                        borderColor: 'rgba(255, 0, 0, 0.5)',
+                        backgroundColor: 'rgba(255, 0, 0, 0.5)',
+                        fill: true,
+                    },
+                    ],
+                }}
+                options={{
+                    legend: { display: false, reverse: true },
+                    title: { display: true, text: `${country} Deaths by Year` },
+                }}
+            />
+        ) : null
+    );
+    const lineChart2Deaths = (
+        monthData[0] ? (
+            <Line width={width} height={height}
+                data={{
+                    labels: monthData.map(({ date }) => new Date(date).toLocaleDateString()),
+                    datasets: [{
+                        data: monthData.map(({ stats }) => stats[0].deaths),
+                        label: 'Deaths By Month',
+                        borderColor: 'rgba(255, 0, 0, 0.5)',
+                        backgroundColor: 'rgba(255, 0, 0, 0.5)',
+                        fill: true,
+                    },
+                    ],
+                }}
+                options={{
+                    legend: { display: false, reverse: true },
+                    title: { display: true, text: `${country} Deaths by Month` },
+                }}
+            />
+        ) : null
+    );
+    const lineChart3Deaths = (
+        weekData[0] ? (
+            <Line width={width} height={height}
+                data={{
+                    labels: weekData.map(({ date }) => new Date(date).toLocaleDateString()),
+                    datasets: [{
+                        data: weekData.map(({ stats }) => stats[0].deaths),
+                        label: 'Deaths By Week',
+                        borderColor: 'rgba(255, 0, 0, 0.5)',
+                        backgroundColor: 'rgba(255, 0, 0, 0.5)',
+                        fill: true,
+                    },
+                    ],
+                }}
+                options={{
+                    legend: { display: false, reverse: true },
+                    title: { display: true, text: `${country} Deaths by Week` },
+                }}
+            />
+        ) : null
+    );
+
+    const lineChart1NewCases = (
+        dailyData[0] ? (
+            <Line width={width} height={height}
+                data={{
+                    labels: dailyData.map(({ date }) => new Date(date).toLocaleDateString()),
+                    datasets: [{
+                        data: dailyData.map(({ stats }) => stats[0].newCases),
+                        label: 'New Cases By Year',
+                        borderColor: 'rgba(0, 255, 0, 0.5)',
+                        backgroundColor: 'rgba(0, 255, 0, 0.5)',
+                        fill: true,
+                    },
+                    ],
+                }}
+                options={{
+                    legend: { display: false, reverse: true },
+                    title: { display: true, text: `${country} New Cases by Year` },
+                }}
+            />
+        ) : null
+    );
+    const lineChart2NewCases = (
+        monthData[0] ? (
+            <Line width={width} height={height}
+                data={{
+                    labels: monthData.map(({ date }) => new Date(date).toLocaleDateString()),
+                    datasets: [{
+                        data: monthData.map(({ stats }) => stats[0].newCases),
+                        label: 'New Cases By Month',
+                        borderColor: 'rgba(0, 255, 0, 0.5)',
+                        backgroundColor: 'rgba(0, 255, 0, 0.5)',
+                        fill: true,
+                    },
+                    ],
+                }}
+                options={{
+                    legend: { display: false, reverse: true },
+                    title: { display: true, text: `${country} New Cases by Month` },
+                }}
+            />
+        ) : null
+    );
+    const lineChart3NewCases = (
+        weekData[0] ? (
+            <Line width={width} height={height}
+                data={{
+                    labels: weekData.map(({ date }) => new Date(date).toLocaleDateString()),
+                    datasets: [{
+                        data: weekData.map(({ stats }) => stats[0].deaths),
+                        label: 'New Cases By Week',
+                        borderColor: 'rgba(0, 255, 0, 0.5)',
+                        backgroundColor: 'rgba(0, 255, 0, 0.5)',
+                        fill: true,
+                    },
+                    ],
+                }}
+                options={{
+                    legend: { display: false, reverse: true },
+                    title: { display: true, text: `${country} New Cases by Week` },
+                }}
+            />
+        ) : null
+    );
+
+
+    const lineChart1Vaccinations = (
+        dailyData[0] ? (
+            <Line width={width} height={height}
+                data={{
+                    labels: dailyData.map(({ date }) => new Date(date).toLocaleDateString()),
+                    datasets: [{
+                        data: dailyData.map(({ stats }) => stats[0].peopleVaccinated),
+                        label: 'Vaccinations By Year',
+                        borderColor: 'rgba(60, 0, 200, 0.5)',
+                        backgroundColor: 'rgba(60, 0, 200, 0.5)',
+                        fill: true,
+                    },
+                    ],
+                }}
+                options={{
+                    legend: { display: false, reverse: true },
+                    title: { display: true, text: `${country} Vaccinations by Year` },
+                }}
+            />
+        ) : null
+    );
+    const lineChart2Vaccinations = (
+        monthData[0] ? (
+            <Line width={width} height={height}
+                data={{
+                    labels: monthData.map(({ date }) => new Date(date).toLocaleDateString()),
+                    datasets: [{
+                        data: monthData.map(({ stats }) => stats[0].peopleVaccinated),
+                        label: 'Vaccinations By Month',
+                        borderColor: 'rgba(60, 0, 200, 0.5)',
+                        backgroundColor: 'rgba(60, 0, 200, 0.5)',
+                        fill: true,
+                    },
+                    ],
+                }}
+                options={{
+                    legend: { display: false, reverse: true },
+                    title: { display: true, text: `${country} Vaccinations by Month` },
+                }}
+            />
+        ) : null
+    );
+    const lineChart3Vaccinations = (
+        weekData[0] ? (
+            <Line width={width} height={height}
+                data={{
+                    labels: weekData.map(({ date }) => new Date(date).toLocaleDateString()),
+                    datasets: [{
+                        data: weekData.map(({ stats }) => stats[0].peopleVaccinated),
+                        label: 'Vaccinations By Week',
+                        borderColor: 'rgba(60, 0, 200, 0.5)',
+                        backgroundColor: 'rgba(60, 0, 200, 0.5)',
+                        fill: true,
+                    },
+                    ],
+                }}
+                options={{
+                    legend: { display: false, reverse: true },
+                    title: { display: true, text: `${country} Vaccinations by Week` },
+                }}
+            />
+        ) : null
+    );
+
+    const lineChart1Hosp = (
+        dailyData[0] ? (
+            <Line width={width} height={height}
+                data={{
+                    labels: dailyData.map(({ date }) => new Date(date).toLocaleDateString()),
+                    datasets: [{
+                        data: dailyData.map(({ stats }) => stats[0].hospitalized),
+                        label: 'Hospitalizations By Year',
+                        borderColor: 'rgba(255,192,203, 0.5)',
+                        backgroundColor: 'rgba(255,192,203, 0.5)',
+                        fill: true,
+                    },
+                    ],
+                }}
+                options={{
+                    legend: { display: false, reverse: true },
+                    title: { display: true, text: `${country} Hospitalizations by Year` },
+                }}
+            />
+        ) : null
+    );
+    const lineChart2Hosp = (
+        monthData[0] ? (
+            <Line width={width} height={height}
+                data={{
+                    labels: monthData.map(({ date }) => new Date(date).toLocaleDateString()),
+                    datasets: [{
+                        data: monthData.map(({ stats }) => stats[0].hospitalized),
+                        label: 'Hospitalizations By Month',
+                        borderColor: 'rgba(255,192,203, 0.5)',
+                        backgroundColor: 'rgba(255,192,203, 0.5)',
+                        fill: true,
+                    },
+                    ],
+                }}
+                options={{
+                    legend: { display: false, reverse: true },
+                    title: { display: true, text: `${country} Hospitalizations by Month` },
+                }}
+            />
+        ) : null
+    );
+    const lineChart3Hosp = (
+        weekData[0] ? (
+            <Line width={width} height={height}
+                data={{
+                    labels: weekData.map(({ date }) => new Date(date).toLocaleDateString()),
+                    datasets: [{
+                        data: weekData.map(({ stats }) => stats[0].hospitalized),
+                        label: 'Hospitalizations By Week',
+                        borderColor: 'rgba(255,192,203, 0.5)',
+                        backgroundColor: 'rgba(255,192,203, 0.5)',
+                        fill: true,
+                    },
+                    ],
+                }}
+                options={{
+                    legend: { display: false, reverse: true },
+                    title: { display: true, text: `${country} Hospitalizations by Week` },
+                }}
+            />
+        ) : null
+    );
+
+
+    // Uncomment the block of line charts below to display a range of State Data By Date
+    /* const lineChart1 = (
+      dailyData[0] ? (
+        <Line
+          data={{
+            labels: dailyData.map(({ date }) => new Date(date).toLocaleDateString()),
+            datasets: [{
+              data: dailyData.map(({ state }) => state.stats[0].cases),
+              label: 'Infected',
+              borderColor: '#3333ff',
+              backgroundColor: 'rgba(0, 0, 255, 0.5)',
+              fill: true,
+            },
+            ],
+          }}
+          options={{
+            legend: { display: false, reverse: true },
+            title: { display: true, text: `Confirmed Cases ${country}` },
+          }}
+        />
+      ) : null
+    );
+
+    const lineChart2 = (
+      dailyData[0] ? (
+        <Line
+          data={{
+            labels: dailyData.map(({ date }) => new Date(date).toLocaleDateString()),
+            datasets: [{
+              data: dailyData.map(({ state }) => state.stats[0].deaths),
+              label: 'Deaths',
+              borderColor: 'red',
+              backgroundColor: 'rgba(255, 0, 0, 0.5)',
+              fill: true,
+            },
+            ],
+          }}
+          options={{
+            legend: { display: false, reverse: true },
+            title: { display: true, text: `Confirmed Deaths ${country}` },
+          }}
+        />
+      ) : null
+    );
+
+    const lineChart3 = (
+      dailyData[0] ? (
+        <Line
+          data={{
+            labels: dailyData.map(({ date }) => new Date(date).toLocaleDateString()),
+            datasets: [{
+              data: dailyData.map(({ state }) => state.stats[0].peopleVaccinated),
+              label: 'Vaccinated',
+              borderColor: 'green',
+              backgroundColor: 'rgba(0, 255, 0, 0.5)',
+              fill: true,
+            },
+            ],
+          }}
+          options={{
+            legend: { display: false },
+            title: { display: true, text: `Confirmed Vaccinations ${country}` },
+          }}
+        />
+      ) : null
+    ); */
+
+    if(cond === 'cases'){
+//         console.log(cond);
+        lineChart1 = lineChart1Cases;
+        lineChart2 = lineChart2Cases;
+        lineChart3 = lineChart3Cases;
+    }
+    else if(cond === 'deaths'){
+        //set lineChart1 2 and 3 to a deaths chart
+//         console.log(cond);
+        lineChart1 = lineChart1Deaths;
+        lineChart2 = lineChart2Deaths;
+        lineChart3 = lineChart3Deaths;
+    }
+    else if(cond === 'newcases'){
+//         console.log(cond);
+        lineChart1 = lineChart1NewCases;
+        lineChart2 = lineChart2NewCases;
+        lineChart3 = lineChart3NewCases;
+    }
+    else if(cond === 'vaccinations'){
+//         console.log(cond);
+        lineChart1 = lineChart1Vaccinations;
+        lineChart2 = lineChart2Vaccinations;
+        lineChart3 = lineChart3Vaccinations;
+    }
+    else if(cond === 'hospitalizations'){
+//         console.log(cond);
+        lineChart1 = lineChart1Hosp;
+        lineChart2 = lineChart2Hosp;
+        lineChart3 = lineChart3Hosp;
+    }
+
+
+
+    return (
+        <div>
+            <div style={{ margin: "20px" }}>
+                <Tabs>
+                    <TabList>
+                        <Tab>By Week</Tab>
+                        <Tab>By Month</Tab>
+                        <Tab>By Year</Tab>
+                    </TabList>
+
+                    <TabPanel>
+                        {country && lineChart3}
+                    </TabPanel>
+                    <TabPanel>
+                            {country && lineChart2}
+                    </TabPanel>
+                    <TabPanel>
+                        {country && lineChart1}
+                    </TabPanel>
+                </Tabs>
+            </div>
+            {/* {country ? barChart : lineChart} */}
+            {/*{country ? lineChart1 : barChart}*/}
+            {/*{country ? lineChart2 : barChart}*/}
+            {/*{country ? lineChart3 : barChart}*/}
+        </div>
+    );
+};
+
+export default Chart;
