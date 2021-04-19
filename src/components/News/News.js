@@ -3,7 +3,7 @@ import Axios from 'axios';
 import NewsItem from './NewsItem';
 import {Line} from "react-chartjs-2";
 
-const News = (nbdate,sname) => {
+const News = ({nbdate,sname,snamestate}) => {
   const [articles, setArticles] = useState([]);
 
   useEffect(() => {
@@ -13,7 +13,7 @@ const News = (nbdate,sname) => {
     const newsdate = nbdate.nbdate;
     const getArticles = async () => {
       const res = await Axios.get(
-        `https://newsapi.org/v2/everything?q=Covid+in+${sname}&from=${newsdate}&to=${newsdate}&pageSize=10&apiKey=616cce31e0804904bc48ac01f41fe27e`,
+          `https://newsapi.org/v2/everything?qInTitle=Covid+in+${sname}&from=${newsdate}&to=${newsdate}&language=en&sortBy=relevancy&pageSize=10&apiKey=616cce31e0804904bc48ac01f41fe27e`,
       );
 
       setArticles(res.data.articles);
@@ -21,19 +21,19 @@ const News = (nbdate,sname) => {
     };
 
     getArticles();
-  }, [nbdate]);
+  }, [nbdate,sname]);
 
   return (
-    <div>
-      {articles.map(({ title, description, url, urlToImage }) => (
-        <NewsItem 
-          title={title}
-          description={description}
-          url={url}
-          urlToImage={urlToImage}
-        />
-      ))}
-    </div>
+      <div>
+        {articles.map(({ title, description, url, urlToImage }) => (
+            <NewsItem
+                title={title}
+                description={description}
+                url={url}
+                urlToImage={urlToImage}
+            />
+        ))}
+      </div>
   );
 };
 

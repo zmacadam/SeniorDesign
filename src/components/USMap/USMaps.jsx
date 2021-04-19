@@ -578,7 +578,7 @@ const USMaps = ({date, cond}) => {
                         </div>
                     </Grid>
                     <Grid item xs={3}>
-                        {check2 ? <Infos nbdate={date} sname={sname}/> : null}
+                        {check2 ? <Infos nbdate={date} sname={sname} snamestate={snamestate}/> : null}
                     </Grid>
                 </Grid>
                 < br/>
