@@ -235,6 +235,11 @@ const USMaps = ({date, cond}) => {
                 .on("click", function(d)
                 {
                     setsname(d.props.name);
+                    setccases(ccases => d.props.stats[0].cases);
+                    setcdeath(cdeath => d.props.stats[0].deaths);
+                    setcnewc(cnewc => d.props.stats[0].newCases);
+                    setchos(chos => d.props.stats[0].hospitalized);
+                    setcvac(cvac => d.props.stats[0].peopleVaccinated);
                 })
                 .on("contexmenu",reset)
                 .on("mouseover", function (d) {
