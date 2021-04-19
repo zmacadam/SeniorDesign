@@ -452,7 +452,7 @@ const USMaps = ({date, cond}) => {
                 // ////console.log("here");
                 setcheck1(check1 => true);
                 ////console.log(d);
-                if (d.props) {
+                if (typeof d !== "undefined") {
                     setsname(sname => d.props.name);
                     setsnamestate(snamestate=> d.props.name);
                     ////console.log(d.props.name);
