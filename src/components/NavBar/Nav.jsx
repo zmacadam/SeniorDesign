@@ -6,7 +6,7 @@ const Nav = () => {
   return (
     <nav>
       <Link style={{ color: "white", textDecoration: "none" }} to="/">
-        <div style={{ fontSize: "25px" }}>Covid Tracker</div>
+        <div style={{ fontSize: "20px" }}>Covid Tracker</div>
       </Link>
       <ul className="nav-links">
         <Link

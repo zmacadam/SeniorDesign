@@ -1,13 +1,13 @@
 .card {
   margin: 0 1% !important;
   width: 200px;
-  height: 150px;
-  padding: 5px;
+  height: 100px;
+  padding: 2px;
   align-items: center;
 }
 
 .MuiTypography-button{
-    margin-top: 5px;
+    margin-top: 0px;
 }
 
 

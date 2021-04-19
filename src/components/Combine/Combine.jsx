@@ -69,13 +69,17 @@ const Combine = () => {
     return (
         <div>
             <div className={styles.container}>
-                {data && <Info data={data}/>}
+                <div>
+                    <button className={styles.button} onClick={() => setCond('cases')}> Cases</button>
+                    <button className={styles.button} onClick={() => setCond('newcases')}> New Cases</button>
+                    <button className={styles.button} onClick={() => setCond('deaths')}> Deaths</button>
+                    <button className={styles.button} onClick={() => setCond('vaccinations')}> Vaccinations</button>
+                    <button className={styles.button} onClick={() => setCond('hospitalizations')}> Hospitalizations
+                    </button>
+                </div>
             </div>
-
             <div className={styles.container}>
                 <p> Search <SearchPage cond={cond} setCond={setCond}/></p>
-                {/*<p>Data is up to date: {moment(test).format('YYYY-MM-DD')}, choose on any date  before the data ready first to see the data <i className="fas fa-adjust"></i> </p>*/}
-                {/* <p> Current date is: {moment(startDate)}</p> */}
                 <DatePicker
                     renderCustomHeader={({
                                              date,
@@ -128,25 +132,7 @@ const Combine = () => {
                     maxDate={addDays(new Date(), -2)}
                 />
             </div>
-            <br/>
-            <div className={styles.container}>
-                <div>
-                    <button className={styles.button} onClick={() => setCond('cases')}> Cases</button>
-                    <button className={styles.button} onClick={() => setCond('newcases')}> New Cases</button>
-                    <button className={styles.button} onClick={() => setCond('deaths')}> Deaths</button>
-                    <button className={styles.button} onClick={() => setCond('vaccinations')}> Vaccinations</button>
-                    <button className={styles.button} onClick={() => setCond('hospitalizations')}> Hospitalizations
-                    </button>
-                </div>
-            </div>
-            {/* <Grid container spacing={1} justify="center"> */}
-            {/* <div className={styles.maps}> */}
             {data && statedata && cond && (<USMap date={moment(startDate).format('YYYY-MM-DD')} cond={cond}/>)}
-            {/* </div> */}
-            <br/>
-            <div className={styles.container}>
-            </div>
-            {/* </Grid> */}
         </div>
     );
 }

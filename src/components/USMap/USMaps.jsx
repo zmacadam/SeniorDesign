@@ -4,11 +4,12 @@ import * as topojson from "topojson-client/src";
 import * as d3 from 'd3';
 import {fetchAllStatesByDate, fetchUSByDate, fetchCountyByDate} from '../../api/';
 import axios from "axios";
-import {Chart, Infos} from "../index";
+import {Chart, Info, Infos} from "../index";
 import range from 'lodash/range';
 import {getMonth, getYear} from 'date-fns';
 import '../../App.css';
 import styles from '../../App.module.css';
+import stylescard from '../Cards/Cards.module.css'
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -16,16 +17,19 @@ import addDays from 'add-days';
 import SearchPage from '../../components/SearchBar/SearchPage.js';
 import {Grid} from '@material-ui/core';
 import {reset} from "react-tabs/lib/helpers/uuid";
+import CardComponent from "../Cards/Card/Card";
 
 const USMaps = ({date, cond}) => {
     const [check2, setcheck2] = useState(false);
     function activatelayer() {
         setcheck2(check2 => check2 == false ? true : false);
     }
+    const [cardx,setcard] = useState(null);
     const [sname, setsname] = useState("USA");
     const [snamestate, setsnamestate] = useState(null);
     const myRef = useRef(null);
     const [data, setData] = useState(null);
+    const [data2, setData2] = useState(null);
     const [statedata, setMapData] = useState(null);
     const [us, setus] = useState(null);
     const [check, setcheck] = useState(false);
@@ -98,6 +102,11 @@ const USMaps = ({date, cond}) => {
                 //  ////console.log(us[0].data);
                 setus(us => usa[0].data);
             });
+        async function updatedata() {
+            let datas = await fetchUSByDate("2021-04-04");
+            setData2((data2) => datas.stats[0]);
+        }
+        updatedata();
         test1 = test1.current.setDate(test1.current.getDate() - 3);
         // setCond((cond) => condDefault);
         setcheck(check => true);
@@ -318,26 +327,31 @@ const USMaps = ({date, cond}) => {
                 .offset([140, 140])
                 .html(function (d) {
                     if (cond === 'cases' && d.props) {
+                        setcard(cardx => d.props.stats[0].cases);
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                             "State: " + d.props.name + "<br/>" +
                             "Cases: " + d.props.stats[0].cases + "<br/>" +
                             "</div>";
                     } else if (cond === 'newcases' && d.props) {
+                        setcard(cardx => d.props.stats[0].newCases);
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                             "State: " + d.props.name + "<br/>" +
                             "New Cases: " + d.props.stats[0].newCases + "<br/>" +
                             "</div>";
                     } else if (cond === 'deaths' && d.props) {
+                        setcard(cardx => d.props.stats[0].deaths);
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                             "State: " + d.props.name + "<br/>" +
                             "Deaths: " + d.props.stats[0].deaths + "<br/>" +
                             "</div>";
                     } else if (cond === 'vaccinations' && d.props) {
+                        setcard(cardx => d.props.stats[0].peopleVaccinated);
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                             "State: " + d.props.name + "<br/>" +
                             "People Vaccinated: " + d.props.stats[0].peopleVaccinated + "<br/>" +
                             "</div>";
                     } else if (cond === 'hospitalizations' && d.props) {
+                        setcard(cardx => d.props.stats[0].hospitalized);
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                             "State: " + d.props.name + "<br/>" +
                             "Hospitalized: " + d.props.stats[0].hospitalized + "<br/>" +
@@ -555,40 +569,44 @@ const USMaps = ({date, cond}) => {
     }
     return (
         <div>
-            <br/>
-            <div className={styles.container}>
-                <Grid container spacing={1}>
-                    <Grid item xs={3}>
-                        {/* {data && date && <Chart nbdate={date} data={data} country="US" cond={cond} />} */}
+            {!check1 ? <Info data={data2} />: null}
+            <Grid container spacing={0}>
+                <Grid item xs={3}>
+                    {/*<div className={styles.container}>*/}
+                    {!check1 ? <Info data={data2} />: null}
+                    {/* {data && date && <Chart nbdate={date} data={data} country="US" cond={cond} />} */}
                         {check2 ?
-                            <Chart nbdate={date} country={sname} cond={cond} width={"600px"} height={"600px"}/> : null}
-                    </Grid>
-                    <Grid item xs={6}>
-                        <div className={styles.details}>
-                            {check1 ?
-                                <button className={styles.button1} onClick={activatelayer}> Get Detail </button> : null}
-                        </div>
-                        <div className={styles.maps}>
-                            <svg
-                                className="d3-component"
-                                width={900}
-                                height={600}
-                                ref={myRef}
-                            />
-                        </div>
-                    </Grid>
-                    <Grid item xs={3}>
-                        {check2 ? <Infos nbdate={date} sname={sname} snamestate={snamestate}/> : null}
-                    </Grid>
+                        <Chart nbdate={date} country={sname} cond={cond} width={"400px"} height={"300px"}/> : <CardComponent
+                                className={stylescard.infected}
+                                cardTitle= {sname + " " + cond}
+                                value={cardx}
+                            />}
+                    {/*</div>*/}
                 </Grid>
-                < br/>
-                {!check1 ?
+                <Grid item xs={6}>
+                    <div className={styles.details}>
+                        {check1 ?
+                            <button className={styles.button1} onClick={activatelayer}> Get Detail </button> : null}
+                    </div>
                     <div className={styles.maps}>
-                        <Chart nbdate={date} country={sname}  cond={cond} width={"950px"} height={"400px"}/>
-                        {/* <p>Abc</p> */}
-                    </div> : null}
-
-            </div>
+                        <svg
+                            className="d3-component"
+                            width={900}
+                            height={600}
+                            ref={myRef}
+                        />
+                    </div>
+                </Grid>
+                <Grid item xs={3}>
+                    {check2 ? <Infos nbdate={date} sname={sname} snamestate={snamestate}/> : null}
+                </Grid>
+            </Grid>
+            < br/>
+            {!check1 ?
+                <div className={styles.container}>
+                    <Chart nbdate={date} country={sname}  cond={cond} width={"900px"} height={"400px"}/>
+                    {/* <p>Abc</p> */}
+                </div> : null}
         </div>
     );
 }

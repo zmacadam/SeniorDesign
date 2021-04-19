@@ -10,7 +10,7 @@ import styles from './Cards.module.css';
 
 
 // const Info = ({ data: { confirmed, recovered, deaths, vaccinations, hospitalizations, lastUpdate } }) => {
-const Info = ({data: {cases, deaths, hospitalized, hospitalizedCum, hospitalizedCur, hospitalizedInc,newCases, newDeaths, peopleVaccinated,totalVaccinations,vaccinesDistributed}})=> {
+const Info = ({data: {cases, deaths, hospitalized,newCases, peopleVaccinated}})=> {
   if (!cases) {
     //console.log('load');
     return 'Loading...';
@@ -22,9 +22,9 @@ const Info = ({data: {cases, deaths, hospitalized, hospitalizedCum, hospitalized
 
   return (
 
-    <div className={styles.container}>
+    <div>
         {/*<Typography gutterBottom variant="h4" component="h2">Covid Tracker</Typography>*/}
-      <Grid container spacing={1} justify="center">
+      {/*<Grid container spacing={1} justify="center">*/}
         <CardComponent
           className={styles.infected}
           cardTitle="Cases"
@@ -68,7 +68,7 @@ const Info = ({data: {cases, deaths, hospitalized, hospitalizedCum, hospitalized
 //             buttFunction= {(cond) => buttClickHosp()}
         />
 
-      </Grid>
+      {/*</Grid>*/}
     </div>
   );
 
