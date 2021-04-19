@@ -601,7 +601,7 @@ const USMaps = ({date, cond}) => {
             <Grid container spacing={1} justify="center">
                 <CardComponent
                     className={stylescard.infected}
-                    cardTitle= {sname + " " + cond}
+                    cardTitle= {sname + " cases"}
                     value={ccases}
                     cardSubtitle="Total number of active cases"
                     //           buttonTitle="Infected"
@@ -609,22 +609,22 @@ const USMaps = ({date, cond}) => {
                 />
                 <CardComponent
                     className={stylescard.recovered}
-                    cardTitle= {sname + " " + cond}
+                    cardTitle= {sname + " new cases"}
                     value={cnewc}
                 />
                 <CardComponent
                     className={stylescard.deaths}
-                    cardTitle= {sname + " " + cond}
+                    cardTitle= {sname + " death"}
                     value={cdeath}
                 />
                 <CardComponent
                     className={stylescard.vaccinated}
-                    cardTitle= {sname + " " + cond}
+                    cardTitle= {sname + " vaccinated"}
                     value={cvac}
                 />
                 <CardComponent
                     className={stylescard.hospitalized}
-                    cardTitle= {sname + " " + cond}
+                    cardTitle= {sname + " hospitalized"}
                     value={chos}
                 />
             </Grid>
