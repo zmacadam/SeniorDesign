@@ -16,6 +16,8 @@ import addDays from 'add-days';
 import SearchPage from '../../components/SearchBar/SearchPage.js';
 import {Grid} from '@material-ui/core';
 import {reset} from "react-tabs/lib/helpers/uuid";
+import { countyValues } from '../Legend/Legend';
+import { stateValues } from '../Legend/Legend';
 
 const USMaps = ({date, cond}) => {
     const [check2, setcheck2] = useState(false);
@@ -31,25 +33,13 @@ const USMaps = ({date, cond}) => {
     const [check, setcheck] = useState(false);
     const [check1, setcheck1] = useState(false);
     // const [cond, setCond] = useState(null);
-    let stateColorCases = d3.scaleThreshold() //blues
-        .domain([10001, 50001, 100001, 250000, 250001])
-        .range(['#AAFFFC', '#66D9FF', '#44ABFF', '#2372FF', '#052FFF']);
-
-    let stateColorRecovered = d3.scaleThreshold() //greens
-        .domain([10001, 50001, 100001, 250000, 250001])
-        .range(['#dee5d1', '#91b588', '#76b378', '#1E9F3E', '#178048']);
-
-    let stateColorDeaths = d3.scaleThreshold() //reds
-        .domain([10001, 50001, 100001, 250000, 250001])
-        .range(['#F08080', '#CD5C5C', '#FF0000', '#B22222', '#8b0000']);
-
-    let stateColorVac = d3.scaleThreshold() //purples
-        .domain([10001, 50001, 100001, 250000, 250001])
-        .range(['#CCCEFF', '#ABAAFF', '#A388FF', '#A966FF', '#BC44FF']);
-
-    let stateColorHosp = d3.scaleThreshold() //pinks
-        .domain([10001, 50001, 100001, 250000, 250001])
-        .range(['#F5CCFF', '#ffaaff', '#FF88F2', '#FF67CF', '#FF49A2']);
+    let stateDomain = undefined;
+    let countyDomain = undefined;
+    let blues = ['#AAFFFC', '#66D9FF', '#44ABFF', '#2372FF', '#052FFF'];
+    let greens = ['#dee5d1', '#91b588', '#76b378', '#1E9F3E', '#178048'];
+    let reds = ['#F08080', '#CD5C5C', '#FF0000', '#B22222', '#8b0000'];
+    let purples = ['#CCCEFF', '#ABAAFF', '#A388FF', '#A966FF', '#BC44FF'];
+    let pinks = ['#F5CCFF', '#ffaaff', '#FF88F2', '#FF67CF', '#FF49A2'];
 
     let countyColorCases = d3.scaleThreshold() //blues
         .domain([10001, 50001, 100001, 250000, 250001])
@@ -120,14 +110,14 @@ const USMaps = ({date, cond}) => {
                 else
                     data3 = await fetchAllStatesByDate(moment(test1.current).format('YYYY-MM-DD'));
                 //data3 = await fetchAllStatesByDate("2021-04-04");
-                setMapData((statedata) => data3);
                 setData((data) => datas.stats[0]);
+                setMapData(data3);
             }
 
             // ////console.log(data);
             updatedata();
         }
-    }, [check]);
+    }, [check, statedata]);
 
     useEffect(() => {
         const svg = d3.select(myRef.current);
@@ -140,20 +130,35 @@ const USMaps = ({date, cond}) => {
                 svg.select("g").remove();
             }
             if (cond === 'cases') {
-                stateColor = stateColorCases;
-                countyColor = countyColorCases;
+                stateDomain = stateValues(statedata, 'casesPercent');
+                console.log(stateDomain);
+                stateColor = d3.scaleThreshold()
+                    .domain(stateDomain)
+                    .range(blues);
             } else if (cond === 'newcases') {
-                stateColor = stateColorRecovered;
-                countyColor = countyColorRecovered;
+                stateDomain = stateValues(statedata, 'newCasesPercent');
+                console.log(stateDomain);
+                stateColor = d3.scaleThreshold()
+                    .domain(stateDomain)
+                    .range(greens);
             } else if (cond === 'deaths') {
-                stateColor = stateColorDeaths;
-                countyColor = countyColorDeaths;
+                stateDomain = stateValues(statedata, 'deathsPercent');
+                console.log(stateDomain);
+                stateColor = d3.scaleThreshold()
+                    .domain(stateDomain)
+                    .range(reds);
             } else if (cond === 'hospitalizations') {
-                stateColor = stateColorHosp;
-                countyColor = countyColorHosp;
+                stateDomain = stateValues(statedata, 'hospitalizedPercent');
+                console.log(stateDomain);
+                stateColor = d3.scaleThreshold()
+                    .domain(stateDomain)
+                    .range(purples);
             } else if (cond === 'vaccinations') {
-                stateColor = stateColorVac;
-                countyColor = countyColorVac;
+                stateDomain = stateValues(statedata, 'totalVaccinationsPercent');
+                console.log(stateDomain);
+                stateColor = d3.scaleThreshold()
+                    .domain(stateDomain)
+                    .range(pinks);
             }
 
 
@@ -252,15 +257,15 @@ const USMaps = ({date, cond}) => {
                     if (d.props && cond === 'cases') {
                         // ////console.log(d.props);
 //                         ////console.log(d.props.name);
-                        return stateColor(d.props.stats[0].cases);
+                        return stateColor(d.props.stats[0].casesPercent);
                     } else if (d.props && cond === 'newcases') {
-                        return stateColor(d.props.stats[0].newCases);
+                        return stateColor(d.props.stats[0].newCasesPercent);
                     } else if (d.props && cond === 'deaths') {
                         return stateColor(d.props.stats[0].deaths);
                     } else if (d.props && cond === 'vaccinations') {
-                        return stateColor(d.props.stats[0].peopleVaccinated);
+                        return stateColor(d.props.stats[0].totalVaccinationsPercent);
                     } else if (d.props && cond === 'hospitalizations') {
-                        return stateColor(d.props.stats[0].hospitalized);
+                        return stateColor(d.props.stats[0].hospitalizedPercent);
                     } else {
                         return "black";
                     }
@@ -321,26 +326,31 @@ const USMaps = ({date, cond}) => {
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                             "State: " + d.props.name + "<br/>" +
                             "Cases: " + d.props.stats[0].cases + "<br/>" +
+                            "Percent of State: " + d.props.stats[0].casesPercent.toFixed(2) + "%<br/>" +
                             "</div>";
                     } else if (cond === 'newcases' && d.props) {
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                             "State: " + d.props.name + "<br/>" +
                             "New Cases: " + d.props.stats[0].newCases + "<br/>" +
+                            "Percent of State: " + d.props.stats[0].newCasesPercent.toFixed(2) + "%<br/>" +
                             "</div>";
                     } else if (cond === 'deaths' && d.props) {
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                             "State: " + d.props.name + "<br/>" +
                             "Deaths: " + d.props.stats[0].deaths + "<br/>" +
+                            "Percent of State: " + d.props.stats[0].deathsPercent.toFixed(2) + "%<br/>" +
                             "</div>";
                     } else if (cond === 'vaccinations' && d.props) {
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                             "State: " + d.props.name + "<br/>" +
-                            "People Vaccinated: " + d.props.stats[0].peopleVaccinated + "<br/>" +
+                            "Vaccines Distributed: " + d.props.stats[0].peopleVaccinated + "<br/>" +
+                            "Percent of State: " + d.props.stats[0].totalVaccinationsPercent.toFixed(2) + "%<br/>" +
                             "</div>";
                     } else if (cond === 'hospitalizations' && d.props) {
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                             "State: " + d.props.name + "<br/>" +
                             "Hospitalized: " + d.props.stats[0].hospitalized + "<br/>" +
+                            "Percent of State: " + d.props.stats[0].hospitalizedPercent.toFixed(2) + "%<br/>" +
                             "</div>";
                     } else {
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
@@ -362,12 +372,13 @@ const USMaps = ({date, cond}) => {
 
                                     // ////console.log(d.id + "@@" + d.props.name);
                                     // return countyColor(d.props.stats[0].cases)
-                                    return countyColor(d.props.stats[0].cases)
+                                    return countyColorCases(d.props.stats[0].casesPercent)
                                 }
                             })
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                             "County: " + d.props.name + "<br/>" +
                             "Cases: " + d.props.stats[0].cases + "<br/>" +
+                            "Percent of County: " + d.props.stats[0].casesPercent.toFixed(2) + "%<br/>" +
                             "</div>";
                     } else if (cond === 'newcases' && d.props) {
                         g.selectAll("path")
@@ -376,12 +387,13 @@ const USMaps = ({date, cond}) => {
 
                                     // ////console.log(d.id + "@@" + d.props.name);
                                     // return countyColor(d.props.stats[0].cases)
-                                    return countyColor(d.props.stats[0].newCases)
+                                    return countyColorRecovered(d.props.stats[0].newCasesPercent)
                                 }
                             })
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                             "County: " + d.props.name + "<br/>" +
                             "New Cases: " + d.props.stats[0].newCases + "<br/>" +
+                            "Percent of County: " + d.props.stats[0].newCasesPercent.toFixed(2) + "%<br/>" +
                             "</div>";
                     } else if (cond === 'deaths' && d.props) {
                         g.selectAll("path")
@@ -390,12 +402,13 @@ const USMaps = ({date, cond}) => {
 
                                     // ////console.log(d.id + "@@" + d.props.name);
                                     // return countyColor(d.props.stats[0].cases)
-                                    return countyColor(d.props.stats[0].deaths)
+                                    return countyColorDeaths(d.props.stats[0].deathsPercent)
                                 }
                             })
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                             "County: " + d.props.name + "<br/>" +
                             "Death: " + d.props.stats[0].deaths + "<br/>" +
+                            "Percent of County: " + d.props.stats[0].newDeaths.toFixed(2) + "%<br/>" +
                             "</div>";
                     } else if (cond === 'vaccinations' && d.props) {
                         g.selectAll("path")
@@ -466,9 +479,20 @@ const USMaps = ({date, cond}) => {
                                 // ////console.log(f.props.stats[0].cases);
                             }
                         })
+                        countyColorCases = d3.scaleThreshold()
+                            .domain(countyValues(county, 'casesPercent'))
+                            .range(blues);
+                        countyColorDeaths = d3.scaleThreshold()
+                            .domain(countyValues(county, 'deathsPercent'))
+                            .range(reds);
+                        countyColorRecovered = d3.scaleThreshold()
+                            .domain(countyValues(county, 'newCasesPercent'))
+                            .range(greens);
                     }
 
                     updatedata();
+
+
                     // tip.show(d);
                     // ////console.log("ok");
                     if (d3.select('.background').node() === this) return reset();
@@ -529,15 +553,15 @@ const USMaps = ({date, cond}) => {
                         if (d.props && cond === 'cases') {
                             // ////console.log(d.props);
                             //                         ////console.log(d.props.name);
-                            return stateColor(d.props.stats[0].cases);
+                            return stateColor(d.props.stats[0].casesPercent);
                         } else if (d.props && cond === 'newcases') {
-                            return stateColor(d.props.stats[0].newCases);
+                            return stateColor(d.props.stats[0].newCasesPercent);
                         } else if (d.props && cond === 'deaths') {
-                            return stateColor(d.props.stats[0].deaths);
+                            return stateColor(d.props.stats[0].deathsPercent);
                         } else if (d.props && cond === 'vaccinations') {
-                            return stateColor(d.props.stats[0].peopleVaccinated);
+                            return stateColor(d.props.stats[0].totalVaccinationsPercent);
                         } else if (d.props && cond === 'hospitalizations') {
-                            return stateColor(d.props.stats[0].hospitalized);
+                            return stateColor(d.props.stats[0].hospitalizedPercent);
                         }
                     })
             }
