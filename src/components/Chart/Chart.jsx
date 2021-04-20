@@ -102,6 +102,9 @@ const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
     testLastWeek = setDateBackWeek(nbdate);
     testLastYear = setDateBackYear(nbdate);
 
+    console.log(countyName);
+    console.log(country);
+
 
 //     console.log(cond);
 //     console.log(country);
@@ -243,7 +246,7 @@ const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
                     labels: dailyData.map(({ date }) => new Date(date).toLocaleDateString()),
                     datasets: [{
                         data: dailyData.map(({ stats }) => stats[0].cases),
-                        label: 'Cases By Year',
+                        label: 'Cases',
                         borderColor: '#3333ff',
                         backgroundColor: 'rgba(0, 0, 255, 0.5)',
                         fill: true,
@@ -267,7 +270,7 @@ const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
                     labels: monthData.map(({ date }) => new Date(date).toLocaleDateString()),
                     datasets: [{
                         data: monthData.map(({ stats }) => stats[0].cases),
-                        label: 'Cases by Month',
+                        label: 'Cases',
                         borderColor: 'blue',
                         backgroundColor: 'rgba(0, 0, 255, 0.5)',
                         fill: true,
@@ -289,7 +292,7 @@ const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
                     labels: weekData.map(({ date }) => new Date(date).toLocaleDateString()),
                     datasets: [{
                         data: weekData.map(({ stats }) => stats[0].cases),
-                        label: 'Cases by Week',
+                        label: 'Cases',
                         borderColor: 'blue',
                         backgroundColor: 'rgba(0, 0, 255, 0.5)',
                         fill: true,
@@ -310,7 +313,7 @@ const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
                     labels: dailyData.map(({ date }) => new Date(date).toLocaleDateString()),
                     datasets: [{
                         data: dailyData.map(({ stats }) => stats[0].deaths),
-                        label: 'Deaths By Year',
+                        label: 'Deaths',
                         borderColor: 'rgba(255, 0, 0, 0.5)',
                         backgroundColor: 'rgba(255, 0, 0, 0.5)',
                         fill: true,
@@ -331,7 +334,7 @@ const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
                     labels: monthData.map(({ date }) => new Date(date).toLocaleDateString()),
                     datasets: [{
                         data: monthData.map(({ stats }) => stats[0].deaths),
-                        label: 'Deaths By Month',
+                        label: 'Deaths',
                         borderColor: 'rgba(255, 0, 0, 0.5)',
                         backgroundColor: 'rgba(255, 0, 0, 0.5)',
                         fill: true,
@@ -352,7 +355,7 @@ const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
                     labels: weekData.map(({ date }) => new Date(date).toLocaleDateString()),
                     datasets: [{
                         data: weekData.map(({ stats }) => stats[0].deaths),
-                        label: 'Deaths By Week',
+                        label: 'Deaths',
                         borderColor: 'rgba(255, 0, 0, 0.5)',
                         backgroundColor: 'rgba(255, 0, 0, 0.5)',
                         fill: true,
@@ -374,7 +377,7 @@ const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
                     labels: dailyData.map(({ date }) => new Date(date).toLocaleDateString()),
                     datasets: [{
                         data: dailyData.map(({ stats }) => stats[0].newCases),
-                        label: 'New Cases By Year',
+                        label: 'New Cases',
                         borderColor: 'rgba(0, 255, 0, 0.5)',
                         backgroundColor: 'rgba(0, 255, 0, 0.5)',
                         fill: true,
@@ -395,7 +398,7 @@ const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
                     labels: monthData.map(({ date }) => new Date(date).toLocaleDateString()),
                     datasets: [{
                         data: monthData.map(({ stats }) => stats[0].newCases),
-                        label: 'New Cases By Month',
+                        label: 'New Cases',
                         borderColor: 'rgba(0, 255, 0, 0.5)',
                         backgroundColor: 'rgba(0, 255, 0, 0.5)',
                         fill: true,
@@ -416,7 +419,7 @@ const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
                     labels: weekData.map(({ date }) => new Date(date).toLocaleDateString()),
                     datasets: [{
                         data: weekData.map(({ stats }) => stats[0].newCases),
-                        label: 'New Cases By Week',
+                        label: 'New Cases',
                         borderColor: 'rgba(0, 255, 0, 0.5)',
                         backgroundColor: 'rgba(0, 255, 0, 0.5)',
                         fill: true,
@@ -431,70 +434,187 @@ const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
         ) : null
     );
 
-
-    const lineChart1Vaccinations = (
+//old vaccine charts
+//     const lineChart1Vaccinations = (
+//         dailyData[0] ? (
+//             <Line width={width} height={height}
+//                 data={{
+//                     labels: dailyData.map(({ date }) => new Date(date).toLocaleDateString()),
+//                     datasets: [{
+//                         data: dailyData.map(({ stats }) => stats[0].peopleVaccinated),
+//                         label: 'Vaccinations',
+//                         borderColor: 'rgba(60, 0, 200, 0.5)',
+//                         backgroundColor: 'rgba(60, 0, 200, 0.5)',
+//                         fill: true,
+//                     },
+//                     ],
+//                 }}
+//                 options={{
+//                     legend: { display: false, reverse: true },
+//                     title: { display: true, text: `${sname} Vaccinations by Year` },
+//                 }}
+//             />
+//         ) : null
+//     );
+//     const lineChart2Vaccinations = (
+//         monthData[0] ? (
+//             <Line width={width} height={height}
+//                 data={{
+//                     labels: monthData.map(({ date }) => new Date(date).toLocaleDateString()),
+//                     datasets: [{
+//                         data: monthData.map(({ stats }) => stats[0].peopleVaccinated),
+//                         label: 'Vaccinations',
+//                         borderColor: 'rgba(60, 0, 200, 0.5)',
+//                         backgroundColor: 'rgba(60, 0, 200, 0.5)',
+//                         fill: true,
+//                     },
+//                     ],
+//                 }}
+//                 options={{
+//                     legend: { display: false, reverse: true },
+//                     title: { display: true, text: `${sname} Vaccinations by Month` },
+//                 }}
+//             />
+//         ) : null
+//     );
+//     const lineChart3Vaccinations = (
+//         weekData[0] ? (
+//             <Line width={width} height={height}
+//                 data={{
+//                     labels: weekData.map(({ date }) => new Date(date).toLocaleDateString()),
+//                     datasets: [{
+//                         data: weekData.map(({ stats }) => stats[0].peopleVaccinated),
+//                         label: 'Vaccinations',
+//                         borderColor: 'rgba(60, 0, 200, 0.5)',
+//                         backgroundColor: 'rgba(60, 0, 200, 0.5)',
+//                         fill: true,
+//                     },
+//                     ],
+//                 }}
+//                 options={{
+//                     legend: { display: false, reverse: true },
+//                     title: { display: true, text: `${sname} Vaccinations by Week` },
+//                 }}
+//             />
+//         ) : null
+//     );
+    const LineChart1VaccNew = (
         dailyData[0] ? (
             <Line width={width} height={height}
                 data={{
                     labels: dailyData.map(({ date }) => new Date(date).toLocaleDateString()),
-                    datasets: [{
-                        data: dailyData.map(({ stats }) => stats[0].vaccinesDistributed),
-                        label: 'Vaccinations By Year',
-                        borderColor: 'rgba(60, 0, 200, 0.5)',
-                        backgroundColor: 'rgba(60, 0, 200, 0.5)',
-                        fill: true,
-                    },
+                    datasets: [
+                        {
+                            data: dailyData.map(({ stats }) => stats[0].vaccinesDistributed),
+                            Label: 'Vaccines Distributed',
+                            borderColor: 'rgba(0, 255, 0, 0.5)',
+                            fill: false,
+                        },
+                        {
+                            data: dailyData.map(({ stats }) => stats[0].firstDose),
+                            Label: 'First Dose',
+                            borderColor: 'rgba(255, 0, 0, 0.5)',
+                            fill: false,
+                        },
+                        {
+                            data: dailyData.map(({ stats }) => stats[0].secondDose),
+                            Label: 'Second Dose',
+                            borderColor: 'rgba(0, 0, 255, 0.5)',
+                            fill: false,
+                        },
+                        {
+                            data: dailyData.map(({ stats }) => stats[0].dailyVaccinated),
+                            Label: 'Daily Vaccinations',
+                            borderColor: 'rgba(60, 0, 200, 0.5)',
+                            fill: false
+                        },
                     ],
                 }}
                 options={{
                     legend: { display: false, reverse: true },
-                    title: { display: true, text: `${sname} Vaccinations by Year` },
+                    title: { display: true, text: `${sname} Vaccination Data` },
                 }}
             />
         ) : null
     );
-    const lineChart2Vaccinations = (
-        monthData[0] ? (
-            <Line width={width} height={height}
-                data={{
-                    labels: monthData.map(({ date }) => new Date(date).toLocaleDateString()),
-                    datasets: [{
-                        data: monthData.map(({ stats }) => stats[0].vaccinesDistributed),
-                        label: 'Vaccinations By Month',
-                        borderColor: 'rgba(60, 0, 200, 0.5)',
-                        backgroundColor: 'rgba(60, 0, 200, 0.5)',
-                        fill: true,
-                    },
-                    ],
-                }}
-                options={{
-                    legend: { display: false, reverse: true },
-                    title: { display: true, text: `${sname} Vaccinations by Month` },
-                }}
-            />
-        ) : null
-    );
-    const lineChart3Vaccinations = (
-        weekData[0] ? (
-            <Line width={width} height={height}
-                data={{
-                    labels: weekData.map(({ date }) => new Date(date).toLocaleDateString()),
-                    datasets: [{
-                        data: weekData.map(({ stats }) => stats[0].vaccinesDistributed),
-                        label: 'Vaccinations By Week',
-                        borderColor: 'rgba(60, 0, 200, 0.5)',
-                        backgroundColor: 'rgba(60, 0, 200, 0.5)',
-                        fill: true,
-                    },
-                    ],
-                }}
-                options={{
-                    legend: { display: false, reverse: true },
-                    title: { display: true, text: `${sname} Vaccinations by Week` },
-                }}
-            />
-        ) : null
-    );
+    const LineChart2VaccNew = (
+            monthData[0] ? (
+                <Line width={width} height={height}
+                    data={{
+                        labels: monthData.map(({ date }) => new Date(date).toLocaleDateString()),
+                        datasets: [
+                            {
+                                data: monthData.map(({ stats }) => stats[0].vaccinesDistributed),
+                                Label: 'Vaccines Distributed',
+                                borderColor: 'rgba(0, 255, 0, 0.5)',
+                                fill: false,
+                            },
+                            {
+                                data: monthData.map(({ stats }) => stats[0].firstDose),
+                                Label: 'First Dose',
+                                borderColor: 'rgba(255, 0, 0, 0.5)',
+                                fill: false,
+                            },
+                            {
+                                data: monthData.map(({ stats }) => stats[0].secondDose),
+                                Label: 'Second Dose',
+                                borderColor: 'rgba(0, 0, 255, 0.5)',
+                                fill: false,
+                            },
+                            {
+                                data: monthData.map(({ stats }) => stats[0].dailyVaccinated),
+                                Label: 'Daily Vaccinations',
+                                borderColor: 'rgba(60, 0, 200, 0.5)',
+                                fill: false
+                            },
+                        ],
+                    }}
+                    options={{
+                        legend: { display: false, reverse: true },
+                        title: { display: true, text: `${sname} Vaccination Data By Month` },
+                    }}
+                />
+            ) : null
+        );
+        const LineChart3VaccNew = (
+                weekData[0] ? (
+                    <Line width={width} height={height}
+                        data={{
+                            labels: weekData.map(({ date }) => new Date(date).toLocaleDateString()),
+                            datasets: [
+                                {
+                                    data: weekData.map(({ stats }) => stats[0].vaccinesDistributed),
+                                    Label: 'Vaccines Distributed',
+                                    borderColor: 'rgba(0, 255, 0, 0.5)',
+                                    fill: false,
+                                },
+                                {
+                                    data: weekData.map(({ stats }) => stats[0].firstDose),
+                                    Label: 'First Dose',
+                                    borderColor: 'rgba(255, 0, 0, 0.5)',
+                                    fill: false,
+                                },
+                                {
+                                    data: weekData.map(({ stats }) => stats[0].secondDose),
+                                    Label: 'Second Dose',
+                                    borderColor: 'rgba(0, 0, 255, 0.5)',
+                                    fill: false,
+                                },
+                                {
+                                    data: weekData.map(({ stats }) => stats[0].dailyVaccinated),
+                                    Label: 'Daily Vaccinations',
+                                    borderColor: 'rgba(60, 0, 200, 0.5)',
+                                    fill: false
+                                },
+                            ],
+                        }}
+                        options={{
+                            legend: { display: false, reverse: true },
+                            title: { display: true, text: `${sname} Vaccination Data By Week` },
+                        }}
+                    />
+                ) : null
+            );
 
     const lineChart1Hosp = (
         dailyData[0] ? (
@@ -503,7 +623,7 @@ const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
                     labels: dailyData.map(({ date }) => new Date(date).toLocaleDateString()),
                     datasets: [{
                         data: dailyData.map(({ stats }) => stats[0].hospitalized),
-                        label: 'Hospitalizations By Year',
+                        label: 'Hospitalizations',
                         borderColor: 'rgba(255,192,203, 0.5)',
                         backgroundColor: 'rgba(255,192,203, 0.5)',
                         fill: true,
@@ -524,7 +644,7 @@ const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
                     labels: monthData.map(({ date }) => new Date(date).toLocaleDateString()),
                     datasets: [{
                         data: monthData.map(({ stats }) => stats[0].hospitalized),
-                        label: 'Hospitalizations By Month',
+                        label: 'Hospitalizations',
                         borderColor: 'rgba(255,192,203, 0.5)',
                         backgroundColor: 'rgba(255,192,203, 0.5)',
                         fill: true,
@@ -545,7 +665,7 @@ const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
                     labels: weekData.map(({ date }) => new Date(date).toLocaleDateString()),
                     datasets: [{
                         data: weekData.map(({ stats }) => stats[0].hospitalized),
-                        label: 'Hospitalizations By Week',
+                        label: 'Hospitalizations',
                         borderColor: 'rgba(255,192,203, 0.5)',
                         backgroundColor: 'rgba(255,192,203, 0.5)',
                         fill: true,
@@ -583,9 +703,13 @@ const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
     }
     else if(cond === 'vaccinations'){
 //         console.log(cond);
-        lineChart1 = lineChart1Vaccinations;
-        lineChart2 = lineChart2Vaccinations;
-        lineChart3 = lineChart3Vaccinations;
+//         lineChart1 = lineChart1Vaccinations;
+
+//         lineChart2 = lineChart2Vaccinations;
+//         lineChart3 = lineChart3Vaccinations;
+        lineChart1 = LineChart1VaccNew;
+        lineChart2 = LineChart2VaccNew;
+        lineChart3 = LineChart3VaccNew;
     }
     else if(cond === 'hospitalizations'){
 //         console.log(cond);
