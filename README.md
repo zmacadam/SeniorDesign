@@ -17,3 +17,8 @@ npm run build + serve -s build
 ```
 https://covidtrackers.herokuapp.com/
 ```
+### Current AWS link (main page not working by somehow)
+```
+https://master.d1hsuda4u3y60k.amplifyapp.com/
+```
+

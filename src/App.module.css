@@ -80,6 +80,24 @@ body {
   transform: translateY(4px);
 }
 
+.button2 {
+  padding: 15px 25px;
+  font-size: 15px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 9px #999;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.button2:hover {background-color: #3e8e41}
+
+
 .button1 {
   padding: 15px 25px;
   font-size: 15px;

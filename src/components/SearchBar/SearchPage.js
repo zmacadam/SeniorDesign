@@ -42,7 +42,6 @@ const SearchPage = ({cond, setCond}) => {
   * Input syntax: "[STATE] [CONDITION]"
   * where STATE is any U.S. state (case insensitive)
   * and CONDITION is the data type to search for eg. "deaths" (case insensitive)
-  * TODO: Fix setCond problem with duplicate maps.
   */
   const stateZoom = function(input) {
     var state_str = input.slice(0, input.indexOf(' ')).toLowerCase(); // first word of input
@@ -51,11 +50,8 @@ const SearchPage = ({cond, setCond}) => {
     if(cond_str) {
       setCond(cond_str);
     }
-    if(state_str) {
-      state = document.getElementById(state_str);
-    }
-    if(state){
-      state.dispatchEvent(new Event('click'));
+    if(state_str){
+      setTimeout(() => { state = document.getElementById(state_str); state.dispatchEvent(new Event('click')); }, 1000);
     }
   }
 

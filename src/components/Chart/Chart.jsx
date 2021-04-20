@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Line, Bar } from 'react-chartjs-2';
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
-import { fetchDailyData, fetchUSByDate, fetchUSByDateRange, fetchStateNoCountiesByDateRange } from '../../api';
+import { fetchDailyData, fetchUSByDate, fetchUSByDateRange, fetchStateNoCountiesByDateRange, fetchCountyByDateRange } from '../../api';
 import styles from './Chart.module.css';
 
 // Temporary var for state name, should be changed from const to var later
@@ -14,6 +14,7 @@ let test2 = new Date();
 // let testLastMonth = new Date("2021/03/18");
 let testLastWeek = new Date();
 let testLastMonth = new Date();
+let testLastYear = new Date();
 // const { date } = this.props;
 test = '2021-03-20';
 test1 = '2020-03-20';
@@ -23,6 +24,7 @@ test2 = '2021-03-22';
 
 
 let ifState = false;
+let ifCounty = false;
 
 function dataMap(data) {
     if(data.hasOwnProperty('state'))
@@ -47,6 +49,19 @@ function setDateBackMonth(date){
         day = '0' + day;
 
     return year + '-'+month+'-'+day;
+}
+
+function setDateBackYear(date){
+    let year = parseInt(date.substring(0,4)-1);
+    let month = parseInt(date.substring(5,7));
+    let day = parseInt(date.substring(8,10));
+
+    if(month.toString().length<2)
+            month = '0' + month;
+        if(day.toString().length<2)
+            day = '0' + day;
+
+        return year + '-'+month+'-'+day;
 }
 
 function setDateBackWeek(date){
@@ -75,7 +90,7 @@ function setDateBackWeek(date){
 }
 
 
-const Chart = ({country, nbdate, cond ,width, height}) => {
+const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
 
 
     const [dailyData, setDailyData] = useState({});
@@ -85,70 +100,119 @@ const Chart = ({country, nbdate, cond ,width, height}) => {
 
     testLastMonth = setDateBackMonth(nbdate);
     testLastWeek = setDateBackWeek(nbdate);
+    testLastYear = setDateBackYear(nbdate);
 
 
 //     console.log(cond);
 //     console.log(country);
-    if(country !== 'USA')
+    if(sname !== 'USA')
         ifState = true;
     else
         ifState = false;
 
+    if(countyName !== null){
+        ifCounty = true;
+    }
+    else
+        ifCounty = false;
+
     useEffect(() => {
         const fetchMyAPI = async () => {
 
-            const nbDataRange = await fetchUSByDateRange(test1, nbdate);
-
+            const nbDataRange = await fetchUSByDateRange(testLastYear, nbdate);
             const nbDataRangeWeek = await fetchUSByDateRange(testLastWeek, nbdate);
             const nbDataRangeMonth = await fetchUSByDateRange(testLastMonth, nbdate);
 //             console.log(nbDataRange);
 //             console.log(nbDataRange[367].stats[0]);
 
-            const nbStateDataWeek = await fetchStateNoCountiesByDateRange(testLastWeek, nbdate, country);
-            const nbStateDataMonth = await fetchStateNoCountiesByDateRange(testLastMonth, nbdate, country);
-            const nbStateData = await fetchStateNoCountiesByDateRange(test1, nbdate, country);
+
+
+
+
+
+//             console.log(countyData);
 
 //             console.log(dataMap(nbStateData));
 
+              console.log(countyName);
 
-            if(ifState){
-                setWeekData(nbStateDataWeek);
-                setMonthData(nbStateDataMonth);
-                setDailyData(nbStateData);
-                }
-            else{
-                setWeekData(nbDataRangeWeek);
-                setMonthData(nbDataRangeMonth);
-                setDailyData(nbDataRange);
-            }
+
+            if(countyName !== null){
+                            const countyDataWeek = await fetchCountyByDateRange(testLastWeek, nbdate, country, countyName);
+                            const countyDataMonth = await fetchCountyByDateRange(testLastMonth, nbdate, country, countyName);
+                            const countyData = await fetchCountyByDateRange(testLastYear, nbdate, country, countyName);
+                            console.log(countyData);
+
+                            setWeekData(countyDataWeek);
+                            setMonthData(countyDataMonth);
+                            setDailyData(countyData);
+                        }
+                        else if(ifState){
+                            const nbStateDataWeek = await fetchStateNoCountiesByDateRange(testLastWeek, nbdate, country);
+                            const nbStateDataMonth = await fetchStateNoCountiesByDateRange(testLastMonth, nbdate, country);
+                            const nbStateData = await fetchStateNoCountiesByDateRange(testLastYear, nbdate, country);
+                            setWeekData(nbStateDataWeek);
+                            setMonthData(nbStateDataMonth);
+                            setDailyData(nbStateData);
+                        }
+                        else{
+                            setWeekData(nbDataRangeWeek);
+                            setMonthData(nbDataRangeMonth);
+                            setDailyData(nbDataRange);
+                        }
+
 
 
         };
 
         fetchMyAPI();
-    }, [country]);
+    }, [country, countyName]);
 
     useEffect(() => {
         const fetchMyAPI = async () => {
 
-            if(country !== 'USA'){
+            if(sname !== 'USA'){
                 ifState = true;
             }
             else
                 ifState = false;
 
+            if(countyName !== null){
+                ifCounty = true;
+            }
+            else
+                ifCounty = false;
+
             const nbDataRangeWeek = await fetchUSByDateRange(testLastWeek, nbdate);
             const nbDataRangeMonth = await fetchUSByDateRange(testLastMonth, nbdate);
-            const nbDataRange = await fetchUSByDateRange(test1, nbdate);
+            const nbDataRange = await fetchUSByDateRange(testLastYear, nbdate);
 
-            const nbStateDataWeek = await fetchStateNoCountiesByDateRange(testLastWeek, nbdate, country);
-            const nbStateDataMonth = await fetchStateNoCountiesByDateRange(testLastMonth, nbdate, country);
-            const nbStateData = await fetchStateNoCountiesByDateRange(test1, nbdate, country);
+
             // console.log(nbdate);
 //              console.log(nbDataRange);
 //              console.log(nbStateData);
 
-            if(ifState){
+
+
+
+//             console.log(countyData);
+
+            console.log(countyName);
+            console.log(country);
+
+            if(countyName !== null){
+                const countyDataWeek = await fetchCountyByDateRange(testLastWeek, nbdate, country, countyName);
+                const countyDataMonth = await fetchCountyByDateRange(testLastMonth, nbdate, country, countyName);
+                const countyData = await fetchCountyByDateRange(testLastYear, nbdate, country, countyName);
+                console.log(countyData);
+                setWeekData(countyDataWeek);
+                setMonthData(countyDataMonth);
+                setDailyData(countyData);
+            }
+            else if(ifState){
+                const nbStateDataWeek = await fetchStateNoCountiesByDateRange(testLastWeek, nbdate, country);
+                const nbStateDataMonth = await fetchStateNoCountiesByDateRange(testLastMonth, nbdate, country);
+                const nbStateData = await fetchStateNoCountiesByDateRange(testLastYear, nbdate, country);
                 setWeekData(nbStateDataWeek);
                 setMonthData(nbStateDataMonth);
                 setDailyData(nbStateData);
@@ -164,7 +228,7 @@ const Chart = ({country, nbdate, cond ,width, height}) => {
         };
 
         fetchMyAPI();
-    }, [nbdate, country]);
+    }, [nbdate, country, countyName]);
     // Uncomment the block of line charts below to display a range of US Total Data By DateRange
     let lineChart1 = null;
     let lineChart2 = null;
@@ -188,7 +252,7 @@ const Chart = ({country, nbdate, cond ,width, height}) => {
                 }}
                 options={{
                     legend: { display: false, reverse: true },
-                    title: { display: true, text: `${country} Cases by Year` },
+                    title: { display: true, text: `${sname} Cases by Year` },
                 }}
             />
         ) : null
@@ -212,7 +276,7 @@ const Chart = ({country, nbdate, cond ,width, height}) => {
                 }}
                 options={{
                     legend: { display: false },
-                    title: { display: true, text: `${country} Cases by Month` },
+                    title: { display: true, text: `${sname} Cases by Month` },
                 }}
             />
         ) : null
@@ -234,7 +298,7 @@ const Chart = ({country, nbdate, cond ,width, height}) => {
                 }}
                 options={{
                     legend: { display: false, reverse: true },
-                    title: { display: true, text: `${country} Cases by Week` },
+                    title: { display: true, text: `${sname} Cases by Week` },
                 }}
             />
         ) : null
@@ -255,7 +319,7 @@ const Chart = ({country, nbdate, cond ,width, height}) => {
                 }}
                 options={{
                     legend: { display: false, reverse: true },
-                    title: { display: true, text: `${country} Deaths by Year` },
+                    title: { display: true, text: `${sname} Deaths by Year` },
                 }}
             />
         ) : null
@@ -276,7 +340,7 @@ const Chart = ({country, nbdate, cond ,width, height}) => {
                 }}
                 options={{
                     legend: { display: false, reverse: true },
-                    title: { display: true, text: `${country} Deaths by Month` },
+                    title: { display: true, text: `${sname} Deaths by Month` },
                 }}
             />
         ) : null
@@ -297,7 +361,7 @@ const Chart = ({country, nbdate, cond ,width, height}) => {
                 }}
                 options={{
                     legend: { display: false, reverse: true },
-                    title: { display: true, text: `${country} Deaths by Week` },
+                    title: { display: true, text: `${sname} Deaths by Week` },
                 }}
             />
         ) : null
@@ -319,7 +383,7 @@ const Chart = ({country, nbdate, cond ,width, height}) => {
                 }}
                 options={{
                     legend: { display: false, reverse: true },
-                    title: { display: true, text: `${country} New Cases by Year` },
+                    title: { display: true, text: `${sname} New Cases by Year` },
                 }}
             />
         ) : null
@@ -340,7 +404,7 @@ const Chart = ({country, nbdate, cond ,width, height}) => {
                 }}
                 options={{
                     legend: { display: false, reverse: true },
-                    title: { display: true, text: `${country} New Cases by Month` },
+                    title: { display: true, text: `${sname} New Cases by Month` },
                 }}
             />
         ) : null
@@ -351,7 +415,7 @@ const Chart = ({country, nbdate, cond ,width, height}) => {
                 data={{
                     labels: weekData.map(({ date }) => new Date(date).toLocaleDateString()),
                     datasets: [{
-                        data: weekData.map(({ stats }) => stats[0].deaths),
+                        data: weekData.map(({ stats }) => stats[0].newCases),
                         label: 'New Cases By Week',
                         borderColor: 'rgba(0, 255, 0, 0.5)',
                         backgroundColor: 'rgba(0, 255, 0, 0.5)',
@@ -361,7 +425,7 @@ const Chart = ({country, nbdate, cond ,width, height}) => {
                 }}
                 options={{
                     legend: { display: false, reverse: true },
-                    title: { display: true, text: `${country} New Cases by Week` },
+                    title: { display: true, text: `${sname} New Cases by Week` },
                 }}
             />
         ) : null
@@ -374,7 +438,7 @@ const Chart = ({country, nbdate, cond ,width, height}) => {
                 data={{
                     labels: dailyData.map(({ date }) => new Date(date).toLocaleDateString()),
                     datasets: [{
-                        data: dailyData.map(({ stats }) => stats[0].peopleVaccinated),
+                        data: dailyData.map(({ stats }) => stats[0].vaccinesDistributed),
                         label: 'Vaccinations By Year',
                         borderColor: 'rgba(60, 0, 200, 0.5)',
                         backgroundColor: 'rgba(60, 0, 200, 0.5)',
@@ -384,7 +448,7 @@ const Chart = ({country, nbdate, cond ,width, height}) => {
                 }}
                 options={{
                     legend: { display: false, reverse: true },
-                    title: { display: true, text: `${country} Vaccinations by Year` },
+                    title: { display: true, text: `${sname} Vaccinations by Year` },
                 }}
             />
         ) : null
@@ -395,7 +459,7 @@ const Chart = ({country, nbdate, cond ,width, height}) => {
                 data={{
                     labels: monthData.map(({ date }) => new Date(date).toLocaleDateString()),
                     datasets: [{
-                        data: monthData.map(({ stats }) => stats[0].peopleVaccinated),
+                        data: monthData.map(({ stats }) => stats[0].vaccinesDistributed),
                         label: 'Vaccinations By Month',
                         borderColor: 'rgba(60, 0, 200, 0.5)',
                         backgroundColor: 'rgba(60, 0, 200, 0.5)',
@@ -405,7 +469,7 @@ const Chart = ({country, nbdate, cond ,width, height}) => {
                 }}
                 options={{
                     legend: { display: false, reverse: true },
-                    title: { display: true, text: `${country} Vaccinations by Month` },
+                    title: { display: true, text: `${sname} Vaccinations by Month` },
                 }}
             />
         ) : null
@@ -416,7 +480,7 @@ const Chart = ({country, nbdate, cond ,width, height}) => {
                 data={{
                     labels: weekData.map(({ date }) => new Date(date).toLocaleDateString()),
                     datasets: [{
-                        data: weekData.map(({ stats }) => stats[0].peopleVaccinated),
+                        data: weekData.map(({ stats }) => stats[0].vaccinesDistributed),
                         label: 'Vaccinations By Week',
                         borderColor: 'rgba(60, 0, 200, 0.5)',
                         backgroundColor: 'rgba(60, 0, 200, 0.5)',
@@ -426,7 +490,7 @@ const Chart = ({country, nbdate, cond ,width, height}) => {
                 }}
                 options={{
                     legend: { display: false, reverse: true },
-                    title: { display: true, text: `${country} Vaccinations by Week` },
+                    title: { display: true, text: `${sname} Vaccinations by Week` },
                 }}
             />
         ) : null
@@ -448,7 +512,7 @@ const Chart = ({country, nbdate, cond ,width, height}) => {
                 }}
                 options={{
                     legend: { display: false, reverse: true },
-                    title: { display: true, text: `${country} Hospitalizations by Year` },
+                    title: { display: true, text: `${sname} Hospitalizations by Year` },
                 }}
             />
         ) : null
@@ -469,7 +533,7 @@ const Chart = ({country, nbdate, cond ,width, height}) => {
                 }}
                 options={{
                     legend: { display: false, reverse: true },
-                    title: { display: true, text: `${country} Hospitalizations by Month` },
+                    title: { display: true, text: `${sname} Hospitalizations by Month` },
                 }}
             />
         ) : null
@@ -490,79 +554,13 @@ const Chart = ({country, nbdate, cond ,width, height}) => {
                 }}
                 options={{
                     legend: { display: false, reverse: true },
-                    title: { display: true, text: `${country} Hospitalizations by Week` },
+                    title: { display: true, text: `${sname} Hospitalizations by Week` },
                 }}
             />
         ) : null
     );
 
 
-    // Uncomment the block of line charts below to display a range of State Data By Date
-    /* const lineChart1 = (
-      dailyData[0] ? (
-        <Line
-          data={{
-            labels: dailyData.map(({ date }) => new Date(date).toLocaleDateString()),
-            datasets: [{
-              data: dailyData.map(({ state }) => state.stats[0].cases),
-              label: 'Infected',
-              borderColor: '#3333ff',
-              backgroundColor: 'rgba(0, 0, 255, 0.5)',
-              fill: true,
-            },
-            ],
-          }}
-          options={{
-            legend: { display: false, reverse: true },
-            title: { display: true, text: `Confirmed Cases ${country}` },
-          }}
-        />
-      ) : null
-    );
-
-    const lineChart2 = (
-      dailyData[0] ? (
-        <Line
-          data={{
-            labels: dailyData.map(({ date }) => new Date(date).toLocaleDateString()),
-            datasets: [{
-              data: dailyData.map(({ state }) => state.stats[0].deaths),
-              label: 'Deaths',
-              borderColor: 'red',
-              backgroundColor: 'rgba(255, 0, 0, 0.5)',
-              fill: true,
-            },
-            ],
-          }}
-          options={{
-            legend: { display: false, reverse: true },
-            title: { display: true, text: `Confirmed Deaths ${country}` },
-          }}
-        />
-      ) : null
-    );
-
-    const lineChart3 = (
-      dailyData[0] ? (
-        <Line
-          data={{
-            labels: dailyData.map(({ date }) => new Date(date).toLocaleDateString()),
-            datasets: [{
-              data: dailyData.map(({ state }) => state.stats[0].peopleVaccinated),
-              label: 'Vaccinated',
-              borderColor: 'green',
-              backgroundColor: 'rgba(0, 255, 0, 0.5)',
-              fill: true,
-            },
-            ],
-          }}
-          options={{
-            legend: { display: false },
-            title: { display: true, text: `Confirmed Vaccinations ${country}` },
-          }}
-        />
-      ) : null
-    ); */
 
     if(cond === 'cases'){
 //         console.log(cond);
@@ -609,13 +607,13 @@ const Chart = ({country, nbdate, cond ,width, height}) => {
                     </TabList>
 
                     <TabPanel>
-                        {country && lineChart3}
+                        {sname && lineChart3}
                     </TabPanel>
                     <TabPanel>
-                            {country && lineChart2}
+                            {sname && lineChart2}
                     </TabPanel>
                     <TabPanel>
-                        {country && lineChart1}
+                        {sname && lineChart1}
                     </TabPanel>
                 </Tabs>
             </div>

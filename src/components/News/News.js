@@ -13,7 +13,7 @@ const News = ({nbdate,sname,snamestate}) => {
     const newsdate = nbdate.nbdate;
     const getArticles = async () => {
       const res = await Axios.get(
-          `https://newsapi.org/v2/everything?qInTitle=Covid+in+${sname}&from=${newsdate}&to=${newsdate}&language=en&sortBy=relevancy&pageSize=10&apiKey=616cce31e0804904bc48ac01f41fe27e`,
+          `https://newsapi.org/v2/everything?qInTitle=Covid+in+${sname}&from=${newsdate}&to=${newsdate}&language=en&sortBy=relevancy&pageSize=10&apiKey=76d09548beaa47da9b51c96964e3354c`,
       );
 
       setArticles(res.data.articles);

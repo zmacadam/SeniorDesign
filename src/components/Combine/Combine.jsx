@@ -15,7 +15,7 @@ import {Grid} from '@material-ui/core';
 const Combine = () => {
     const [data, setData] = useState(null);
     const [statedata, setMapData] = useState(null);
-    const [startDate, setStartDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(addDays(new Date(), -1));
     const years = range(1990, getYear(new Date()) + 1, 1);
     const months = [
         'January',
@@ -32,9 +32,14 @@ const Combine = () => {
         'December',
     ];
     const [test, settest] = useState(new Date());
-
+    let currentDate = new Date(moment(startDate).format('YYYY-MM-DD'));
     const [cond, setCond] = useState(null);
-
+    let march7 = new Date('2021-03-07');
+    let premarch7 = true;
+    if (Date.parse(march7) < Date.parse(currentDate)) {
+        premarch7 = false;
+    }
+    console.log(premarch7);
     useEffect(() => {
         // //console.log(today);
         settest(test => test.setDate(test.getDate() - 3));
@@ -69,13 +74,17 @@ const Combine = () => {
     return (
         <div>
             <div className={styles.container}>
-                {data && <Info data={data}/>}
+                <div>
+                    <button className={styles.button} onClick={() => setCond('cases')}> Cases</button>
+                    <button className={styles.button} onClick={() => setCond('newcases')}> New Cases</button>
+                    <button className={styles.button} onClick={() => setCond('deaths')}> Deaths</button>
+                    <button className={styles.button} onClick={() => setCond('vaccinations')}> Vaccinations</button>
+                    {premarch7 ? <button className={styles.button} onClick={() => setCond('hospitalizations')}> Hospitalizations
+                    </button> : "Hospitalization data unavailable after March 7th 2021"}
+                </div>
             </div>
-
             <div className={styles.container}>
                 <p> Search <SearchPage cond={cond} setCond={setCond}/></p>
-                {/*<p>Data is up to date: {moment(test).format('YYYY-MM-DD')}, choose on any date  before the data ready first to see the data <i className="fas fa-adjust"></i> </p>*/}
-                {/* <p> Current date is: {moment(startDate)}</p> */}
                 <DatePicker
                     renderCustomHeader={({
                                              date,
@@ -125,28 +134,11 @@ const Combine = () => {
                     )}
                     selected={startDate}
                     onChange={(date) => setStartDate(date)}
-                    maxDate={addDays(new Date(), -2)}
+                    maxDate={addDays(new Date(), -1)}
                 />
+                <br/>
             </div>
-            <br/>
-            <div className={styles.container}>
-                <div>
-                    <button className={styles.button} onClick={() => setCond('cases')}> Cases</button>
-                    <button className={styles.button} onClick={() => setCond('newcases')}> New Cases</button>
-                    <button className={styles.button} onClick={() => setCond('deaths')}> Deaths</button>
-                    <button className={styles.button} onClick={() => setCond('vaccinations')}> Vaccinations</button>
-                    <button className={styles.button} onClick={() => setCond('hospitalizations')}> Hospitalizations
-                    </button>
-                </div>
-            </div>
-            {/* <Grid container spacing={1} justify="center"> */}
-            {/* <div className={styles.maps}> */}
             {data && statedata && cond && (<USMap date={moment(startDate).format('YYYY-MM-DD')} cond={cond}/>)}
-            {/* </div> */}
-            <br/>
-            <div className={styles.container}>
-            </div>
-            {/* </Grid> */}
         </div>
     );
 }

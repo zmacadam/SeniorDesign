@@ -23,11 +23,10 @@ const Symptom = () => {
 
         <TabPanel>
           <p>
-            Coronavirus disease (COVID-19) is an infectious disease caused by a
-            newly discovered coronavirus.
+            A coronavirus identified in 2019, SARS-CoV-2, has caused a pandemic of respiratory illness, called COVID-19.
           </p>
           <p>
-            Most people who fall sick with COVID-19 will experience mild to
+            Most people who become ill from COVID-19 will experience mild to
             moderate symptoms and recover without special treatment.
           </p>
           <hr />

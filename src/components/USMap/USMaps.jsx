@@ -9,6 +9,7 @@ import range from 'lodash/range';
 import {getMonth, getYear} from 'date-fns';
 import '../../App.css';
 import styles from '../../App.module.css';
+import stylescard from '../Cards/Cards.module.css';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -18,20 +19,29 @@ import {Grid} from '@material-ui/core';
 import {reset} from "react-tabs/lib/helpers/uuid";
 import { countyValues } from '../Legend/Legend';
 import { stateValues } from '../Legend/Legend';
+import CardComponent from "../Cards/Card/Card";
 
 const USMaps = ({date, cond}) => {
     const [check2, setcheck2] = useState(false);
     function activatelayer() {
         setcheck2(check2 => check2 == false ? true : false);
     }
-    const [sname, setsname] = useState("USA");
+    const [sname, setsname] = useState('USA');
     const [snamestate, setsnamestate] = useState(null);
     const myRef = useRef(null);
     const [data, setData] = useState(null);
     const [statedata, setMapData] = useState(null);
     const [us, setus] = useState(null);
     const [check, setcheck] = useState(false);
+    const [data2, setData2] = useState(null);
     const [check1, setcheck1] = useState(false);
+    const [ccases,setccases] = useState(null);
+    const [cdeath,setcdeath] = useState(null);
+    const [cnewc,setcnewc] = useState(null);
+    const [cvac,setcvac] = useState(null);
+    const [chos,setchos] = useState(null);
+    const[state, setState] = useState(null);
+    const [countyName,setCounty] = useState(null);
     // const [cond, setCond] = useState(null);
     let stateDomain = undefined;
     let countyDomain = undefined;
@@ -113,7 +123,13 @@ const USMaps = ({date, cond}) => {
                     data3 = await fetchAllStatesByDate(moment(test1.current).format('YYYY-MM-DD'));
                     //data3 = await fetchAllStatesByDate("2021-04-04");
                     setData((data) => datas.stats[0]);
+                    setData2(data2 => datas);
                     setMapData(data3);
+                    setccases(ccases => datas.stats[0].cases);
+                    setcdeath(cdeath => datas.stats[0].deaths);
+                    setcnewc(cnewc => datas.stats[0].newCases);
+                    setchos(chos => datas.stats[0].hospitalized);
+                    setcvac(cvac => datas.stats[0].secondDose);
                 }
             }
 
@@ -121,10 +137,30 @@ const USMaps = ({date, cond}) => {
             updatedata();
         }
     }, [check, statedata]);
+    useEffect(() => {
+        if(date){
+            let datas;
+            async function updatedata() {
+                if (date < moment(test1.current).format('YYYY-MM-DD'))
+                    datas = await fetchUSByDate(date);
+                else
+                    datas = await fetchUSByDate(moment(test1.current).format('YYYY-MM-DD'));
+                setData2(data2 => datas);
+                setccases(ccases => datas.stats[0].cases);
+                setcdeath(cdeath => datas.stats[0].deaths);
+                setcnewc(cnewc => datas.stats[0].newCases);
+                setchos(chos => datas.stats[0].hospitalized);
+                setcvac(cvac => datas.stats[0].secondDose);
+            }
+            updatedata();
+        }
+    },[date]);
 
     useEffect(() => {
         const svg = d3.select(myRef.current);
         if (us && myRef.current && date && statedata && cond) {
+            setcheck1(false);
+            setcheck2(false);
             // ////console.log("@@" + moment(today).format('YYYY-MM-DD'));
             // ////console.log(date);
             // ////console.log(statedata);
@@ -188,6 +224,12 @@ const USMaps = ({date, cond}) => {
                 .on("click", function(d)
                 {
                     setsname(d.props.name);
+                    setCounty(d.props.name);
+                    setccases(ccases => d.props.stats[0].cases);
+                    setcdeath(cdeath => d.props.stats[0].deaths);
+                    setcnewc(cnewc => d.props.stats[0].newCases);
+                    setchos(chos => d.props.stats[0].hospitalized);
+                    setcvac(cvac => d.props.stats[0].secondDose);
                 })
                 .on("contexmenu",reset)
                 .on("mouseover", function (d) {
@@ -219,6 +261,7 @@ const USMaps = ({date, cond}) => {
                     } else if (cond === 'deaths') {
                         stateDomain = stateValues(stdata, 'deathsPercent');
                         console.log(stateDomain);
+                        console.log(reds);
                         stateColor = d3.scaleThreshold()
                             .domain(stateDomain)
                             .range(reds);
@@ -229,8 +272,9 @@ const USMaps = ({date, cond}) => {
                             .domain(stateDomain)
                             .range(purples);
                     } else if (cond === 'vaccinations') {
-                        stateDomain = stateValues(stdata, 'totalVaccinationsPercent');
+                        stateDomain = stateValues(stdata, 'secondDosePercent');
                         console.log(stateDomain);
+                        console.log(pinks);
                         stateColor = d3.scaleThreshold()
                             .domain(stateDomain)
                             .range(pinks);
@@ -253,14 +297,13 @@ const USMaps = ({date, cond}) => {
 
                             })
                             if (d.props && cond === 'cases') {
-                                console.log(stateColor(d.props.stats[0].casesPercent));
                                 return stateColor(d.props.stats[0].casesPercent);
                             } else if (d.props && cond === 'newcases') {
                                 return stateColor(d.props.stats[0].newCasesPercent);
                             } else if (d.props && cond === 'deaths') {
-                                return stateColor(d.props.stats[0].deaths);
+                                return stateColor(d.props.stats[0].deathsPercent);
                             } else if (d.props && cond === 'vaccinations') {
-                                return stateColor(d.props.stats[0].totalVaccinationsPercent);
+                                return stateColor(d.props.stats[0].secondDosePercent);
                             } else if (d.props && cond === 'hospitalizations') {
                                 return stateColor(d.props.stats[0].hospitalizedPercent);
                             } else {
@@ -344,8 +387,8 @@ const USMaps = ({date, cond}) => {
                     } else if (cond === 'vaccinations' && d.props) {
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                             "State: " + d.props.name + "<br/>" +
-                            "Vaccines Distributed: " + d.props.stats[0].peopleVaccinated + "<br/>" +
-                            "Percent of State: " + d.props.stats[0].totalVaccinationsPercent.toFixed(2) + "%<br/>" +
+                            "Daily Vaccinations: " + d.props.stats[0].dailyVaccinated + "<br/>" +
+                            "Percent of State Vaccinated: " + d.props.stats[0].secondDosePercent.toFixed(2) + "%<br/>" +
                             "</div>";
                     } else if (cond === 'hospitalizations' && d.props) {
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
@@ -418,12 +461,12 @@ const USMaps = ({date, cond}) => {
 
                                     // ////console.log(d.id + "@@" + d.props.name);
                                     // return countyColor(d.props.stats[0].cases)
-                                    return countyColor(d.props.stats[0].peopleVaccinated)
+                                    return countyColorVac(d.props.stats[0].peopleVaccinated)
                                 }
                             })
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                             "County: " + d.props.name + "<br/>" +
-                            "People Vaccinated: " + d.props.stats[0].peopleVaccinated + "<br/>" +
+                            "No County Vaccination Data" +
                             "</div>";
                     } else if (cond === 'hospitalizations' && d.props) {
                         g.selectAll("path")
@@ -432,12 +475,12 @@ const USMaps = ({date, cond}) => {
 
                                     // ////console.log(d.id + "@@" + d.props.name);
                                     // return countyColor(d.props.stats[0].cases)
-                                    return countyColor(d.props.stats[0].hospitalized)
+                                    return countyColorHosp(d.props.stats[0].hospitalized)
                                 }
                             })
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                             "County: " + d.props.name + "<br/>" +
-                            "People Vaccinated: " + d.props.stats[0].hospitalized + "<br/>" +
+                            "No County Hospitalization Data" +
                             "</div>";
                     } else {
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
@@ -449,13 +492,21 @@ const USMaps = ({date, cond}) => {
             g.call(countytip);
 
             function clicked(d) {
+                console.log(d);
                 // ////console.log("here");
                 setcheck1(check1 => true);
                 ////console.log(d);
                 if (typeof d !== "undefined") {
+                    setccases(ccases => d.props.stats[0].cases);
+                    setcdeath(cdeath => d.props.stats[0].deaths);
+                    setcnewc(cnewc => d.props.stats[0].newCases);
+                    setchos(chos => d.props.stats[0].hospitalized);
+                    setcvac(cvac => d.props.stats[0].secondDose);
                     setsname(sname => d.props.name);
                     setsnamestate(snamestate=> d.props.name);
                     ////console.log(d.props.name);
+                    
+                    setState(state => d.props.name);
 
                     async function updatedata() {
                         // if(date)
@@ -520,7 +571,14 @@ const USMaps = ({date, cond}) => {
 
             function reset() {
                 async function updatedata() {
+                    setCounty(null);
+                    setccases(ccases => data2.stats[0].cases);
+                    setcdeath(cdeath => data2.stats[0].deaths);
+                    setcnewc(cnewc => data2.stats[0].newCases);
+                    setchos(chos => data2.stats[0].hospitalized);
+                    setcvac(cvac => data2.stats[0].secondDose);
                     setsname(sname => "USA");
+                    setState(state => "USA");
                     setcheck1(check1 => false);
                     setcheck2(check2 => false);
                     setsnamestate(snamestate=>null);
@@ -560,7 +618,7 @@ const USMaps = ({date, cond}) => {
                         } else if (d.props && cond === 'deaths') {
                             return stateColor(d.props.stats[0].deathsPercent);
                         } else if (d.props && cond === 'vaccinations') {
-                            return stateColor(d.props.stats[0].totalVaccinationsPercent);
+                            return stateColor(d.props.stats[0].secondDosePercent);
                         } else if (d.props && cond === 'hospitalizations') {
                             return stateColor(d.props.stats[0].hospitalizedPercent);
                         }
@@ -580,13 +638,46 @@ const USMaps = ({date, cond}) => {
     }
     return (
         <div>
+            <Grid container spacing={1} justify="center">
+                <CardComponent
+                    className={stylescard.infected}
+                    cardTitle= {sname + " cases"}
+                    value={ccases}
+                    cardSubtitle="Total number of active cases"
+                    //           buttonTitle="Infected"
+                    //           buttFunction= { (cond) => buttClickInfected() }
+                />
+                <CardComponent
+                    className={stylescard.recovered}
+                    cardTitle= {sname + " new cases"}
+                    value={cnewc}
+                />
+                <CardComponent
+                    className={stylescard.deaths}
+                    cardTitle= {sname + " death"}
+                    value={cdeath}
+                />
+                {cvac!=0 ?
+                    <CardComponent
+                    className={stylescard.vaccinated}
+                    cardTitle= {sname + " vaccinated"}
+                    value={cvac}
+                />:null}
+                {chos!=0 ?
+                    <CardComponent
+                    className={stylescard.hospitalized}
+                    cardTitle= {sname + " hospitalized"}
+                    value={chos}
+                />
+                :null}
+            </Grid>
             <br/>
             <div className={styles.container}>
                 <Grid container spacing={1}>
                     <Grid item xs={3}>
                         {/* {data && date && <Chart nbdate={date} data={data} country="US" cond={cond} />} */}
                         {check2 ?
-                            <Chart nbdate={date} country={sname} cond={cond} width={"600px"} height={"600px"}/> : null}
+                            <Chart nbdate={date} sname={sname} country={state} countyName={countyName} cond={cond} width={"600px"} height={"600px"}/> : null}
                     </Grid>
                     <Grid item xs={6}>
                         <div className={styles.details}>
@@ -609,7 +700,7 @@ const USMaps = ({date, cond}) => {
                 < br/>
                 {!check1 ?
                     <div className={styles.maps}>
-                        <Chart nbdate={date} country={sname}  cond={cond} width={"950px"} height={"400px"}/>
+                        <Chart nbdate={date} sname={sname} country={state} countyName={countyName} cond={cond} width={"950px"} height={"400px"}/>
                         {/* <p>Abc</p> */}
                     </div> : null}
 

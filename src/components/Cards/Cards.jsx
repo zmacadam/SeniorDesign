@@ -10,7 +10,7 @@ import styles from './Cards.module.css';
 
 
 // const Info = ({ data: { confirmed, recovered, deaths, vaccinations, hospitalizations, lastUpdate } }) => {
-const Info = ({data: {cases, deaths, hospitalized, hospitalizedCum, hospitalizedCur, hospitalizedInc,newCases, newDeaths, peopleVaccinated,totalVaccinations,vaccinesDistributed}})=> {
+const Info = ({data: {cases, deaths, hospitalized,newCases, secondDose}})=> {
   if (!cases) {
     console.log('load');
     return 'Loading...';
@@ -42,7 +42,7 @@ const Info = ({data: {cases, deaths, hospitalized, hospitalizedCum, hospitalized
           <CardComponent
               className={styles.vaccinated}
               cardTitle="Vaccinations"
-              value={peopleVaccinated}
+              value={secondDose}
               cardSubtitle="Total number of vaccinations"
 
           />
@@ -83,7 +83,7 @@ const Info = ({data: {cases, deaths, hospitalized, hospitalizedCum, hospitalized
         <CardComponent
             className={styles.vaccinated}
             cardTitle="Vaccinations"
-            value={peopleVaccinated}
+            value={secondDose}
             cardSubtitle="Total number of vaccinations"
 
         />

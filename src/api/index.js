@@ -69,7 +69,8 @@ export const fetchUSByDateRange = async(startDate, endDate) => {
 //        console.log(data);
 //        console.log(data[0].stats[0].cases);
         data = data.map(({ stats, date }) => ({ stats, date }));
-        return data.reverse();
+        //removed data.reverse()
+        return data;
     } catch (error) {
         return error;
     }
@@ -89,7 +90,8 @@ export const fetchStateNoCountiesByDateRange = async(startDate, endDate, stateNa
 //        console.log(data);
 //        console.log(data[0]);
         // data.map(({ stats, date }) => ({ stats, date }));
-        return data.reverse();
+        //removed data.reverse()
+        return data;
     } catch (error) {
         return error;
     }
@@ -166,6 +168,21 @@ export const fetchCountyByDate = async(state, date) => {
         console.log(data.data.state);
         return data.data;
     } catch (error) {
+        return error;
+    }
+};
+
+export const fetchCountyByDateRange = async(startDate, endDate, stateName, countyName) => {
+    let changeableUrl = mapurl;
+    if(startDate && endDate && countyName){
+        changeableUrl = `${url1}${mapurl}CountyByDateRange?start=${startDate}&&end=${endDate}&&state=${stateName}&&county=${countyName}`;
+        console.log(changeableUrl);
+    }
+    try {
+        const data = await axios.get(changeableUrl);
+        console.log(data);
+        return data.data;
+    } catch (error){
         return error;
     }
 };
