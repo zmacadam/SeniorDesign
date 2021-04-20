@@ -531,7 +531,7 @@ const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
                     ],
                 }}
                 options={{
-                    legend: { display: false, reverse: true },
+                    legend: { display: true, reverse: true },
                     title: { display: true, text: `${sname} Vaccination Data` },
                 }}
             />
@@ -570,7 +570,7 @@ const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
                         ],
                     }}
                     options={{
-                        legend: { display: false, reverse: true },
+                        legend: { display: true, reverse: true },
                         title: { display: true, text: `${sname} Vaccination Data By Month` },
                     }}
                 />
@@ -609,7 +609,7 @@ const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
                             ],
                         }}
                         options={{
-                            legend: { display: false, reverse: true },
+                            legend: { display: true, reverse: true },
                             title: { display: true, text: `${sname} Vaccination Data By Week` },
                         }}
                     />
