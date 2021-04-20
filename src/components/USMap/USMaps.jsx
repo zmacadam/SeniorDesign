@@ -29,7 +29,6 @@ const USMaps = ({date, cond}) => {
     const [sname, setsname] = useState('USA');
     const [snamestate, setsnamestate] = useState(null);
     const myRef = useRef(null);
-    const [data, setData] = useState(null);
     const [statedata, setMapData] = useState(null);
     const [us, setus] = useState(null);
     const [check, setcheck] = useState(false);
@@ -98,7 +97,7 @@ const USMaps = ({date, cond}) => {
                 //  ////console.log(us[0].data);
                 setus(us => usa[0].data);
             });
-        test1 = test1.current.setDate(test1.current.getDate() - 3);
+        test1 = test1.current.setDate(test1.current.getDate() - 1);
         // setCond((cond) => condDefault);
         setcheck(check => true);
 
@@ -122,7 +121,6 @@ const USMaps = ({date, cond}) => {
                 else {
                     data3 = await fetchAllStatesByDate(moment(test1.current).format('YYYY-MM-DD'));
                     //data3 = await fetchAllStatesByDate("2021-04-04");
-                    setData((data) => datas.stats[0]);
                     setData2(data2 => datas);
                     setMapData(data3);
                     setccases(ccases => datas.stats[0].cases);
@@ -136,7 +134,7 @@ const USMaps = ({date, cond}) => {
             // ////console.log(data);
             updatedata();
         }
-    }, [check, statedata]);
+    }, [check]);
     useEffect(() => {
         if(date){
             let datas;
