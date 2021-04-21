@@ -72,8 +72,6 @@ const USMaps = ({date, cond}) => {
     let county = useRef(null);
     let counties = useRef(null);
     let states = useRef(null);
-    let test1 = useRef(new Date());
-    let checked = true;
     let curstate;
     let stateColor = null;
     let stage = useRef(0);
@@ -89,60 +87,24 @@ const USMaps = ({date, cond}) => {
     useEffect(() => {
         const condDefault = 'cases';
         var url1 = axios.get("https://raw.githubusercontent.com/BiKunTin/datastore/main/us-counties.topojson");
-        // var url1 = axios.get('../us-counties.topojson');
         Promise
             .all([url1])
             .then((usa) => {
-                // ////console.log("haha");
-                //  ////console.log(us[0].data);
                 setus(us => usa[0].data);
             });
-        test1 = test1.current.setDate(test1.current.getDate() - 1);
-        // setCond((cond) => condDefault);
         setcheck(check => true);
 
     }, []);
     useEffect(() => {
-        if (check && date) {
+        if(date){
+            console.log(date);
             let datas;
             let data3;
-
             async function updatedata() {
-                // ////console.log(check + moment(test1.current).format('YYYY-MM-DD') + "@@" + date);
-                if (date < moment(test1.current).format('YYYY-MM-DD'))
-                    datas = await fetchUSByDate(date);
-                else
-                    datas = await fetchUSByDate(moment(test1.current).format('YYYY-MM-DD'));
-                // datas = await fetchUSByDate("2021-04-04");
-                if (date < moment(test1.current).format('YYYY-MM-DD')) {
-                    data3 = await fetchAllStatesByDate(date);
-                    setMapData(data3);
-                }
-                else {
-                    data3 = await fetchAllStatesByDate(moment(test1.current).format('YYYY-MM-DD'));
-                    //data3 = await fetchAllStatesByDate("2021-04-04");
-                    setData2(data2 => datas);
-                    setMapData(data3);
-                    setccases(ccases => datas.stats[0].cases);
-                    setcdeath(cdeath => datas.stats[0].deaths);
-                    setcnewc(cnewc => datas.stats[0].newCases);
-                    setchos(chos => datas.stats[0].hospitalized);
-                    setcvac(cvac => datas.stats[0].secondDose);
-                }
-            }
-
-            // ////console.log(data);
-            updatedata();
-        }
-    }, [check]);
-    useEffect(() => {
-        if(date){
-            let datas;
-            async function updatedata() {
-                if (date < moment(test1.current).format('YYYY-MM-DD'))
-                    datas = await fetchUSByDate(date);
-                else
-                    datas = await fetchUSByDate(moment(test1.current).format('YYYY-MM-DD'));
+                // if (date < moment(test1.current).format('YYYY-MM-DD'))
+                datas = await fetchUSByDate(date);
+                data3 = await fetchAllStatesByDate(date);
+                setMapData(data3);
                 setData2(data2 => datas);
                 setccases(ccases => datas.stats[0].cases);
                 setcdeath(cdeath => datas.stats[0].deaths);
@@ -159,17 +121,12 @@ const USMaps = ({date, cond}) => {
         if (us && myRef.current && date && statedata && cond) {
             setcheck1(false);
             setcheck2(false);
-            // ////console.log("@@" + moment(today).format('YYYY-MM-DD'));
-            // ////console.log(date);
-            // ////console.log(statedata);
-            // ////console.log(cond);
             for (var i = 1; i < 100; i++) {
                 svg.select("g").remove();
             }
 
             let width = 960 - margin.left - margin.right;
             let height = 600 - margin.left - margin.right;
-            // ////console.log(myRef.current);
             svg.append('svg')
                 .attr('class', 'center-container')
                 .attr('height', height + margin.top + margin.bottom)
@@ -188,30 +145,19 @@ const USMaps = ({date, cond}) => {
 
             const path = d3.geoPath()
                 .projection(projection);
-            // const div = d3.select("body").append("div").attr("class", "tooltip").style("opacity", 0);
             const g = svg.append("g")
                 .attr('class', 'center-container center-items us-state')
                 .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
                 .attr('width', width + margin.left + margin.right)
                 .attr('height', height + margin.top + margin.bottom);
-            // ////console.log(us);
             counties = topojson.feature(us, us.objects.counties).features;
             states = topojson.feature(us, us.objects.states).features;
             states.forEach(function (f) {
-                // ////console.log(statedata);
                 f.props = statedata.states.find(function (d) {
-                    // ////console.log(d.fips + "@@" + f.id);
                     return d.fips * 1000 / 1000 === f.id
                 })
 
             })
-            // function createmap() {
-            // ////console.log(g);
-            // if(date<moment(test1).format('YYYY-MM-DD'))
-            // {
-            //     ////console.log(stage.current);
-            //     d3.select('g').select('svg').remove();
-            // }
             g.append("g")
                 .attr("id", "counties")
                 .selectAll("path")
@@ -231,134 +177,84 @@ const USMaps = ({date, cond}) => {
                 })
                 .on("contexmenu",reset)
                 .on("mouseover", function (d) {
-                    // ////console.log('@@' + cond)
                     countytip.show(d, this);
                 })
                 .on("mouseout", function (d) {
                     countytip.hide(d, this);
                 });
-                async function updatedata() {
-                    // ////console.log(moment(test1).format('YYYY-MM-DD'));
-
-                    let stdata;
-                    if (date < moment(test1.current).format('YYYY-MM-DD'))
-                        stdata = await fetchAllStatesByDate(date);
-                    else
-                        stdata = await fetchAllStatesByDate(moment(test1.current).format('YYYY-MM-DD'));
-                    if (cond === 'cases') {
-                        stateDomain = stateValues(stdata, 'casesPercent');
-                        stateColor = d3.scaleThreshold()
-                            .domain(stateDomain)
-                            .range(blues);
-                    } else if (cond === 'newcases') {
-                        stateDomain = stateValues(stdata, 'newCasesPercent');
-                        console.log(stateDomain);
-                        stateColor = d3.scaleThreshold()
-                            .domain(stateDomain)
-                            .range(greens);
-                    } else if (cond === 'deaths') {
-                        stateDomain = stateValues(stdata, 'deathsPercent');
-                        console.log(stateDomain);
-                        console.log(reds);
-                        stateColor = d3.scaleThreshold()
-                            .domain(stateDomain)
-                            .range(reds);
-                    } else if (cond === 'hospitalizations') {
-                        stateDomain = stateValues(stdata, 'hospitalizedPercent');
-                        console.log(stateDomain);
-                        stateColor = d3.scaleThreshold()
-                            .domain(stateDomain)
-                            .range(purples);
-                    } else if (cond === 'vaccinations') {
-                        stateDomain = stateValues(stdata, 'secondDosePercent');
-                        console.log(stateDomain);
-                        console.log(pinks);
-                        stateColor = d3.scaleThreshold()
-                            .domain(stateDomain)
-                            .range(pinks);
-                    }
-                    g.append("g")
-                        .attr("id", "states")
-                        .selectAll("path")
-                        .data(states)
-                        .enter().append("path")
-                        .style('fill', function (d) {
-                            // ////console.log(county);
-                            // ////console.log(d.id*1000/1000);
-                            // e.log('@@' + cond)
-                            states.forEach(function (f) {
-                                // ////console.log(date);
-                                f.props = stdata.states.find(function (d) {
-                                    // ////console.log(d.fips + "@@" + f.id);
-                                    return d.fips * 1000 / 1000 === f.id
-                                })
-
-                            })
-                            if (d.props && cond === 'cases') {
-                                return stateColor(d.props.stats[0].casesPercent);
-                            } else if (d.props && cond === 'newcases') {
-                                return stateColor(d.props.stats[0].newCasesPercent);
-                            } else if (d.props && cond === 'deaths') {
-                                return stateColor(d.props.stats[0].deathsPercent);
-                            } else if (d.props && cond === 'vaccinations') {
-                                return stateColor(d.props.stats[0].secondDosePercent);
-                            } else if (d.props && cond === 'hospitalizations') {
-                                return stateColor(d.props.stats[0].hospitalizedPercent);
-                            } else {
-                                return "black";
-                            }
-
-
-                        })
-                        .attr("d", path)
-                        .attr("id", function (d) { // set id to lowercase state name eg. "texas"
-                            if (d.props) {
-                                return d.props.name.toLowerCase();
-                            } else return "";
-                        })
-                        .attr("class", "state")
-                        .on("click", clicked)
-                        .on("mouseover", function (d) {
-                            async function updatedata() {
-                                let stdata;
-                                if (date < moment(test1.current).format('YYYY-MM-DD'))
-                                    stdata = await fetchAllStatesByDate(date);
-                                else
-                                    stdata = await fetchAllStatesByDate(moment(test1.current).format('YYYY-MM-DD'));
-
-                                // ////console.log(county);
-                                // ////console.log(d.id*1000/1000);
-                                // ////console.log('@@' + cond)
-                                states.forEach(function (f) {
-                                    f.props = stdata.states.find(function (d) {
-                                        // ////console.log(d.fips + "@@" + f.id);
-                                        return d.fips * 1000 / 1000 === f.id
-                                    })
-
-                                })
-                            }
-
-                            updatedata();
-                            statetip.show(d, this);
-                        })
-                        .on("mouseout", function (d) {
-                            statetip.hide(d, this);
-                        });
-                    // ////console.log(g.attr("class", "state"));
-                    g.append("path")
-                        .datum(topojson.mesh(us, us.objects.states, function (a, b) {
-                            return a !== b;
-                        }))
-                        .attr("id", "state-borders")
-                        .attr("d", path);
-                    // }
-                    // createmap();
-
+                if (cond === 'cases') {
+                    stateDomain = stateValues(statedata, 'casesPercent');
+                    stateColor = d3.scaleThreshold()
+                        .domain(stateDomain)
+                        .range(blues);
+                } else if (cond === 'newcases') {
+                    stateDomain = stateValues(statedata, 'newCasesPercent');
+                    console.log(stateDomain);
+                    stateColor = d3.scaleThreshold()
+                        .domain(stateDomain)
+                        .range(greens);
+                } else if (cond === 'deaths') {
+                    stateDomain = stateValues(statedata, 'deathsPercent');
+                    console.log(stateDomain);
+                    console.log(reds);
+                    stateColor = d3.scaleThreshold()
+                        .domain(stateDomain)
+                        .range(reds);
+                } else if (cond === 'hospitalizations') {
+                    stateDomain = stateValues(statedata, 'hospitalizedPercent');
+                    console.log(stateDomain);
+                    stateColor = d3.scaleThreshold()
+                        .domain(stateDomain)
+                        .range(purples);
+                } else if (cond === 'vaccinations') {
+                    stateDomain = stateValues(statedata, 'secondDosePercent');
+                    console.log(stateDomain);
+                    console.log(pinks);
+                    stateColor = d3.scaleThreshold()
+                        .domain(stateDomain)
+                        .range(pinks);
                 }
+                g.append("g")
+                    .attr("id", "states")
+                    .selectAll("path")
+                    .data(states)
+                    .enter().append("path")
+                    .style('fill', function (d) {
+                        if (d.props && cond === 'cases') {
+                            return stateColor(d.props.stats[0].casesPercent);
+                        } else if (d.props && cond === 'newcases') {
+                            return stateColor(d.props.stats[0].newCasesPercent);
+                        } else if (d.props && cond === 'deaths') {
+                            return stateColor(d.props.stats[0].deathsPercent);
+                        } else if (d.props && cond === 'vaccinations') {
+                            return stateColor(d.props.stats[0].secondDosePercent);
+                        } else if (d.props && cond === 'hospitalizations') {
+                            return stateColor(d.props.stats[0].hospitalizedPercent);
+                        } else {
+                            return "black";
+                        }
+                    })
+                    .attr("d", path)
+                    .attr("id", function (d) { // set id to lowercase state name eg. "texas"
+                        if (d.props) {
+                            return d.props.name.toLowerCase();
+                        } else return "";
+                    })
+                    .attr("class", "state")
+                    .on("click", clicked)
+                    .on("mouseover", function (d) {
+                        statetip.show(d, this);
+                    })
+                    .on("mouseout", function (d) {
+                        statetip.hide(d, this);
+                    });
+                g.append("path")
+                    .datum(topojson.mesh(us, us.objects.states, function (a, b) {
+                        return a !== b;
+                    }))
+                    .attr("id", "state-borders")
+                    .attr("d", path);
 
-                updatedata();
-            ////console.log("STATE:");
-            ////console.log(g);
 
             const statetip = d3tip()
                 .attr('class', 'd3-tip')
@@ -406,14 +302,10 @@ const USMaps = ({date, cond}) => {
                 .attr('class', 'd3-tip')
                 .offset([140, 140])
                 .html(function (d) {
-                    // ////console.log(d);
                     if (cond === 'cases' && d.props) {
                         g.selectAll("path")
                             .style('fill', function (d) {
                                 if (d.props && parseInt(d.id / 1000) === curstate) {
-
-                                    // ////console.log(d.id + "@@" + d.props.name);
-                                    // return countyColor(d.props.stats[0].cases)
                                     return countyColorCases(d.props.stats[0].casesPercent)
                                 }
                             })
@@ -426,9 +318,6 @@ const USMaps = ({date, cond}) => {
                         g.selectAll("path")
                             .style('fill', function (d) {
                                 if (d.props && parseInt(d.id / 1000) === curstate) {
-
-                                    // ////console.log(d.id + "@@" + d.props.name);
-                                    // return countyColor(d.props.stats[0].cases)
                                     return countyColorRecovered(d.props.stats[0].newCasesPercent)
                                 }
                             })
@@ -441,9 +330,6 @@ const USMaps = ({date, cond}) => {
                         g.selectAll("path")
                             .style('fill', function (d) {
                                 if (d.props && parseInt(d.id / 1000) === curstate) {
-
-                                    // ////console.log(d.id + "@@" + d.props.name);
-                                    // return countyColor(d.props.stats[0].cases)
                                     return countyColorDeaths(d.props.stats[0].deathsPercent)
                                 }
                             })
@@ -456,9 +342,6 @@ const USMaps = ({date, cond}) => {
                         g.selectAll("path")
                             .style('fill', function (d) {
                                 if (d.props && parseInt(d.id / 1000) === curstate) {
-
-                                    // ////console.log(d.id + "@@" + d.props.name);
-                                    // return countyColor(d.props.stats[0].cases)
                                     return countyColorVac(d.props.stats[0].peopleVaccinated)
                                 }
                             })
@@ -470,9 +353,6 @@ const USMaps = ({date, cond}) => {
                         g.selectAll("path")
                             .style('fill', function (d) {
                                 if (d.props && parseInt(d.id / 1000) === curstate) {
-
-                                    // ////console.log(d.id + "@@" + d.props.name);
-                                    // return countyColor(d.props.stats[0].cases)
                                     return countyColorHosp(d.props.stats[0].hospitalized)
                                 }
                             })
@@ -490,10 +370,7 @@ const USMaps = ({date, cond}) => {
             g.call(countytip);
 
             function clicked(d) {
-                console.log(d);
-                // ////console.log("here");
                 setcheck1(check1 => true);
-                ////console.log(d);
                 if (typeof d !== "undefined") {
                     setccases(ccases => d.props.stats[0].cases);
                     setcdeath(cdeath => d.props.stats[0].deaths);
@@ -502,21 +379,11 @@ const USMaps = ({date, cond}) => {
                     setcvac(cvac => d.props.stats[0].secondDose);
                     setsname(sname => d.props.name);
                     setsnamestate(snamestate=> d.props.name);
-                    ////console.log(d.props.name);
                     
                     setState(state => d.props.name);
 
                     async function updatedata() {
-                        // if(date)
-                        // {
-                        //     d3.select('g').select('svg').exit().remove();
-                        //     checked=false;
-                        // }
-                        if (date < moment(test1.current).format('YYYY-MM-DD'))
-                            county = await fetchCountyByDate(d.props.name, date);
-                        else
-                            county = await fetchCountyByDate(d.props.name, moment(test1.current).format('YYYY-MM-DD'));
-                        // ////console.log(d.id*1000/1000);
+                        county = await fetchCountyByDate(d.props.name, date);
                         counties.forEach(function (f) {
                             // ////console.log(parseInt(f.id/1000));
                             curstate = parseInt(d.id)
@@ -526,7 +393,6 @@ const USMaps = ({date, cond}) => {
                                     // ////console.log(e.fips + "@@" + f.id);
                                     return e.fips * 1000 / 1000 === f.id
                                 })
-                                // ////console.log(f.props.stats[0].cases);
                             }
                         })
                         countyColorCases = d3.scaleThreshold()
@@ -580,20 +446,6 @@ const USMaps = ({date, cond}) => {
                     setcheck1(check1 => false);
                     setcheck2(check2 => false);
                     setsnamestate(snamestate=>null);
-                    let stdata;
-                    if (date < moment(test1.current).format('YYYY-MM-DD'))
-                        stdata = await fetchAllStatesByDate(date);
-                    else
-                        stdata = await fetchAllStatesByDate(moment(test1.current).format('YYYY-MM-DD'));
-
-                    // ////console.log(county);
-                    // ////console.log(d.id*1000/1000);
-                    states.forEach(function (f) {
-                        f.props = stdata.states.find(function (d) {
-                            // ////console.log(d.fips + "@@" + f.id);
-                            return d.fips * 1000 / 1000 === f.id
-                        })
-                    })
                 }
 
                 updatedata();
@@ -608,8 +460,7 @@ const USMaps = ({date, cond}) => {
                 g.selectAll("path")
                     .style('fill', function (d) {
                         if (d.props && cond === 'cases') {
-                            // ////console.log(d.props);
-                            //                         ////console.log(d.props.name);
+
                             return stateColor(d.props.stats[0].casesPercent);
                         } else if (d.props && cond === 'newcases') {
                             return stateColor(d.props.stats[0].newCasesPercent);
@@ -628,7 +479,7 @@ const USMaps = ({date, cond}) => {
             }
         }
         d3.select('svg').select('g').exit().remove();
-    }, [us, myRef.current, cond, date]);
+    }, [us, myRef.current, cond, date,statedata]);
     if (!statedata) {
         return (
             <div>Loading...</div>
@@ -642,8 +493,6 @@ const USMaps = ({date, cond}) => {
                     cardTitle= {sname + " cases"}
                     value={ccases}
                     cardSubtitle="Total number of active cases"
-                    //           buttonTitle="Infected"
-                    //           buttFunction= { (cond) => buttClickInfected() }
                 />
                 <CardComponent
                     className={stylescard.recovered}
@@ -673,7 +522,6 @@ const USMaps = ({date, cond}) => {
             <div className={styles.container}>
                 <Grid container spacing={1}>
                     <Grid item xs={3}>
-                        {/* {data && date && <Chart nbdate={date} data={data} country="US" cond={cond} />} */}
                         {check2 ?
                             <Chart nbdate={date} sname={sname} country={state} countyName={countyName} cond={cond} width={"600px"} height={"600px"}/> : null}
                     </Grid>
@@ -699,7 +547,6 @@ const USMaps = ({date, cond}) => {
                 {!check1 ?
                     <div className={styles.maps}>
                         <Chart nbdate={date} sname={sname} country={state} countyName={countyName} cond={cond} width={"950px"} height={"400px"}/>
-                        {/* <p>Abc</p> */}
                     </div> : null}
 
             </div>
