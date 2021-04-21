@@ -92,6 +92,13 @@ const USMaps = ({date, cond}) => {
         right: 10
     };
     let active = d3.select(null);
+    
+    function convertToSlug(Text){
+        return Text
+            .toLowerCase()
+            .replace(/[^\w ]+/g,'')
+            .replace(/ +/g,'_');
+    }
 
     useEffect(() => {
         const condDefault = 'cases';
@@ -168,12 +175,16 @@ const USMaps = ({date, cond}) => {
 
             })
             g.append("g")
-                .attr("id", "counties")
                 .selectAll("path")
                 .data(counties)
                 .enter().append("path")
                 .attr("d", path)
                 .attr("class", "county-boundary")
+                .attr("id", function (d) { // set id to lowercase county name eg. "bexar_county"
+                    if (d.props) {
+                        return convertToSlug(d.props.name.toLowerCase());
+                    } else return "";
+                })
                 .on("click", function(d)
                 {
                     setsname(d.props.name);
