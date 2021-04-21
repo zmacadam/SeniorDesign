@@ -62,8 +62,8 @@ const Combine = () => {
                     </button> : "Hospitalizations*"}
                 </div>
             </div>
+            <br/>
             <div className={styles.container}>
-                <p> Search <SearchPage cond={cond} setCond={setCond}/></p>
                 <DatePicker
                     renderCustomHeader={({
                                              date,
@@ -115,6 +115,8 @@ const Combine = () => {
                     onChange={(date) => setStartDate(date)}
                     maxDate={addDays(new Date(), -1)}
                 />
+                <br/>
+                <p> Search <SearchPage cond={cond} setCond={setCond}/></p>
                 <br/>
             </div>
             <USMap date={moment(startDate).format('YYYY-MM-DD')} cond={cond}/>

@@ -20,8 +20,13 @@ import {reset} from "react-tabs/lib/helpers/uuid";
 import { countyValues } from '../Legend/Legend';
 import { stateValues } from '../Legend/Legend';
 import CardComponent from "../Cards/Card/Card";
-
+import "./USMaps.css";
 const USMaps = ({date, cond}) => {
+    const [toggleState, setToggleState] = useState(1);
+
+    const toggleTab = (index) => {
+        setToggleState(index);
+    };
     const [check2, setcheck2] = useState(false);
     function activatelayer() {
         setcheck2(check2 => check2 == false ? true : false);
@@ -640,52 +645,74 @@ const USMaps = ({date, cond}) => {
                             <Chart nbdate={date} sname={sname} country={state} countyName={countyName} cond={cond} width={"600px"} height={"600px"}/> : null}
                     </Grid>
                     <Grid item xs={6}>
-                        <Grid container spacing={6}>
-                            <Grid item xs={6}>
-                                <div className={styles.details}>
-                                    {check1 ?
-                                        <button className={styles.button1} onClick={activatelayer}> Get Details </button> : null}
-                                </div>
-                            </Grid>
-                            <Grid item xs={6}>
-                                {color && domain ?
-                                    <div className={styles.legend}>
-                                        <div className={styles.mylegend}>
-                                        <div className={styles.legendtitle}>Percent of Population</div>
-                                            <div className={styles.legendscale}>
-                                                <ul className={styles.legendlabels}>
-                                                    <li><span style={{background: color.color0}}></span>{domain.domain0}</li>
-                                                    <li><span style={{background: color.color1}}></span>{domain.domain1}</li>
-                                                    <li><span style={{background: color.color2}}></span>{domain.domain2}</li>
-                                                    <li><span style={{background: color.color3}}></span>{domain.domain3}</li>
-                                                    <li><span style={{background: color.color4}}></span>{domain.domain4}</li>
-                                                </ul>
+                        <div className="container">
+                            <div className="bloc-tabs">
+                                <button
+                                    className={toggleState === 1 ? "tabs active-tabs" : "tabs"}
+                                    onClick={() => toggleTab(1)}
+                                >
+                                    Maps
+                                </button>
+                                {!check1 ? <button
+                                    className={toggleState === 2 ? "tabs active-tabs" : "tabs"}
+                                    onClick={() => toggleTab(2)}
+                                >
+                                    USA Chart
+                                </button>:null}
+                            </div>
+                            <div className="content-tabs">
+                                <div className={toggleState === 1 ? "content  active-content" : "content"}>
+                                    <Grid container spacing={6}>
+                                        <Grid item xs={6}>
+                                            <div className={styles.details}>
+                                                {check1 ?
+                                                    <button className={styles.button1} onClick={activatelayer}> Get Details </button> : null}
                                             </div>
-                                        </div>
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            {color && domain ?
+                                                <div className={styles.legend}>
+                                                    <div className={styles.mylegend}>
+                                                    <div className={styles.legendtitle}>Percent of Population</div>
+                                                        <div className={styles.legendscale}>
+                                                            <ul className={styles.legendlabels}>
+                                                                <li><span style={{background: color.color0}}></span>{domain.domain0}</li>
+                                                                <li><span style={{background: color.color1}}></span>{domain.domain1}</li>
+                                                                <li><span style={{background: color.color2}}></span>{domain.domain2}</li>
+                                                                <li><span style={{background: color.color3}}></span>{domain.domain3}</li>
+                                                                <li><span style={{background: color.color4}}></span>{domain.domain4}</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                : null }
+                                        </Grid>
+                                    </Grid>
+                                    <div className={styles.maps}>
+                                        <svg
+                                            className="d3-component"
+                                            width={900}
+                                            height={600}
+                                            ref={myRef}
+                                        />
                                     </div>
-                                    : null }
-                            </Grid>
-                        </Grid>
-                        <div className={styles.maps}>
-                            <svg
-                                className="d3-component"
-                                width={900}
-                                height={600}
-                                ref={myRef}
-                            />
+                                </div>
+
+                                {!check1 ? <div
+                                    className={toggleState === 2 ? "content  active-content" : "content"}
+                                >
+                                    {!check1 ?
+                                        // <div className={styles.maps}>
+                                        <Chart nbdate={date} sname={sname} country={state} countyName={countyName} cond={cond} width={"950px"} height={"400px"}/>
+                                        : null}
+                                </div> :null}
+                            </div>
                         </div>
                     </Grid>
                     <Grid item xs={3}>
                         {check2 ? <Infos nbdate={date} sname={sname} snamestate={snamestate}/> : null}
                     </Grid>
                 </Grid>
-                < br/>
-                {!check1 ?
-                    <div className={styles.maps}>
-                        <Chart nbdate={date} sname={sname} country={state} countyName={countyName} cond={cond} width={"950px"} height={"400px"}/>
-                        {/* <p>Abc</p> */}
-                    </div> : null}
-
             </div>
         </div>
     );
