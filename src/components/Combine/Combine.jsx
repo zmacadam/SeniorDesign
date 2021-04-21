@@ -63,62 +63,72 @@ const Combine = () => {
                 </div>
             </div>
             <br/>
-            <div className={styles.container}>
-                <DatePicker
-                    renderCustomHeader={({
-                                             date,
-                                             changeYear,
-                                             changeMonth,
-                                             decreaseMonth,
-                                             increaseMonth,
-                                             prevMonthButtonDisabled,
-                                             nextMonthButtonDisabled,
-                                         }) => (
-                        <div
-                            style={{
-                                margin: 10,
-                                display: 'flex',
-                                justifyContent: 'center',
-                            }}
-                        >
-                            <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
-                                {'<'}
-                            </button>
-                            <select
-                                value={getYear(date)}
-                                onChange={({target: {value}}) => changeYear(value)}
+            {/*<div className={styles.container}>*/}
+            <Grid container spacing={1}>
+                <Grid item xs={6}>
+                    <div className={styles.container}>
+                        <p> Search <SearchPage cond={cond} setCond={setCond}/></p>
+                    </div>
+                </Grid>
+                <Grid item xs={6}>
+                    <div className={styles.container}>
+                    <p> Change date: <DatePicker
+                        renderCustomHeader={({
+                                                 date,
+                                                 changeYear,
+                                                 changeMonth,
+                                                 decreaseMonth,
+                                                 increaseMonth,
+                                                 prevMonthButtonDisabled,
+                                                 nextMonthButtonDisabled,
+                                             }) => (
+                            <div
+                                style={{
+                                    margin: 10,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                }}
                             >
-                                {years.map((option) => (
-                                    <option key={option} value={option}>
-                                        {option}
-                                    </option>
-                                ))}
-                            </select>
+                                <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
+                                    {'<'}
+                                </button>
+                                <select
+                                    value={getYear(date)}
+                                    onChange={({target: {value}}) => changeYear(value)}
+                                >
+                                    {years.map((option) => (
+                                        <option key={option} value={option}>
+                                            {option}
+                                        </option>
+                                    ))}
+                                </select>
 
-                            <select
-                                value={months[getMonth(date)]}
-                                onChange={({target: {value}}) => changeMonth(months.indexOf(value))}
-                            >
-                                {months.map((option) => (
-                                    <option key={option} value={option}>
-                                        {option}
-                                    </option>
-                                ))}
-                            </select>
+                                <select
+                                    value={months[getMonth(date)]}
+                                    onChange={({target: {value}}) => changeMonth(months.indexOf(value))}
+                                >
+                                    {months.map((option) => (
+                                        <option key={option} value={option}>
+                                            {option}
+                                        </option>
+                                    ))}
+                                </select>
 
-                            <button onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
-                                {'>'}
-                            </button>
-                        </div>
-                    )}
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date)}
-                    maxDate={addDays(new Date(), -1)}
-                />
-                <br/>
-                <p> Search <SearchPage cond={cond} setCond={setCond}/></p>
-                <br/>
-            </div>
+                                <button onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
+                                    {'>'}
+                                </button>
+                            </div>
+                        )}
+                        selected={startDate}
+                        onChange={(date) => setStartDate(date)}
+                        maxDate={addDays(new Date(), -1)}
+                    /></p>
+                    </div>
+                </Grid>
+
+            </Grid>
+            <br/>
+            {/*</div>*/}
             <USMap date={moment(startDate).format('YYYY-MM-DD')} cond={cond}/>
         </div>
     );

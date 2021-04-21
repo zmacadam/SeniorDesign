@@ -688,14 +688,14 @@ const USMaps = ({date, cond}) => {
                                                 : null }
                                         </Grid>
                                     </Grid>
-                                    <div className={styles.maps}>
+                                    {/*<div className={styles.maps}>*/}
                                         <svg
                                             className="d3-component"
                                             width={900}
                                             height={600}
                                             ref={myRef}
                                         />
-                                    </div>
+                                    {/*</div>*/}
                                 </div>
 
                                 {!check1 ? <div
