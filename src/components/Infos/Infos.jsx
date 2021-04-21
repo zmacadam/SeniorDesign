@@ -8,7 +8,6 @@ const Infos = ( {nbdate,sname, snamestate} ) => (
       <Tabs>
         <TabList>
           <Tab>News</Tab>
-          <Tab>Vaccination Site</Tab>
         </TabList>
         <TabPanel>
           <p>
@@ -19,11 +18,6 @@ const Infos = ( {nbdate,sname, snamestate} ) => (
                 </h1>
               </Sticky>
             </div>
-          </p>
-        </TabPanel>
-        <TabPanel>
-          <p>
-            Implement
           </p>
         </TabPanel>
       </Tabs>

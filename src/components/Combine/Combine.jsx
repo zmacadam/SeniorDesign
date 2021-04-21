@@ -52,25 +52,42 @@ const Combine = () => {
 
     return (
         <div>
-            <div className={styles.container}>
-                <div>
-                    <button className={styles.button} onClick={() => setCond('cases')}> Cases</button>
-                    <button className={styles.button} onClick={() => setCond('newcases')}> New Cases</button>
-                    <button className={styles.button} onClick={() => setCond('deaths')}> Deaths</button>
-                    {prejan12 ? <button className={styles.button} onClick={() => setCond('vaccinations')}> Vaccinations</button> : "Vaccinations*"}
-                    {premarch7 ? <button className={styles.button} onClick={() => setCond('hospitalizations')}> Hospitalizations
-                    </button> : "Hospitalizations*"}
-                </div>
-            </div>
-            <br/>
             {/*<div className={styles.container}>*/}
             <Grid container spacing={1}>
-                <Grid item xs={6}>
+                <Grid item xs={3}>
                     <div className={styles.container}>
                         <p> Search <SearchPage cond={cond} setCond={setCond}/></p>
                     </div>
                 </Grid>
                 <Grid item xs={6}>
+                    {/*<Grid>*/}
+                    {/*    */}
+                    {/*</Grid>*/}
+                    <div className={styles.container}>
+                    {/*    <div>*/}
+                    {/*<Grid xs={2}>*/}
+                    <div>
+
+                            <button className={styles.button} onClick={() => setCond('cases')}> Cases</button>
+                        {/*</Grid>*/}
+                        {/*<Grid xs={2}>*/}
+                            <button className={styles.button} onClick={() => setCond('newcases')}> New Cases</button>
+                        {/*</Grid>*/}
+                        {/*<Grid xs={2}>*/}
+                            <button className={styles.button} onClick={() => setCond('deaths')}> Deaths</button>
+                        {/*</Grid>*/}
+                        {/*<Grid xs={2}>*/}
+                            {prejan12 ? <button className={styles.button} onClick={() => setCond('vaccinations')}> Vaccinations</button> : "Vaccinations*"}
+                        {/*</Grid>*/}
+                        {/*<Grid xs={2}>*/}
+                            {premarch7 ? <button className={styles.button} onClick={() => setCond('hospitalizations')}> Hospitalizations
+                            </button> : "Hospitalizations*"}
+                    {/*</Grid>*/}
+
+                    </div>
+                    </div>
+                </Grid>
+                <Grid item xs={3}>
                     <div className={styles.container}>
                     <p> Change date: <DatePicker
                         renderCustomHeader={({
