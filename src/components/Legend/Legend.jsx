@@ -20,7 +20,8 @@ export const stateValues = (data, value) => {
   const { states } = data;
   // eslint-disable-next-line no-plusplus
   for (let i = 0; i < states.length; i++) {
-    percents.push(states[i].stats[0][value]);
+    if (states[i].name !== "District of Columbia")
+      percents.push(states[i].stats[0][value]);
   }
   // eslint-disable-next-line prefer-spread
   const min = Math.min.apply(Math, percents);

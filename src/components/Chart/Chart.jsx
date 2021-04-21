@@ -102,9 +102,6 @@ const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
     testLastWeek = setDateBackWeek(nbdate);
     testLastYear = setDateBackYear(nbdate);
 
-    console.log(countyName);
-    console.log(country);
-
 
 //     console.log(cond);
 //     console.log(country);
