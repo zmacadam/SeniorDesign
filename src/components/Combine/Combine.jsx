@@ -39,7 +39,11 @@ const Combine = () => {
     if (Date.parse(march7) < Date.parse(currentDate)) {
         premarch7 = false;
     }
-    console.log(premarch7);
+    let Jan12 = new Date('2021-01-11');
+    let prejan12 = false;
+    if (Date.parse(Jan12) < Date.parse(currentDate)) {
+        prejan12 = true;
+    }
     useEffect(() => {
         // //console.log(today);
         settest(test => test.setDate(test.getDate() - 1));
@@ -53,9 +57,9 @@ const Combine = () => {
                     <button className={styles.button} onClick={() => setCond('cases')}> Cases</button>
                     <button className={styles.button} onClick={() => setCond('newcases')}> New Cases</button>
                     <button className={styles.button} onClick={() => setCond('deaths')}> Deaths</button>
-                    <button className={styles.button} onClick={() => setCond('vaccinations')}> Vaccinations</button>
+                    {prejan12 ? <button className={styles.button} onClick={() => setCond('vaccinations')}> Vaccinations</button> : "Vaccinations*"}
                     {premarch7 ? <button className={styles.button} onClick={() => setCond('hospitalizations')}> Hospitalizations
-                    </button> : null}
+                    </button> : "Hospitalizations*"}
                 </div>
             </div>
             <div className={styles.container}>
