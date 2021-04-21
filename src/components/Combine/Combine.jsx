@@ -35,6 +35,7 @@ const Combine = () => {
     let currentDate = new Date(moment(startDate).format('YYYY-MM-DD'));
     const [cond, setCond] = useState(null);
     let march7 = new Date('2021-03-07');
+    let jan21 = new Date('2020-01-22');
     let premarch7 = true;
     if (Date.parse(march7) < Date.parse(currentDate)) {
         premarch7 = false;
@@ -139,6 +140,8 @@ const Combine = () => {
                         selected={startDate}
                         onChange={(date) => setStartDate(date)}
                         maxDate={addDays(new Date(), -1)}
+                        minDate={jan21}
+
                     /></p>
                     </div>
                 </Grid>
