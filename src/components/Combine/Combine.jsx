@@ -39,38 +39,17 @@ const Combine = () => {
     if (Date.parse(march7) < Date.parse(currentDate)) {
         premarch7 = false;
     }
-    console.log(premarch7);
+    let Jan12 = new Date('2021-01-11');
+    let prejan12 = false;
+    if (Date.parse(Jan12) < Date.parse(currentDate)) {
+        prejan12 = true;
+    }
     useEffect(() => {
         // //console.log(today);
-        settest(test => test.setDate(test.getDate() - 3));
+        settest(test => test.setDate(test.getDate() - 1));
+        setCond((cond) => 'cases');
     }, []);
 
-    useEffect(() => {
-        if (test) {
-            const condDefault = 'cases';
-            let datas;
-            let data3;
-
-            async function updatedata() {
-                // datas = await fetchData();
-                // //console.log("@@" + moment(test).format('YYYY-MM-DD'));
-                datas = await fetchUSByDate("2021-04-04");
-                data3 = await fetchAllStatesByDate("2021-04-04");
-                setData((data) => datas.stats[0]);
-                setMapData((statedata) => data3);
-                setCond((cond) => condDefault);
-            }
-
-            // //console.log(data);
-            updatedata();
-        }
-
-    }, [test]);
-    if (!data || !statedata) {
-        return (
-            <div>Loading...</div>
-        );
-    }
     return (
         <div>
             <div className={styles.container}>
@@ -78,9 +57,9 @@ const Combine = () => {
                     <button className={styles.button} onClick={() => setCond('cases')}> Cases</button>
                     <button className={styles.button} onClick={() => setCond('newcases')}> New Cases</button>
                     <button className={styles.button} onClick={() => setCond('deaths')}> Deaths</button>
-                    <button className={styles.button} onClick={() => setCond('vaccinations')}> Vaccinations</button>
+                    {prejan12 ? <button className={styles.button} onClick={() => setCond('vaccinations')}> Vaccinations</button> : "Vaccinations*"}
                     {premarch7 ? <button className={styles.button} onClick={() => setCond('hospitalizations')}> Hospitalizations
-                    </button> : "Hospitalization data unavailable after March 7th 2021"}
+                    </button> : "Hospitalizations*"}
                 </div>
             </div>
             <div className={styles.container}>
@@ -138,7 +117,7 @@ const Combine = () => {
                 />
                 <br/>
             </div>
-            {data && statedata && cond && (<USMap date={moment(startDate).format('YYYY-MM-DD')} cond={cond}/>)}
+            <USMap date={moment(startDate).format('YYYY-MM-DD')} cond={cond}/>
         </div>
     );
 }

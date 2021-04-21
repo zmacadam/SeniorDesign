@@ -506,32 +506,32 @@ const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
                     datasets: [
                         {
                             data: dailyData.map(({ stats }) => stats[0].vaccinesDistributed),
-                            Label: 'Vaccines Distributed',
+                            label: 'Vaccines Distributed',
                             borderColor: 'rgba(0, 255, 0, 0.5)',
                             fill: false,
                         },
                         {
                             data: dailyData.map(({ stats }) => stats[0].firstDose),
-                            Label: 'First Dose',
+                            label: 'First Dose',
                             borderColor: 'rgba(255, 0, 0, 0.5)',
                             fill: false,
                         },
                         {
                             data: dailyData.map(({ stats }) => stats[0].secondDose),
-                            Label: 'Second Dose',
+                            label: 'Second Dose',
                             borderColor: 'rgba(0, 0, 255, 0.5)',
                             fill: false,
                         },
                         {
                             data: dailyData.map(({ stats }) => stats[0].dailyVaccinated),
-                            Label: 'Daily Vaccinations',
+                            label: 'Daily Vaccinations',
                             borderColor: 'rgba(60, 0, 200, 0.5)',
                             fill: false
                         },
                     ],
                 }}
                 options={{
-                    legend: { display: false, reverse: true },
+                    legend: { display: true, reverse: true },
                     title: { display: true, text: `${sname} Vaccination Data` },
                 }}
             />
@@ -545,32 +545,32 @@ const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
                         datasets: [
                             {
                                 data: monthData.map(({ stats }) => stats[0].vaccinesDistributed),
-                                Label: 'Vaccines Distributed',
+                                label: 'Vaccines Distributed',
                                 borderColor: 'rgba(0, 255, 0, 0.5)',
                                 fill: false,
                             },
                             {
                                 data: monthData.map(({ stats }) => stats[0].firstDose),
-                                Label: 'First Dose',
+                                label: 'First Dose',
                                 borderColor: 'rgba(255, 0, 0, 0.5)',
                                 fill: false,
                             },
                             {
                                 data: monthData.map(({ stats }) => stats[0].secondDose),
-                                Label: 'Second Dose',
+                                label: 'Second Dose',
                                 borderColor: 'rgba(0, 0, 255, 0.5)',
                                 fill: false,
                             },
                             {
                                 data: monthData.map(({ stats }) => stats[0].dailyVaccinated),
-                                Label: 'Daily Vaccinations',
+                                label: 'Daily Vaccinations',
                                 borderColor: 'rgba(60, 0, 200, 0.5)',
                                 fill: false
                             },
                         ],
                     }}
                     options={{
-                        legend: { display: false, reverse: true },
+                        legend: { display: true, reverse: true },
                         title: { display: true, text: `${sname} Vaccination Data By Month` },
                     }}
                 />
@@ -584,32 +584,32 @@ const Chart = ({country, nbdate, cond, countyName, sname, width, height}) => {
                             datasets: [
                                 {
                                     data: weekData.map(({ stats }) => stats[0].vaccinesDistributed),
-                                    Label: 'Vaccines Distributed',
+                                    label: 'Vaccines Distributed',
                                     borderColor: 'rgba(0, 255, 0, 0.5)',
                                     fill: false,
                                 },
                                 {
                                     data: weekData.map(({ stats }) => stats[0].firstDose),
-                                    Label: 'First Dose',
+                                    label: 'First Dose',
                                     borderColor: 'rgba(255, 0, 0, 0.5)',
                                     fill: false,
                                 },
                                 {
                                     data: weekData.map(({ stats }) => stats[0].secondDose),
-                                    Label: 'Second Dose',
+                                    label: 'Second Dose',
                                     borderColor: 'rgba(0, 0, 255, 0.5)',
                                     fill: false,
                                 },
                                 {
                                     data: weekData.map(({ stats }) => stats[0].dailyVaccinated),
-                                    Label: 'Daily Vaccinations',
+                                    label: 'Daily Vaccinations',
                                     borderColor: 'rgba(60, 0, 200, 0.5)',
                                     fill: false
                                 },
                             ],
                         }}
                         options={{
-                            legend: { display: false, reverse: true },
+                            legend: { display: true, reverse: true },
                             title: { display: true, text: `${sname} Vaccination Data By Week` },
                         }}
                     />

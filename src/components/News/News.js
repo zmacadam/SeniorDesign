@@ -7,13 +7,9 @@ const News = ({nbdate,sname,snamestate}) => {
   const [articles, setArticles] = useState([]);
 
   useEffect(() => {
-    /* console.log("nbdate is: " + nbdate);
-    console.log(nbdate);
-    console.log(nbdate.nbdate); */
-    const newsdate = nbdate.nbdate;
     const getArticles = async () => {
       const res = await Axios.get(
-          `https://newsapi.org/v2/everything?qInTitle=Covid+in+${sname}&from=${newsdate}&to=${newsdate}&language=en&sortBy=relevancy&pageSize=10&apiKey=76d09548beaa47da9b51c96964e3354c`,
+          `https://newsapi.org/v2/everything?qInTitle=+Covid+in+${sname}&to=${nbdate}&language=en&sortBy=relevancy&pageSize=10&apiKey=76d09548beaa47da9b51c96964e3354c`,
       );
 
       setArticles(res.data.articles);

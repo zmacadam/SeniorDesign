@@ -13,12 +13,8 @@ npm start
 npm run build + serve -s build
 ```
 
-### Current heroku link (main page not working by somehow)
+### Current AWS link
 ```
-https://covidtrackers.herokuapp.com/
-```
-### Current AWS link (main page not working by somehow)
-```
-https://master.d1hsuda4u3y60k.amplifyapp.com/
+http://ec2-3-83-230-148.compute-1.amazonaws.com:8080/
 ```
 
