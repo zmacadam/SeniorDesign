@@ -15,19 +15,86 @@ const Symptom = () => {
     <div style={{ margin: "20px" }}>
       <Tabs>
         <TabList>
-          <Tab>tab1</Tab>
-          <Tab>tab2</Tab>
+          <Tab>General Use</Tab>
+          <Tab>Glossary</Tab>
+          <Tab>Sources</Tab>
         </TabList>
 
         <TabPanel>
           <p>
-            code here
+            Here are some helpful tips for using this Covid Tracker:
+          </p>
+          <hr />
+          <p>
+            Begin by clicking on the date displayed on the home page. This will display a calendar for you to select what day you would like to see data for.
+            The most recently available day will always be yesterday because it takes some time for public data sources to update.
+            By default, the home page will load data for the most recent day.
+          </p>
+          <p>
+            There are green buttons at the top of the page that correspond to different types of data.
+            Click any of the buttons to modify the map and graphs according to the data you would like to display.
+            For visual clarity, each data type uses a unique color theme.
+            Note: The data source for hospitalization data has been discontinued, and that button is not available after March 7th 2021.
+            Similarly, publicly available vaccine data began on January 12th, and therefore is not available before then.
+          </p>
+          <p>
+            Once you select the date and data you would like to see, please scroll across our interactive map of the U.S.!
+            The map begins in the U.S. view.
+            Hover the mouse over any state to see a tooltip representing the number of the data for that day, as well as what percentage of the population in that state is represented by the data.
+            Left-click on any state to zoom into the state view and see a similar display for all the individual counties. Right-click within the map to zoom back out to the U.S. view.
+            As you zoom into a state, a button will pop up nearby. Clicking this button will open additional tabs that display graphs and news for that state.
+            If you click on a county, the graphs and news will update relative to the county that was selected.
+            The map displays a legend with a choropleth effect that shades states and counties based on the percentage of people affected in those areas relative to its population.
+          </p>
+          <p>
+            There is also a graph on the home page that displays data for the entire U.S.!
+            All graphs provide the option to view trends for the last week, month, or year based on the date selected.
           </p>
         </TabPanel>
         <TabPanel>
           <p>
-            code here
+            Note: All data types display stats relative to the currently selected day and map region being viewed, and update accordingly
           </p>
+          <hr />
+          <p>
+            Cases: Total cases of Covid-19 up to the selected date within the current region (including both confirmed and probable).
+          </p>
+          <p>
+            New Cases: Total new cases of Covid-19 recorded in just the current day selected.
+          </p>
+          <p>
+            Deaths: Total deaths from Covid-19 up the selected date (including both confirmed and probable).
+          </p>
+          <p>
+            Hospitalizations: Total number of people hospitalized due to Covid-19.
+          </p>
+          <p>
+            Vaccinations: Total number of people who are documented as fully vaccinated (having received second or final dose).
+            Our vaccination data has multiple stats which are all displayed in the vaccination graphs.
+          </p>
+          <p>
+            Vaccines Distributed: Total number of all vaccines delivered.
+          </p>
+          <p>
+            Daily Vaccinations: Total number of people who were vaccinated that day.
+          </p>
+          <p>
+            Second Dose: Total number of people who have received their second or last vaccine dose.
+          </p>
+          <p>
+            First Dose: Total number of people who have received the first dose of their vaccine.
+          </p>
+        </TabPanel>
+        <TabPanel>
+          <p>
+            DATA SOURCES
+          </p>
+          <hr />
+          <ul>
+            <li>The New York times: https://github.com/nytimes/covid-19-data</li>
+            <li>Our World in Data: https://github.com/owid/covid-19-data</li>
+            <li>The COVID Tracking Project: https://covidtracking.com/</li>
+          </ul>
         </TabPanel>
 
       </Tabs>
