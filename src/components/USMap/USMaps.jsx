@@ -423,7 +423,7 @@ const USMaps = ({date, cond}) => {
                         return "<div style='opacity:0.8;background-color:#329c68;font-family:sans-serif;padding:8px;;color:white'>" +
                             "County: " + d.props.name + "<br/>" +
                             "Death: " + d.props.stats[0].deaths + "<br/>" +
-                            "Percent of County: " + d.props.stats[0].newDeaths.toFixed(2) + "%<br/>" +
+                            "Percent of County: " + d.props.stats[0].deathsPercent.toFixed(2) + "%<br/>" +
                             "</div>";
                     } else if (cond === 'vaccinations' && d.props) {
                         setDomain(null);
@@ -649,8 +649,9 @@ const USMaps = ({date, cond}) => {
                             </Grid>
                             <Grid item xs={6}>
                                 {color && domain ?
-                                    <div className={styles.details} style={{marginBottom: "-15%"}}>
+                                    <div className={styles.legend}>
                                         <div className={styles.mylegend}>
+                                        <div className={styles.legendtitle}>Percent of Population</div>
                                             <div className={styles.legendscale}>
                                                 <ul className={styles.legendlabels}>
                                                     <li><span style={{background: color.color0}}></span>{domain.domain0}</li>
