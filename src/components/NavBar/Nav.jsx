@@ -17,6 +17,18 @@ const Nav = () => {
                         marginRight: "40px",
                         fontSize: "15px"
                     }}
+                    to="/infos"
+                >
+                    <li>Infos</li>
+                </Link>
+                <Link
+                    style={{
+                        color: "white",
+                        textDecoration: "none",
+                        marginTop: "5px",
+                        marginRight: "40px",
+                        fontSize: "15px"
+                    }}
                     to="/symptom"
                 >
                     <li>Symptom</li>
